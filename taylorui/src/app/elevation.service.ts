@@ -14,6 +14,7 @@ export class ElevationService {
   
   getElevation() {
     console.log("----------ElevationComponent - getElevation [" + this.acrefeet + "] ----------");
+    console.log(this.elevationData.elevationTable)
 
   }
 }
