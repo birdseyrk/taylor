@@ -1,0 +1,48 @@
+{
+  "RESERVOIR_FULL_ACFT": 106200.0,
+  "RESERVOIR_FILL_ACFT": 94974.0,
+
+  "YEAR_BEGINNING_VOLUME_ACFT": 68005.0,
+
+  "RESERVOIR_FULL_WATER_HEIGHT_FT": 9330.0,
+  "RESERVOIR_MAX_WATER_HEIGHT_FT": 9329.0,
+  "RESERVOIR_MAX_WATER_HEIGHT_WARNING_FT": 9327.0,
+
+  "RESERVOIR_SURFACE_WATER_AREA_AC": 2000.0,
+  "RESERVOIR_MAX_SURFACE_WATER_ELEVATION_FT": 9337.2,
+
+  "DAM_HEIGHT_FT": 206.8,
+  "DAM_LENGTH_FT": 675.0,
+  "DAM_CREST_ELEVATION_FT": 9343.0,
+  "DAM_OUTLET_FT": 10.0,
+  "DAM_OUTLET_WATER_CAPACITY_CFS": 1500.0,
+  "SPILLWAY_CREST_ELEVATION_FT": 9330.0,
+  "SPILLWAY_LENGTH_FT": 180.0,
+  "SPILLLWAY_WATER_CAPACITY_CFS": 10000.0,
+  "TOP_OF_ACTIVE_CONSERVATION_POOL_FT": 9330.0,
+  "TOP_OF_INACTIVE_CONSERVATION_POOL_FT": 9183.0,
+
+  "ACRE_TO_SQFT": 43560,
+  "ACRE_TO_CUBICFT": 43599.9,
+  "SECONDS_PER_DAY": 86400,
+  "SQFT_TO_ACFT": 0.0000229568411,
+
+  "DRY_YEAR_RANGE_ACFT": {
+    "low": 0.0,
+    "high": 74999.999,
+    "minimumStorageObjective_10_31": 60000,
+    "Description": "Taylor River/Amended Stipulation minimum storage based on table. Page 8"
+  },
+  "AVERAGE_YEAR_RANGE_ACFT": {
+    "low": 75000.0,
+    "high": 109999.999,
+    "minimumStorageObjective_10_31": 70000,
+    "Description": "Taylor River/Amended Stipulation Page 8"
+  },
+  "WET_YEAR_RANGE_ACFT": {
+    "low": 110000.0,
+    "high": 1110000.0,
+    "minimumStorageObjective_10_31": 75000,
+    "Description": "Taylor River/Amended Stipulation Page 8"
+  }
+}
