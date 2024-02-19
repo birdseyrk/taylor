@@ -8,6 +8,7 @@ import { ElevationService } from '../elevation.service';
   templateUrl: './elevation.component.html',
   styleUrl: './elevation.component.css'
 })
+
 export class ElevationComponent {
 
   constructor( 
@@ -15,12 +16,10 @@ export class ElevationComponent {
 
   acrefeet   = 70000.0;
   elevation = 0.0;
-  
+  test:any = new Array(70000,80000,90000,100000);
 
   getElevation(event: MouseEvent) {
-    console.log("getElevation " + this.acrefeet);
-    console.log(this.elevationService.getElevation( this.acrefeet));
     this.elevation = this.elevationService.getElevation( this.acrefeet);
+    this.elevationService.getElevations(this.test);
   }
-
 }
