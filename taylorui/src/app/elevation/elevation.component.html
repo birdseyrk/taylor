@@ -3,12 +3,17 @@
 <span class="p-input-icon-left">
     <!-- <i class="pi pi-search"></i> -->
     <p-inputNumber  class="p-inputtext-sm" [(ngModel)]="acrefeet" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber>
-    <!-- <p-button label="Primary" label="Check Elevation" (onClick)="getElevation()" ></p-button> -->
-    <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button>
-    <!-- <input pInputText type="text" class="p-inputtext-sm" [(ngModel)]="acrefeet" /> -->
 </span>
 
-<div class="row">
+<span class="p-input-icon-left">
+    <p-inputNumber  class="p-inputtext-sm" [(ngModel)]="elevation"  mode="decimal" [min]="0" [max]="9329"> </p-inputNumber>
+</span>
+
+<span class="p-input-icon-left">
+    <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button>
+</span>
+
+<!-- <div class="row">
     <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button>
 </div>
 
@@ -27,4 +32,4 @@
       <label class="form-check-label" for="exampleCheck1">Check me out</label>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+  </form> -->
