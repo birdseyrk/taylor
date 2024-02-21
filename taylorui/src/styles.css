@@ -1,7 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
 
-
-@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-@import "../node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css";
-@import "../node_modules/primeng/resources/primeng.css";
+@import "../node_modules/primeng/resources/themes/lara-light-blue/theme.css";
+/*@import "../node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css";*/
+@import "../node_modules/primeng/resources/primeng.min.css";
+@import "../node_modules/primeng/resources/components/button/button.css";
+@import "../node_modules/primeng/resources/components/dataview/dataview.css";
+@import "../node_modules/primeng/resources/components/inputtextarea/inputtextarea.css";
+@import "../node_modules/primeng/resources/components/inputtext/inputtext.css";
+@import "../node_modules/primeng/resources/components/panel/panel.css";
+@import "../node_modules/primeng/resources/components/toolbar/toolbar.css";
+@import "../node_modules/primeng/resources/components/tabmenu/tabmenu.css";
+@import "../node_modules/primeng/resources/components/splitbutton/splitbutton.css";
+@import "../node_modules/primeng/resources/components/table/table.css";
 @import "../node_modules/primeicons//primeicons.css";

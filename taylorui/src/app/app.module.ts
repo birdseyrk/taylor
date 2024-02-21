@@ -25,11 +25,13 @@ import { TableModule } from 'primeng/table';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ElevationComponent } from './elevation/elevation.component';
+import { DataReaderComponent } from './data-reader/data-reader.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ElevationComponent
+    ElevationComponent,
+    DataReaderComponent
   ],
   imports: [
     BrowserModule,
