@@ -1,9 +1,14 @@
-
 <span class="p-float-label">
-    <textarea id="float-input" rows="30" cols="80" pInputTextarea  [(ngModel)]="proposedOperations"></textarea>
-    <label for="float-input">"Proposed Operation</label>
-  </span>
-  <p-button label="Load Proposed Operations" (click)="processData($event)"></p-button>
-  <!-- <span class="p-input-icon-left">
-    <button class="p-button-sm" pButton type="button" (click)="getProposedOperations($event)" >Load Proposed Operations</button>
-  </span> -->
+  <textarea
+    id="float-input"
+    rows="30"
+    cols="80"
+    pInputTextarea
+    [(ngModel)]="proposedOperations"
+  ></textarea>
+  <label for="float-input">"Proposed Operation</label>
+</span>
+<p-button
+  label="Load Proposed Operations"
+  (click)="processData($event)"
+></p-button>

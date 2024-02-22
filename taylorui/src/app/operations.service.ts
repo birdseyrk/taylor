@@ -7,6 +7,7 @@ export class OperationsService {
   constructor() {}
 
   // operations: any = new Array();
+  myJson:string = '{}';
 
   getOperations(proposedOperations: any): string[] {
     let operations: any = new Array();
@@ -36,14 +37,16 @@ export class OperationsService {
       }
     }
 
-    this.getJson(operations);
+    operations.push(lineString.trim());
+
+    this.myJson = this.setJson(operations);
 
     return operations;
   }
   getRowArray(row: any): string {
     let blank = 32;
     let comma = 44;
-    let rowJson = '{"date":"';
+    let rowJson = '{"month":"';
     let addComma = false;
     let columnIndex = 1;
     let name = '';
@@ -61,8 +64,8 @@ export class OperationsService {
           ']'
       );
 
-      if (row.charCodeAt(i) === blank && i != 3) {
-        console.log('---------- ' + columnIndex + '----------');
+      if (row.charCodeAt(i) === blank) {
+        //console.log('---------- ' + columnIndex + '----------');
         // if (addComma) {
         //   rowJson = rowJson + '","';
         // }
@@ -75,26 +78,30 @@ export class OperationsService {
           //    break;
           // }
           case 1: {
-            name = '"inflow":"';
+            name = '"dateRange":"';
             break;
           }
           case 2: {
-            name = '"avgInflow":"';
+            name = '"inflow":"';
             break;
           }
           case 3: {
-            name = '"outFlow":"';
+            name = '"avgInflow":"';
             break;
           }
           case 4: {
-            name = '"avgOutFlow":"';
+            name = '"outFlow":"';
             break;
           }
           case 5: {
-            name = '"eomContent":"';
+            name = '"avgOutFlow":"';
             break;
           }
           case 6: {
+            name = '"eomContent":"';
+            break;
+          }
+          case 7: {
             name = '"eomElevation":"';
             break;
           }
@@ -104,12 +111,12 @@ export class OperationsService {
           }
         }
 
-        console.log(rowJson);
+        //console.log(rowJson);
         rowJson = rowJson + '",' + name;
         addComma = true;
         columnIndex++;
 
-        console.log(rowJson);
+        //console.log(rowJson);
       } else if (row.charCodeAt(i) === comma) {
         // no-op
       } else {
@@ -123,9 +130,17 @@ export class OperationsService {
     return rowJson;
   }
 
-  getJson(operations: any[]): string {
-    let jsonString = '{';
+  getJson():string {
+    return this.myJson;
+  }
 
+  setJson(operations: any[]): string {
+
+    for (let i = 0; i < operations.length; i++) {
+      console.log(" index " + i + "******* " + operations[i] +  " *******");
+    }
+
+    let jsonString = '{';
     jsonString = jsonString + '"title":' + '"' + operations[0] + '",';
     jsonString = jsonString + '"name":' + '"' + operations[1] + '",';
     jsonString = jsonString + '"forcast":' + '"' + operations[2] + '",';
@@ -160,7 +175,8 @@ export class OperationsService {
     jsonString = jsonString + this.getRowArray(operations[30]) + ',';
     jsonString = jsonString + this.getRowArray(operations[31]) + '],';
     jsonString = jsonString + '"inflowSummary":' + '"' + operations[32] + '",';
-    jsonString = jsonString + '"normal":' + '"' + operations[33] + '"';
+    jsonString = jsonString + '"normal":' + '"' + operations[33] + '",';
+    jsonString = jsonString + '"maxContent":' + '"' + operations[34] + '"';
 
     jsonString = jsonString + '}';
 

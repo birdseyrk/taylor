@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { InputNumberInputEvent } from 'primeng/inputnumber';
+// import { InputNumberInputEvent } from 'primeng/inputnumber';
 
 import { ElevationService } from '../elevation.service';
 
@@ -14,7 +14,7 @@ export class ElevationComponent {
   constructor( 
     public elevationService: ElevationService) { }
 
-  acrefeet   = 70000.0;
+  acrefeet   = 0.0;
   elevation = 0.0;
   test:any = new Array(70000,80000,90000,100000);
 

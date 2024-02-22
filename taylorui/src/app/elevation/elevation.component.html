@@ -1,35 +1,28 @@
 <p>elevation works!</p>
 
-<span class="p-input-icon-left">
-    <!-- <i class="pi pi-search"></i> -->
-    <p-inputNumber  class="p-inputtext-sm" [(ngModel)]="acrefeet" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber>
-</span>
+<div class="p-grid p-fluid">
+  <div class="p-field p-col-12 p-md-3">
+    <label for="acrefeet">Acre Feet</label>
+    <p-inputNumber  inputId="acrefeet" class="p-inputtext-sm" [(ngModel)]="acrefeet" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber>
+  </div>
 
-<span class="p-input-icon-left">
-    <p-inputNumber  class="p-inputtext-sm" [(ngModel)]="elevation"  mode="decimal" [min]="0" [max]="9329"> </p-inputNumber>
-</span>
-
-<span class="p-input-icon-left">
-    <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button>
-</span>
-
-<!-- <div class="row">
-    <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button>
+  <div class="p-field p-col-12 p-md-3">
+    <label for="elevation">Elevation</label>
+      <p-inputNumber inputId="elevation"  class="p-inputtext-sm" [(ngModel)]="elevation"  mode="decimal" [min]="0" [max]="9329"> </p-inputNumber>
+  </div>
 </div>
 
-<form>
-    <div class="form-group">
-      <label for="exampleInputEmail1">Email address</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-      <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-    </div>
-    <div class="form-group">
-      <label for="exampleInputPassword1">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-    </div>
-    <div class="form-check">
-      <input type="checkbox" class="form-check-input" id="exampleCheck1">
-      <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form> -->
+<!-- <span class="p-input-icon-left">
+  <p-button label="Get Elevation"  (click)="getElevation($event)"></p-button>
+</span> -->
+
+<p-panel header="Elevations">
+  <p-header>
+    <!-- <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button> -->
+  </p-header>
+  <p-inputNumber placeholder="acreFt-input" class="p-inputtext-sm" [(ngModel)]="acrefeet" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber>
+  
+  <p-button label="Get Elevation"  (click)="getElevation($event)"></p-button>
+  <!-- <p-footer>
+  </p-footer> -->
+</p-panel>

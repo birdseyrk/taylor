@@ -39,17 +39,21 @@ export class ElevationService {
     });
 
     this.elevation = this.elevationData.elevationTable[tabIndex - 1].elevation;
-
-    this.elevationData.elevationTable[tabIndex - 1].acrefeet.forEach(function (
-      row: any
-    ) {
-
-      if (row < acreFeet) {
-        decIndex++;
-      } else {
-        return;
-      }
-    });
+    
+    if (acreFeet > this.elevationData.elevationTable[tabIndex - 1].max) {
+      decIndex = 9;
+    } else {
+      this.elevationData.elevationTable[tabIndex - 1].acrefeet.forEach(function (
+        row: any
+      ) {
+        
+        if (row < acreFeet) {
+          decIndex++;
+        } else {
+          return;
+        }
+      });
+    }
 
     myDecimal =
       (acreFeet -
