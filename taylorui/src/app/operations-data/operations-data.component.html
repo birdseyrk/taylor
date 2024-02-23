@@ -1,35 +1,60 @@
 <p>operations-data works!</p>
 
+    
+<p-button label="Get Data"  (click)="getMyData($event)"></p-button>
+
 <p-panel header="Operations">
     <p-header>
       <!-- <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button> -->
     </p-header>
-    
-    <p-button label="Get Data"  (click)="getMyData($event)"></p-button>
+
+    <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" [minFractionDigits]="2"></p-inputNumber> -->
+    <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" ></p-inputNumber> -->
+    <label for="eom-content">{{eomContentLabel}}</label>
 
     <p-table [value]="myData" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
             <tr>
                 <th>Month</th>
-                <th>Dates</th>
-                <th>Inflow</th>
-                <th>Avg Inflow</th>
+                <th>Days</th>
+                <th>Manual Inflow (AF)</th>
+                <th>Inflow (AF)</th>
+                <th>Inflow (CF)</th>
+                <th>Manual Outflow (AF)</th>
                 <th>Outflow</th>
-                <th>Avg Outflow</th>
+                <th>Outflow (CF)</th>
+                <th>Avg Inflow (CFS)</th>
+                <th>Avg Outflow (CFS)</th>
                 <th>EOM Content</th>
                 <th>EOM Elevation</th>
+                <th>Manual Outflow (CFS)</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-myData>
             <tr>
-                <td>{{ myData.month }}</td>
-                <td>{{ myData.dateRange }}</td>
-                <td>{{ myData.inflow }}</td>
-                <td>{{ myData.avgInflow }}</td>
-                <td>{{ myData.outFlow }}</td>
-                <td>{{ myData.avgOutFlow }}</td>
-                <td>{{ myData.eomContent }}</td>
-                <td>{{ myData.eomElevation }}</td>
+                <td><label class="p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</label></td>
+                <td><p-inputNumber placeholder="Days" class="p-inputtext-sm" [(ngModel)]="myData.days" [readonly]="true" inputId="minmax" mode="decimal" [size]="2" [min]="1" [max]="16"> </p-inputNumber></td>
+                <!-- <td><label class="p-inputtext-sm">{{ myData.days }}</label></td> -->
+                <td><p-inputNumber placeholder="Manual Inflow (AC)" class="p-inputtext-sm" [(ngModel)]="myData.manualInflow" inputId="minmax" mode="decimal" [size]="6" [min]="" [max]="106200"> </p-inputNumber></td>
+                <td><p-inputNumber placeholder="Predicted Inflow (AC)" class="p-inputtext-sm" [readonly]="true" [(ngModel)]="myData.inflow" inputId="minmax" mode="decimal" [size]="6" [min]="" [max]="106200"> </p-inputNumber></td>
+                <!-- <td><label class="p-inputtext-sm">{{ myData.inflow }}</label></td> -->
+                <td><p-inputNumber placeholder="Inflow CF" class="p-inputtext-sm" [(ngModel)]="myData.inflowCF" [readonly]="true" inputId="minmax" mode="decimal" [size]="6" [min]="" [max]="106200"> </p-inputNumber></td>
+                <!-- <td><label class="p-inputtext-sm">{{ myData.inflowCF }}</label></td> -->
+                <td><p-inputNumber placeholder="Manual Outflow (AC)" class="p-inputtext-sm" [(ngModel)]="myData.manualOutflow" inputId="minmax" mode="decimal" [min]="" [max]="106200"> </p-inputNumber></td>
+                <td><p-inputNumber placeholder="Outflow (AF)" class="p-inputtext-sm" [(ngModel)]="myData.outflow" [readonly]="true" inputId="minmax" mode="decimal" [min]="" [max]="106200"> </p-inputNumber></td>
+                <!-- <td><label class="p-inputtext-sm">{{ myData.outflow }}</label></td> -->
+                <td><p-inputNumber placeholder="Outflow (CF)" class="p-inputtext-sm" [(ngModel)]="myData.outflowCF" [readonly]="true" inputId="minmax" mode="decimal" [min]="" [max]="106200"> </p-inputNumber></td>
+                <!-- <td><label class="p-inputtext-sm">{{ myData.outflowCF }}</label></td> -->
+                <td><p-inputNumber placeholder="Avg Inflow CS" class="p-inputtext-sm" [(ngModel)]="myData.avgInflowCFS" [readonly]="true" inputId="minmax" mode="decimal" [maxFractionDigits]="4" [min]="0" [max]="106200"> </p-inputNumber></td>
+                <!-- <td><label class="p-inputtext-sm">{{ myData.avgInflowCFS.toFixed(4) }}</label></td> -->
+                <td><p-inputNumber placeholder="Avg Outflow CS" class="p-inputtext-sm" [(ngModel)]="myData.avgOutflowCFS" [readonly]="true" inputId="minmax" mode="decimal" [maxFractionDigits]="4" [min]="0" [max]="106200"> </p-inputNumber></td>
+                <!-- <td><label class="p-inputtext-sm">{{ myData.avgOutflowCFS.toFixed(4) }}</label></td> -->
+                <td><p-inputNumber placeholder="EOM Content" class="p-inputtext-sm" [(ngModel)]="myData.eomContent" [readonly]="true" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber></td>
+                <!-- <td><label class="p-inputtext-sm">{{ myData.eomContent }}</label></td> -->
+                <td><p-inputNumber placeholder="EOM Elevation" class="p-inputtext-sm" [(ngModel)]="myData.eomElevation" [readonly]="true" inputId="minmax" mode="decimal" [maxFractionDigits]="4" [min]="0" [max]="106200"> </p-inputNumber></td>
+                <td><label class="p-inputtext-sm">{{ myData.eomElevation }}</label></td>
+                <td><p-inputNumber placeholder="acreFt-input" class="p-inputtext-sm" [(ngModel)]="myData.manualOutflowCFS" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber></td>
+                
             </tr>
         </ng-template>
     </p-table>

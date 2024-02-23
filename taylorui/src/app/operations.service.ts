@@ -16,20 +16,20 @@ export class OperationsService {
     let lineString = '';
 
     for (let i = 0; i < proposedOperations.length; i++) {
-      console.log(
-        'i = ' +
-          i +
-          ' char [' +
-          proposedOperations[i] +
-          '] str.charAt(0) is: [' +
-          proposedOperations.charCodeAt(i) +
-          ']'
-      );
+      // console.log(
+      //   'i = ' +
+      //     i +
+      //     ' char [' +
+      //     proposedOperations[i] +
+      //     '] str.charAt(0) is: [' +
+      //     proposedOperations.charCodeAt(i) +
+      //     ']'
+      // );
 
       if (proposedOperations.charCodeAt(i) === newLineChar) {
-        console.log(lineString.trim());
+        //console.log(lineString.trim());
         operations.push(lineString.trim());
-        console.log(operations[operIndex]);
+        //console.log(operations[operIndex]);
         operIndex++;
         lineString = '';
       } else {
@@ -43,13 +43,17 @@ export class OperationsService {
 
     return operations;
   }
-  getRowArray(row: any): string {
+  getRowArray(row: any, index:number): string {
     let blank = 32;
     let comma = 44;
-    let rowJson = '{"month":"';
+    //let rowJson = '{"month":"';
     let addComma = false;
     let columnIndex = 1;
-    let name = '';
+    //let name = '';
+    let myValue = '';
+    let myNewRow = '';
+    
+    console.log(row);
 
     for (let i = 0; i < row.length; i++) {
       console.log(
@@ -64,8 +68,10 @@ export class OperationsService {
           ']'
       );
 
+      console.log(columnIndex);
+
       if (row.charCodeAt(i) === blank) {
-        //console.log('---------- ' + columnIndex + '----------');
+        console.log('---------- ' + columnIndex + '----------');
         // if (addComma) {
         //   rowJson = rowJson + '","';
         // }
@@ -78,31 +84,67 @@ export class OperationsService {
           //    break;
           // }
           case 1: {
-            name = '"dateRange":"';
+            //console.log(myValue +'",dateRange":"');
+            //name = '"dateRange":"';
+
+            myNewRow = '{"index":"'+ index +'","month":"' + myValue + '",';
+            myValue = '';
             break;
           }
           case 2: {
-            name = '"inflow":"';
+            //console.log(myValue + ',"inflow":"');
+            //name = '"inflow":"';
+
+            myNewRow = myNewRow + '"dateRange":"' + myValue + '",'; 
+
+            var mySplit = myValue.split("-");
+            //console.log("start [" + mySplit[0] + "] end [" + mySplit[1] + "] total [" +  ( parseInt(mySplit[1]) - parseInt(mySplit[0])) +"]");
+
+            let days = parseInt(mySplit[1]) - parseInt(mySplit[0]) + 1;
+
+            myNewRow = myNewRow + '"dateRange":"' + myValue + '","days":"' + days + '",';
+
+            myValue = '';
             break;
           }
           case 3: {
-            name = '"avgInflow":"';
+            //console.log(myValue + ',"avgInflow":"');
+            //name = '"avgInflow":"';
+
+            myNewRow = myNewRow + '"inflow":' + myValue + ',';
+            myValue = '';
             break;
           }
           case 4: {
-            name = '"outFlow":"';
+            //console.log(myValue + ',"outflow":"');
+            //name = '"outflow":"';
+
+            myNewRow = myNewRow + '"avgInflow":' + myValue + ',';
+            myValue = '';
             break;
           }
           case 5: {
-            name = '"avgOutFlow":"';
+            //console.log(myValue +'",avgOutflow":"' );
+            //name = '"avgOutflow":"';
+
+            myNewRow = myNewRow + '"outflow":' + myValue + ',';
+            myValue = '';
             break;
           }
           case 6: {
-            name = '"eomContent":"';
+            //console.log(myValue + '",eomContent":"');
+            //name = '"eomContent":"';
+
+            myNewRow = myNewRow + '"avgOutflow":' + myValue + ',';
+            myValue = '';
             break;
           }
           case 7: {
-            name = '"eomElevation":"';
+            //console.log(myValue + '",eomElevation":"');
+            //name = '"eomElevation":"';
+
+            myNewRow = myNewRow + '"eomContent":' + myValue + ',';
+            myValue = '';
             break;
           }
           default: {
@@ -112,7 +154,9 @@ export class OperationsService {
         }
 
         //console.log(rowJson);
-        rowJson = rowJson + '",' + name;
+        //rowJson = rowJson + '",' + name;
+
+        //console.log(myNewRow);
         addComma = true;
         columnIndex++;
 
@@ -120,25 +164,50 @@ export class OperationsService {
       } else if (row.charCodeAt(i) === comma) {
         // no-op
       } else {
-        rowJson = rowJson + row[i];
+       //rowJson = rowJson + row[i];
+       myValue = myValue  + row[i];
+       //console.log(myValue);
       }
     }
-    rowJson = rowJson + '"}';
+    //rowJson = rowJson + '"}';
 
-    console.log(rowJson);
+    //console.log(rowJson);
 
-    return rowJson;
+    myNewRow = myNewRow + '"eomElevation":' + myValue + ',"manualInflow":"","inflowCF":"","avgInflowCFS":"","manualOutflow":"","manualOutflowCFS":"","avgOutflowCFS":"","outflowCF":""}';
+
+    console.log("------> " + myNewRow + " <------");
+
+    //console.log("------> " + rowJson + " <------");
+
+    return myNewRow; //rowJson;
   }
 
   getJson():string {
     return this.myJson;
   }
 
-  setJson(operations: any[]): string {
+  calculateValues(operations:any):any {
 
-    for (let i = 0; i < operations.length; i++) {
-      console.log(" index " + i + "******* " + operations[i] +  " *******");
+    const ACtoCF = 43560;
+    const secondsDay = 86400;
+
+    for (let i = 0; i < operations.data.length; i++) {
+      operations.data[i].inflowCF = operations.data[i].inflow   * ACtoCF;
+      operations.data[i].outflowCF = operations.data[i].outflow * ACtoCF;
+      operations.data[i].avgInflowCFS = operations.data[i].inflowCF / (operations.data[i].days * secondsDay);
+      operations.data[i].avgOutflowCFS = operations.data[i].outflowCF / (operations.data[i].days * secondsDay);
     }
+    
+    return operations;
+
+  }
+
+  //setJson(operations: any[]): string {
+  setJson(operations: any[]): any {
+
+    // for (let i = 0; i < operations.length; i++) {
+    //   console.log(" index " + i + "******* " + operations[i] +  " *******");
+    // }
 
     let jsonString = '{';
     jsonString = jsonString + '"title":' + '"' + operations[0] + '",';
@@ -150,30 +219,30 @@ export class OperationsService {
     jsonString = jsonString + '"label3":' + '"' + operations[6] + '",';
     jsonString = jsonString + '"initialAcreFeet":' + '"' + operations[7] + '",';
     jsonString = jsonString + '"data":[';
-    jsonString = jsonString + this.getRowArray(operations[8]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[9]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[10]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[11]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[12]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[13]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[14]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[15]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[16]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[17]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[18]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[19]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[20]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[21]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[22]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[23]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[24]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[25]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[26]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[27]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[28]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[29]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[30]) + ',';
-    jsonString = jsonString + this.getRowArray(operations[31]) + '],';
+    jsonString = jsonString + this.getRowArray(operations[8],  0) + ',';
+    jsonString = jsonString + this.getRowArray(operations[9],  1) + ',';
+    jsonString = jsonString + this.getRowArray(operations[10], 2) + ',';
+    jsonString = jsonString + this.getRowArray(operations[11], 3) + ',';
+    jsonString = jsonString + this.getRowArray(operations[12], 4) + ',';
+    jsonString = jsonString + this.getRowArray(operations[13], 5) + ',';
+    jsonString = jsonString + this.getRowArray(operations[14], 6) + ',';
+    jsonString = jsonString + this.getRowArray(operations[15], 7) + ',';
+    jsonString = jsonString + this.getRowArray(operations[16], 8) + ',';
+    jsonString = jsonString + this.getRowArray(operations[17], 9) + ',';
+    jsonString = jsonString + this.getRowArray(operations[18], 10) + ',';
+    jsonString = jsonString + this.getRowArray(operations[19], 11) + ',';
+    jsonString = jsonString + this.getRowArray(operations[20], 12) + ',';
+    jsonString = jsonString + this.getRowArray(operations[21], 13) + ',';
+    jsonString = jsonString + this.getRowArray(operations[22], 14) + ',';
+    jsonString = jsonString + this.getRowArray(operations[23], 15) + ',';
+    jsonString = jsonString + this.getRowArray(operations[24], 16) + ',';
+    jsonString = jsonString + this.getRowArray(operations[25], 17) + ',';
+    jsonString = jsonString + this.getRowArray(operations[26], 18) + ',';
+    jsonString = jsonString + this.getRowArray(operations[27], 19) + ',';
+    jsonString = jsonString + this.getRowArray(operations[28], 20) + ',';
+    jsonString = jsonString + this.getRowArray(operations[29], 21) + ',';
+    jsonString = jsonString + this.getRowArray(operations[30], 22) + ',';
+    jsonString = jsonString + this.getRowArray(operations[31], 23) + '],';
     jsonString = jsonString + '"inflowSummary":' + '"' + operations[32] + '",';
     jsonString = jsonString + '"normal":' + '"' + operations[33] + '",';
     jsonString = jsonString + '"maxContent":' + '"' + operations[34] + '"';
@@ -181,6 +250,9 @@ export class OperationsService {
     jsonString = jsonString + '}';
 
     console.log(jsonString);
-    return jsonString;
+    //return jsonString;
+
+    return this.calculateValues(JSON.parse(jsonString));
+
   }
 }
