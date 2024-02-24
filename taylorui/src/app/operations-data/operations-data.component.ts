@@ -8,6 +8,7 @@ import { OperationsService } from '../operations.service';
   templateUrl: './operations-data.component.html',
   styleUrl: './operations-data.component.css'
 })
+
 export class OperationsDataComponent {
 
   constructor( 
@@ -15,38 +16,161 @@ export class OperationsDataComponent {
 
     //TODO put elevation service in operations, change calls to call operations.
 
-    myData:any = [];
+    elevationWarning:number    = 9327;
+    elevationMaxWarning:number = 9329;
+    warningBackground = 'yellow';
+    maxBackground = 'red';
+
+    operationsData:any;
+    operationMonthlyData:any = [];
     startingEOMContent:number = 0.0;
     eomContentLabel:string = '';
 
     getElevation(acrefeet:number):number {
-      console.log('-------- OperationsService.getElevation --------');
-
+      console.log('-------- OperationsDataComponent.getElevation --------');
+      //TODO where do i put this combone the two
       return this.elevationService.getElevation(acrefeet);
     }
 
     getElevations(eomContent:number[]):number[] {
-      console.log('-------- OperationsService.getElevations --------');
+      console.log('-------- OperationsDataComponent.getElevations --------');
 
       return this.elevationService.getElevations(eomContent);
     }
 
     getEOMContent(baseContent:number, inflow:number, outflow:number):number {
-      console.log('-------- OperationsService.getEOMContent -------- ' + baseContent + ' ' + inflow + ' ' + outflow);
+      console.log('-------- OperationsDataComponent.getEOMContent -------- ' + baseContent + ' ' + inflow + ' ' + outflow);
 
       return baseContent + inflow - outflow;
 
     }
 
     setEOMContent(baseContent:number, inflow:number, outflow:number):number {
-      console.log('-------- OperationsService.setEOMContent -------- ' + baseContent + ' ' + inflow + ' ' + outflow);
+      console.log('-------- OperationsDataComponent.setEOMContent -------- ' + baseContent + ' ' + inflow + ' ' + outflow);
 
       return this.getEOMContent(baseContent, inflow, outflow);
 
     }
 
+    getElevationWarning(elevation:number):any {
+      console.log('-------- OperationsDataComponent.getElevationWarning --------');
+
+        let warning = '';
+        if (elevation > this.elevationMaxWarning) {
+          warning = this.maxBackground;
+        } else if (elevation > this.elevationWarning) {
+          warning = this.warningBackground;
+        }
+
+        return warning;
+    }
+
+    recalculateEOM(inputData:any) {
+      console.log('-------- OperationsDataComponent.recalculateEOM -------- ' + inputData.index + ' ' + inputData.manualInflow);
+      //console.log(inputData);
+      
+      let myEomContent = 0;
+      let myInflow = Number(inputData.manualInflow);
+      let myOutflow  = Number(inputData.manualOutflow);
+      let myIndex  = Number(inputData.index);
+
+     // console.log(this.operationMonthlyData);
+
+
+      if (myInflow > 0){
+        this.operationMonthlyData[Number(inputData.index)].manualInflow = myInflow;
+      }
+      if (myOutflow > 0){
+        this.operationMonthlyData[Number(inputData.index)].manualOutflow = myOutflow;
+      }
+
+      // if  (myIndex === 0 ) {
+
+      //   console.log('-------- 0 --------');
+
+      //   myEomContent = this.startingEOMContent;
+
+      // } else {
+
+      //   console.log('-------- Not 0 --------');
+
+      //   myEomContent = this.operationMonthlyData[(myIndex-1)].eomContent;
+      // }
+      
+      //this.operationMonthlyData[Number(inputData.index)].eomContent = myEomContent + myInflow - myOutflow;
+    
+
+      for (let i = (Number(inputData.index) ); i < this.operationMonthlyData.length; i++) {
+
+        //console.log(typeof i + ' ' + i);
+        //console.log(this.operationMonthlyData[i]);
+
+
+        if  (i === 0 ) {
+
+          //console.log('-------- 0 --------');
+
+          myEomContent = this.startingEOMContent;
+
+        } else {
+
+         // console.log('-------- Not 0 --------');
+
+          myEomContent = this.operationMonthlyData[(i-1)].eomContent;
+        }
+
+        //console.log( i + ' myEomContent ' + typeof myEomContent+ ' ' + myEomContent);
+
+        //this.operationMonthlyData[i].eomContent = myEomContent + myInflow - myOutflow;
+
+        //console.log(' man inflow ' + this.operationMonthlyData[i].manualInflow + ' man outflow ' + this.operationMonthlyData[i].manualOutflow + ' eom Content ' + this.operationMonthlyData[i].eomContent);
+        //console.log(' inflow ' + typeof this.operationMonthlyData[i].inflow + '  outflow ' + typeof this.operationMonthlyData[i].outflow + ' eom Content ' + typeof this.operationMonthlyData[i].eomContent);
+        //console.log(' man inflow ' + typeof this.operationMonthlyData[i].manualInflow + ' man outflow ' + typeof this.operationMonthlyData[i].manualOutflow + ' eom Content ' + typeof this.operationMonthlyData[i].eomContent);
+
+        
+        if (Number(this.operationMonthlyData[i].manualInflow) === 0 ) {
+          myInflow = Number(this.operationMonthlyData[i].inflow);
+          //console.log( i + ' inflow zero ' + this.operationMonthlyData[i].inflow);
+        } else {
+          myInflow = Number(this.operationMonthlyData[i].manualInflow);
+          //console.log( i + ' not inflow zero ' + myInflow);
+        }
+
+        
+        //console.log( i + ' myInflow ' + typeof myInflow + ' ' + myInflow);
+        
+        if (this.operationMonthlyData[i].manualOutflow === 0 ) {
+          myOutflow = this.operationMonthlyData[i].outflow;
+          //console.log( i + '  outflow zero ' + myOutflow);
+        } else {
+          myOutflow = Number(this.operationMonthlyData[i].manualOutflow);
+          //console.log( i + ' outflow not zero ' + myOutflow);
+        }
+
+        //console.log( i + ' ' + typeof myOutflow + ' ' + myOutflow);
+
+
+
+        //console.log( myEomContent + ' ' + myInflow + ' ' + myOutflow + ' ' +(myEomContent + myInflow - myOutflow ) );
+        
+        //console.log( i + ' ' + typeof myOutflow+ ' ' + myOutflow + ' ' + (myEomContent + myInflow - myOutflow) );
+
+        //console.log('eomContent ' + myEomContent + ' infow ' + myInflow + ' outflow ' + myOutflow);
+        
+        this.operationMonthlyData[i].eomContent = myEomContent + myInflow - myOutflow;
+
+        this.operationMonthlyData[i].eomElevation = this.getElevation(this.operationMonthlyData[i].eomContent);
+
+        this.operationMonthlyData[i].elevationWarning = this.getElevationWarning(this.operationMonthlyData[i].eomElevation);
+
+       // console.log('[' + this.operationMonthlyData[i].elevationWarning + ']');
+
+      }
+
+    }
+
     getEOMContentList(data:any):number[] {
-      console.log('-------- OperationsService.getEOMContentList --------');
+      console.log('-------- OperationsDataComponent.getEOMContentList --------');
 
       let eomContent = new Array();
       
@@ -56,7 +180,7 @@ export class OperationsDataComponent {
 
       for (let i = 0; i < data.length; i++) {
         
-        myEomContent = (this.startingEOMContent + data[i].inflow -data[i].outflow); 
+        myEomContent = (this.startingEOMContent + data[i].inflow - data[i].outflow); 
         eomContent.push(myEomContent);
       }
         
@@ -66,7 +190,7 @@ export class OperationsDataComponent {
     }
 
     setEOMContentList(data:any, baseContent:number) {
-      console.log('-------- OperationsService.setEOMContentList --------');
+      console.log('-------- OperationsDataComponent.setEOMContentList --------');
 
       let baseEOM = 0;
 
@@ -82,14 +206,15 @@ export class OperationsDataComponent {
 
         let myEOM = this.setEOMContent( baseEOM, data[i].inflow, data[i].outflow);
         data[i].eomContent = myEOM;
+
         //console.log(i + ' ' + data[i].eomContent + ' ' + data[i].inflow + ' ' + data[i].outflow);
 
       }
 
     }
 
-    getMyData(event: MouseEvent) {
-      console.log('-------- OperationsService.getMyData --------');
+    getOperationData(event: MouseEvent) {
+      console.log('-------- OperationsDataComponent.getOperationData --------');
 
       this.startingEOMContent = 0.0;
       let temp:any = this.operationsService.getJson();
@@ -99,15 +224,15 @@ export class OperationsDataComponent {
       //if (temp.length > 2) {
       if (temp) {
   
-        //this.myData = obj.data;
-        this.myData = temp.data;
+        //this.operationMonthlyData = obj.data;
+        this.operationMonthlyData = temp.data;
 
         this.startingEOMContent = parseInt( temp.initialAcreFeet.replace(',','')); 
         //this.startingEOMContent = parseInt( obj.initialAcreFeet.replace(',','')); 
   
         this.eomContentLabel = "EOM Content " +  this.startingEOMContent + " elevation " + this.getElevation( this.startingEOMContent).toFixed(2);
 
-        this.setEOMContentList(this.myData, this.startingEOMContent);
+        this.setEOMContentList(this.operationMonthlyData, this.startingEOMContent);
 
       }
   

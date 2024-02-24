@@ -16,6 +16,7 @@ export class DataReaderComponent {
   proposedOperations: any ="";
 
   processData(event: MouseEvent) {
+    console.log('-------- DataReaderComponent.processData --------');
     if (this.proposedOperations.length > 0) {
       this.operations = this.operationsService.getOperations(this.proposedOperations);
     } else {

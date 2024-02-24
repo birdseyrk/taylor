@@ -10,6 +10,8 @@ export class OperationsService {
   myJson:string = '{}';
 
   getOperations(proposedOperations: any): string[] {
+    console.log('-------- OperationsService.getOperations --------');
+
     let operations: any = new Array();
     let operIndex = 0;
     let newLineChar = 10;
@@ -53,25 +55,25 @@ export class OperationsService {
     let myValue = '';
     let myNewRow = '';
     
-    console.log(row);
+   // console.log(row);
 
     for (let i = 0; i < row.length; i++) {
-      console.log(
-        'i = ' +
-          i +
-          ' char [' +
-          row[i] +
-          '] str.charAt(0) is: [' +
-          row.charCodeAt(i) +
-          '] addComma [' +
-          addComma +
-          ']'
-      );
+      // console.log(
+      //   'i = ' +
+      //     i +
+      //     ' char [' +
+      //     row[i] +
+      //     '] str.charAt(0) is: [' +
+      //     row.charCodeAt(i) +
+      //     '] addComma [' +
+      //     addComma +
+      //     ']'
+      // );
 
-      console.log(columnIndex);
+     // console.log(columnIndex);
 
       if (row.charCodeAt(i) === blank) {
-        console.log('---------- ' + columnIndex + '----------');
+        //console.log('---------- ' + columnIndex + '----------');
         // if (addComma) {
         //   rowJson = rowJson + '","';
         // }
@@ -173,7 +175,7 @@ export class OperationsService {
 
     //console.log(rowJson);
 
-    myNewRow = myNewRow + '"eomElevation":' + myValue + ',"manualInflow":"","inflowCF":"","avgInflowCFS":"","manualOutflow":"","manualOutflowCFS":"","avgOutflowCFS":"","outflowCF":""}';
+    myNewRow = myNewRow + '"eomElevation":' + myValue + ',"elevationWarning":"","manualInflow":0,"inflowCF":"","avgInflowCFS":"","manualOutflow":0,"manualOutflowCFS":0,"avgOutflowCFS":"","outflowCF":""}';
 
     console.log("------> " + myNewRow + " <------");
 
@@ -187,16 +189,33 @@ export class OperationsService {
   }
 
   calculateValues(operations:any):any {
+    console.log('-------- OperationsService.calculateValues -------- ');
 
     const ACtoCF = 43560;
     const secondsDay = 86400;
+
+    const elevationWarning    = 9327;
+    const elevationMaxWarning = 9329;
+    const warningBackground = 'yellow';
+    const maxBackground = 'red';
 
     for (let i = 0; i < operations.data.length; i++) {
       operations.data[i].inflowCF = operations.data[i].inflow   * ACtoCF;
       operations.data[i].outflowCF = operations.data[i].outflow * ACtoCF;
       operations.data[i].avgInflowCFS = operations.data[i].inflowCF / (operations.data[i].days * secondsDay);
       operations.data[i].avgOutflowCFS = operations.data[i].outflowCF / (operations.data[i].days * secondsDay);
+  
+      //TODO this is also in the elevation service need to design it so it is only one place.
+      operations.data[i].elevationWarning = '';
+      if (operations.data[i].eomElevation > elevationMaxWarning) {
+        operations.data[i].elevationWarning = maxBackground;
+      } else if (operations.data[i].eomElevation > elevationWarning) {
+        operations.data[i].elevationWarning = warningBackground;
+      }
+
     }
+
+    console.log(operations);
     
     return operations;
 
@@ -204,6 +223,7 @@ export class OperationsService {
 
   //setJson(operations: any[]): string {
   setJson(operations: any[]): any {
+    console.log('-------- OperationsService.setJson --------');
 
     // for (let i = 0; i < operations.length; i++) {
     //   console.log(" index " + i + "******* " + operations[i] +  " *******");

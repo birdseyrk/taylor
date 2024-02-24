@@ -2,10 +2,23 @@
 
 <main class="main">
   <div class="content">
+    <p-tabView>
+      <p-tabPanel header="Elevation">
+        <app-elevation></app-elevation>
+      </p-tabPanel>
+      <p-tabPanel header="Data Reader">
+        <app-data-reader></app-data-reader>
+      </p-tabPanel>
+      <p-tabPanel header="Operations">
+        <app-operations-data></app-operations-data>
+      </p-tabPanel>
+    </p-tabView>
+
   </div>
 </main>
 
-<app-elevation></app-elevation>
-<app-data-reader></app-data-reader>
-<app-operations-data></app-operations-data>
+
+
+
+
 <router-outlet />
