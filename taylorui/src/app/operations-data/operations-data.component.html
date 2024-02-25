@@ -13,10 +13,16 @@
     <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" [minFractionDigits]="2"></p-inputNumber> -->
     <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" ></p-inputNumber> -->
 
-    
-<span class="p-input-icon-left"> 
+    <p-button icon="pi pi-external-link" [text]="true" [rounded]="true" severity="info " [outlined]="true" (click)="showDataDialog()"></p-button>
+    <p-button icon="pi pi-chart-line"    [text]="true" [rounded]="true" severity="info " [outlined]="true" (click)="showElevationDialog()"></p-button>
+
+<!-- <span class="p-input-icon-left"> 
     <i class="pi pi-external-link"  (click)="showDataDialog()"></i> 
 </span>
+<span class="p-input-icon-left"> 
+    <i class="pi pi-chart-line"     (click)="showElevationDialog()"></i> 
+</span> -->
+
 <p-divider></p-divider>
     <label for="eom-content">{{eomContentLabel}}</label>
 
@@ -59,7 +65,7 @@
         </ng-template>
     </p-table>
 
-    <p-dialog header="Header" [(visible)]="dataDialogVisible" [style]="{width: '50vw'}">
+    <p-dialog header="Operations Data" [(visible)]="dataDialogVisible" [style]="{width: '50vw'}">
 
         <textarea rows="30" cols="80" pInputTextarea [(ngModel)]="proposedOperations"></textarea>
         <p-divider></p-divider>
@@ -69,6 +75,12 @@
             label="Load Proposed Operations"
             (click)="processData($event)"
         ></p-button>
+
+    </p-dialog>
+
+    <p-dialog header="Taylor Park Reservior Water Elevation" [(visible)]="elevationVisible" [style]="{width: '80vw', height: '40vw'}">
+
+        <p-chart type="line" [data]="elevationGridData" [options]="elevationGridOptions" height="100%" width="100%"></p-chart>
 
     </p-dialog>
 

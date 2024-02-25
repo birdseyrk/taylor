@@ -20,6 +20,11 @@ export class OperationsDataComponent {
     elevationMaxWarning:number = 9329;
     warningBackground = 'yellow'; 
     maxBackground = 'LightCoral';
+    elevationGridTitle = 'Taylor Park Reservior Level';
+    elevationGridYLabel = 'Water Elevation (ft)'
+    elevationGridXLabel = 'Months'
+
+
 
     operationsData:any;
     operationMonthlyData:any = [];
@@ -27,9 +32,16 @@ export class OperationsDataComponent {
     eomContentLabel:string = '';
 
     operations: string[] = [];
-    proposedOperations: any ="";
+    proposedOperations: any = "";
+
+    elevationGridData:any = "";
+    // elevationWarningData:any = "";
+    // elevationMaxData:any = "";
+    // elevationAdjustedData:any = "";
+    elevationGridOptions:any = "";
 
     dataDialogVisible = false;
+    elevationVisible  = false;
 
     // getElevation(acrefeet:number):number {
     //   console.log('-------- OperationsDataComponent.getElevation --------');
@@ -46,9 +58,108 @@ export class OperationsDataComponent {
     showDataDialog() {
       this.dataDialogVisible = !this.dataDialogVisible;
     }
+
+    showElevationDialog() {
+      this.elevationVisible = !this.elevationVisible;
+    }
+
+    addToGridElevation() {
+      console.log('-------- OperationsDataComponent.addToGridElevation --------');
+
+      //https://htmlcolorcodes.com/color-names/
+      //BlueViolet	  #8A2BE2	rgb(138, 43, 226)
+      //MediumPurple	#9370DB	rgb(147, 112, 219)  //TODO all colres to constants
+      //The fourth value denotes alpha and needs to be between 0.0 (absolute transparency) and 1.0 (absolute opacity). For example, 0.5 would be 50% opacity and 50% transparency.
+
+      let myModifiedData:any = [];
+      
+
+      let myAdjustedLevel = '{"data":[],"backgroundColor":"rgb(147, 112, 219, .5)","fill":false,"borderColor":"rgb(138, 43, 226)","tension":".4","label":"Adjusted Water Elevation"}';
+      let elevationAdjustedData = JSON.parse(myAdjustedLevel);
+
+      console.log(elevationAdjustedData);
+
+      for (let i = 0; i < this.operationMonthlyData.length; i++) {
+        myModifiedData[i] = this.operationMonthlyData[i].eomElevation;
+      }
+
+      
+      elevationAdjustedData.data =  myModifiedData;
+
+      this.elevationGridData.datasets[3] = elevationAdjustedData;  //TODO mayb all of these need to be local not global
+
+    }
+
+    getElevationGridData() {
+      console.log('-------- OperationsDataComponent.getElevationGridData --------');
+
+      //https://htmlcolorcodes.com/color-names/
+      //Yellow	        #FFFF00	rgb(255, 255, 0)
+      //LightYellow	    #FFFFE0	rgb(255, 255, 224)
+      //CornflowerBlue	#6495ED	rgb(100, 149, 237)
+      //Blue	          #0000FF	rgb(0, 0, 255)
+      //Salmon	        #FA8072	rgb(250, 128, 114)
+      //Red	            #FF0000	rgb(255, 0, 0)
+      //The fourth value denotes alpha and needs to be between 0.0 (absolute transparency) and 1.0 (absolute opacity). For example, 0.5 would be 50% opacity and 50% transparency.
+
+
+      let myJSONstring    = '{"datasets":[],"labels":[]}';
+      let myProposedLevel = '{"data":[],"backgroundColor":"rgb(100, 149, 237, .5)","fill":true,"borderColor":"rgb(0, 0, 255, .5)","tension":".4","label":"Proposed Water Elevation"}';
+      let myWarningLevel  = '{"data":[],"backgroundColor":"rgb(255, 255, 224)","borderDash": [5, 5],"fill":false,"borderColor":"rgb(255, 255, 0)","tension":".4","label":"Warning Water Elevation"}';
+      let myMaxLevel      = '{"data":[],"backgroundColor":"rgb(250, 128, 114)","borderDash": [5, 5],"fill":false,"borderColor":"rgb(255, 0, 0)","tension":".4","label":"Max Water Elevation"}';
+      
+      let myProposedData:any = [];
+      let myLabels:any = [];
+      let myWarning:any = [];
+      let myMax:any = [];
+
+      this.elevationGridData = JSON.parse(myJSONstring);
+      let elevationProposedData = JSON.parse(myProposedLevel);
+      let elevationWarningData = JSON.parse(myWarningLevel);
+      let elevationMaxData = JSON.parse(myMaxLevel);
+
+      console.log( this.elevationGridData );
+
+      for (let i = 0; i < this.operationMonthlyData.length; i++) {
+        myProposedData[i] = this.operationMonthlyData[i].eomElevation;
+        myLabels[i] = this.operationMonthlyData[i].month + ' ' + this.operationMonthlyData[i].dateRange;
+        myWarning[i] = 9327; //TODO use constant value
+        myMax[i] = 9329; //TODO use constant value
+      }
+
+      elevationProposedData.data = myProposedData;
+      elevationWarningData.data =  myWarning;
+      elevationMaxData.data =  myMax;
+
+
+      this.elevationGridData.datasets[0] = elevationWarningData;
+      this.elevationGridData.datasets[1] = elevationMaxData;
+      this.elevationGridData.datasets[2] = elevationProposedData;
+      this.elevationGridData.labels = myLabels;
+
+      console.log( this.elevationGridData );
+
+      this.elevationGridOptions = { 
+        plugins: { 
+            legend: { 
+                labels: { 
+                    color: '#495057' 
+                } 
+            } 
+        }, 
+        scales: { 
+            r: { 
+                grid: { 
+                    color: '#ebedef' 
+                } 
+            } 
+        } 
+      } 
+
+    }
   
     processData(event: MouseEvent) {
-      console.log('-------- DataReaderComponent.processData --------');
+      console.log('-------- OperationsDataComponent.processData --------');
       if (this.proposedOperations.length > 0) {
         this.operations = this.operationsService.getOperations(this.proposedOperations);
       } else {
@@ -190,6 +301,9 @@ export class OperationsDataComponent {
        // console.log('[' + this.operationMonthlyData[i].elevationWarning + ']');
 
       }
+      console.log(this.operationMonthlyData);
+
+      this.addToGridElevation();
 
     }
 
@@ -258,6 +372,8 @@ export class OperationsDataComponent {
         this.eomContentLabel = "EOM Content " +  this.startingEOMContent + " elevation " + this.elevationService.getElevation(this.startingEOMContent).toFixed(2);
 
         this.setEOMContentList(this.operationMonthlyData, this.startingEOMContent);
+
+        this.getElevationGridData();
 
       }
   
