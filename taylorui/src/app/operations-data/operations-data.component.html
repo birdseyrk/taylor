@@ -1,13 +1,25 @@
-<p-button label="Get Data"  (click)="getOperationData($event)"></p-button>
+<!-- <p-button label="Get Data"  (click)="getOperationData($event)"></p-button> -->
+<!-- <p-button (click)="showDataDialog()" icon="pi pi-external-link" label="Get Data"></p-button> -->
+
+<!-- <p-button (click)="showDataDialog()" icon="pi pi-external-link" label="Get Data"></p-button> -->
+
+
 
 <p-panel header="Operations">
     <p-header>
-      <!-- <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button> -->
+        <!-- <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button> -->
     </p-header>
 
     <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" [minFractionDigits]="2"></p-inputNumber> -->
     <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" ></p-inputNumber> -->
+
+    
+<span class="p-input-icon-left"> 
+    <i class="pi pi-external-link"  (click)="showDataDialog()"></i> 
+</span>
+<p-divider></p-divider>
     <label for="eom-content">{{eomContentLabel}}</label>
+
 
     <p-table [value]="operationMonthlyData" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
@@ -47,4 +59,18 @@
         </ng-template>
     </p-table>
 
-  </p-panel>
+    <p-dialog header="Header" [(visible)]="dataDialogVisible" [style]="{width: '50vw'}">
+
+        <textarea rows="30" cols="80" pInputTextarea [(ngModel)]="proposedOperations"></textarea>
+        <p-divider></p-divider>
+        <p-button
+           
+            [disabled]="proposedOperations.length === 0 "
+            label="Load Proposed Operations"
+            (click)="processData($event)"
+        ></p-button>
+
+    </p-dialog>
+
+</p-panel>  
+

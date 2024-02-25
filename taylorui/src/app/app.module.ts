@@ -10,6 +10,9 @@ import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
 //import { CalendarModule } from 'primeng/calendar';
+import { ChartModule } from 'primeng/chart';
+import { DialogModule } from 'primeng/dialog';
+import { DividerModule } from 'primeng/divider';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
@@ -26,14 +29,14 @@ import { ToastModule } from 'primeng/toast';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ElevationComponent } from './elevation/elevation.component';
-import { DataReaderComponent } from './data-reader/data-reader.component';
+// import { DataReaderComponent } from './data-reader/data-reader.component';
 import { OperationsDataComponent } from './operations-data/operations-data.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ElevationComponent,
-    DataReaderComponent,
+    // DataReaderComponent,
     OperationsDataComponent
   ],
   imports: [
@@ -45,6 +48,9 @@ import { OperationsDataComponent } from './operations-data/operations-data.compo
     // NG Prime Widgets
     ButtonModule,
     //CalendarModule,
+    ChartModule,
+    DialogModule,
+    DividerModule,
     InputNumberModule,
     InputTextareaModule,
     InputTextModule,

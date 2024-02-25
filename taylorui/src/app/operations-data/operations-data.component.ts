@@ -18,25 +18,48 @@ export class OperationsDataComponent {
 
     elevationWarning:number    = 9327;
     elevationMaxWarning:number = 9329;
-    warningBackground = 'yellow';
-    maxBackground = 'red';
+    warningBackground = 'yellow'; 
+    maxBackground = 'LightCoral';
 
     operationsData:any;
     operationMonthlyData:any = [];
     startingEOMContent:number = 0.0;
     eomContentLabel:string = '';
 
-    getElevation(acrefeet:number):number {
-      console.log('-------- OperationsDataComponent.getElevation --------');
-      //TODO where do i put this combone the two
-      return this.elevationService.getElevation(acrefeet);
-    }
+    operations: string[] = [];
+    proposedOperations: any ="";
 
-    getElevations(eomContent:number[]):number[] {
-      console.log('-------- OperationsDataComponent.getElevations --------');
+    dataDialogVisible = false;
 
-      return this.elevationService.getElevations(eomContent);
+    // getElevation(acrefeet:number):number {
+    //   console.log('-------- OperationsDataComponent.getElevation --------');
+    //   //TODO where do i put this combone the two
+    //   return this.elevationService.getElevation(acrefeet);
+    // }
+
+    // getElevations(eomContent:number[]):number[] {
+    //   console.log('-------- OperationsDataComponent.getElevations --------');
+
+    //   return this.elevationService.getElevations(eomContent);
+    // }
+
+    showDataDialog() {
+      this.dataDialogVisible = !this.dataDialogVisible;
     }
+  
+    processData(event: MouseEvent) {
+      console.log('-------- DataReaderComponent.processData --------');
+      if (this.proposedOperations.length > 0) {
+        this.operations = this.operationsService.getOperations(this.proposedOperations);
+      } else {
+        console.log("proposedOperations data is empty");
+      }
+  
+      console.log(this.operations);
+      this.showDataDialog();
+      this.getOperationData();
+
+    };
 
     getEOMContent(baseContent:number, inflow:number, outflow:number):number {
       console.log('-------- OperationsDataComponent.getEOMContent -------- ' + baseContent + ' ' + inflow + ' ' + outflow);
@@ -159,7 +182,8 @@ export class OperationsDataComponent {
         
         this.operationMonthlyData[i].eomContent = myEomContent + myInflow - myOutflow;
 
-        this.operationMonthlyData[i].eomElevation = this.getElevation(this.operationMonthlyData[i].eomContent);
+        //remove this.operationMonthlyData[i].eomElevation = this.getElevation(this.operationMonthlyData[i].eomContent);
+        this.operationMonthlyData[i].eomElevation = this.elevationService.getElevation(this.operationMonthlyData[i].eomContent);
 
         this.operationMonthlyData[i].elevationWarning = this.getElevationWarning(this.operationMonthlyData[i].eomElevation);
 
@@ -213,7 +237,7 @@ export class OperationsDataComponent {
 
     }
 
-    getOperationData(event: MouseEvent) {
+    getOperationData() {
       console.log('-------- OperationsDataComponent.getOperationData --------');
 
       this.startingEOMContent = 0.0;
@@ -230,7 +254,8 @@ export class OperationsDataComponent {
         this.startingEOMContent = parseInt( temp.initialAcreFeet.replace(',','')); 
         //this.startingEOMContent = parseInt( obj.initialAcreFeet.replace(',','')); 
   
-        this.eomContentLabel = "EOM Content " +  this.startingEOMContent + " elevation " + this.getElevation( this.startingEOMContent).toFixed(2);
+        //this.eomContentLabel = "EOM Content " +  this.startingEOMContent + " elevation " + this.getElevation( this.startingEOMContent).toFixed(2);
+        this.eomContentLabel = "EOM Content " +  this.startingEOMContent + " elevation " + this.elevationService.getElevation(this.startingEOMContent).toFixed(2);
 
         this.setEOMContentList(this.operationMonthlyData, this.startingEOMContent);
 
