@@ -13,8 +13,11 @@
     <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" [minFractionDigits]="2"></p-inputNumber> -->
     <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" ></p-inputNumber> -->
 
-    <p-button icon="pi pi-external-link" [text]="true" [rounded]="true" severity="info " [outlined]="true" (click)="showDataDialog()"></p-button>
-    <p-button icon="pi pi-chart-line"    [text]="true" [rounded]="true" severity="info " [outlined]="true" (click)="showElevationDialog()"></p-button>
+    <p-button id="load"     icon="pi pi-external-link"                                                                  [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showDataDialog()"></p-button>
+    <p-button id="chart"    icon="pi pi-chart-line"                        [disabled]="proposedOperations.length === 0" [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showElevationDialog()"></p-button>
+    <p-button id="calendar" icon="pi-calendar"                                                                          [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showCalendarDialog()"></p-button>
+    <p-button id="clear"    icon="pi pi-times" [style]="{'float':'right'}" [disabled]="proposedOperations.length === 0" [text]="true" [rounded]="true" severity="danger " [outlined]="true" (click)="showClearOperationalDataDialog()"></p-button>
+
 
 <!-- <span class="p-input-icon-left"> 
     <i class="pi pi-external-link"  (click)="showDataDialog()"></i> 
@@ -24,7 +27,18 @@
 </span> -->
 
 <p-divider></p-divider>
-    <label for="eom-content">{{eomContentLabel}}</label>
+    <!-- <label for="eom-content">{{eomContentLabel}}</label>
+    <label for="InflowLabel" ><b>   April-July inflow  </b></label> -->
+    <span >{{eomContentLabel}}</span>
+    <span ><b>   April-July inflow  </b></span>
+    <span [ngStyle]="{background:yearTypeBackground}"><b>{{yearTypeInflow}}</b></span>
+    <span [ngStyle]="{background:yearTypeBackground}"><b>{{yearTypeLabel}}</b></span>
+    <!-- <span [ngStyle]="{color:'var(WET_YEAR_BACKGROUND)'}">TEST</span> -->
+    <!-- <p-chips field="value" [(ngModel)]="yearTypeLabel" [inputStyle]="{background:yearTypeBackground}"></p-chips> -->
+    <!-- <p-avatar-text  styleClass="mr-9" [style]="{ 'background-color': '#2196F3', color: '#ffffff', width:'100px' }"> <span class="text-base">content</span></p-avatar-text> -->
+    <!-- <p-avatar size="xlarge">
+        <span class="text-base">Content</span>
+    </p-avatar> -->
 
 
     <p-table [value]="operationMonthlyData" [tableStyle]="{ 'min-width': '50rem' }">
@@ -65,15 +79,21 @@
         </ng-template>
     </p-table>
 
-    <p-dialog header="Operations Data" [(visible)]="dataDialogVisible" [style]="{width: '50vw'}">
+    <p-dialog header="Operations Data" [(visible)]="dataDialogVisible" [style]="{width: '32vw'}" [modal]="true" [draggable]="false" [resizable]="false">
 
         <textarea rows="30" cols="80" pInputTextarea [(ngModel)]="proposedOperations"></textarea>
         <p-divider></p-divider>
         <p-button
            
             [disabled]="proposedOperations.length === 0 "
-            label="Load Proposed Operations"
+            label="Load Proposed Operations 3"
             (click)="processData($event)"
+        ></p-button>
+        <p-button
+            [style]="{'float':'right'}"
+            [disabled]="proposedOperations.length === 0 "
+            label="Clear Proposed Operations"
+            (click)="clearData($event)"
         ></p-button>
 
     </p-dialog>
@@ -81,6 +101,22 @@
     <p-dialog header="Taylor Park Reservior Water Elevation" [(visible)]="elevationVisible" [style]="{width: '80vw', height: '40vw'}">
 
         <p-chart type="line" [data]="elevationGridData" [options]="elevationGridOptions" height="100%" width="100%"></p-chart>
+
+    </p-dialog>
+
+    <p-dialog header="Clear Operational Data" [(visible)]="clearOperationDataVisible" [style]="{width: '20vw', height: '10vw'}"  [modal]="true" [draggable]="false" [resizable]="false">
+        <!-- <div class="card flex justify-content-center gap-2"> -->
+        <div class="card gap-2">
+            <!-- <p-toast></p-toast>
+            <p-confirmPopup></p-confirmPopup> -->
+            <p-button  [style]="{'float':'left'}" (click)="clearOperationalData()" label="Delete"></p-button>
+            <p-button  [style]="{'float':'right'}" (click)="closeClearOperationalDataDialog()" label="Cancel"></p-button>
+        </div>
+    </p-dialog>
+
+    <p-dialog header="Calendar" [(visible)]="calendarVisible" [style]="{width: '23vw', height: '23vw'}">
+
+        <p-calendar class="max-w-full" [(ngModel)]="myDate"  [inline]="true" [showWeek]="true"></p-calendar>
 
     </p-dialog>
 

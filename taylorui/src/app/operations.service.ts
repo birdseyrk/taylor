@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as constants from '../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -41,7 +42,7 @@ export class OperationsService {
 
     operations.push(lineString.trim());
 
-    this.myJson = this.setJson(operations);
+    this.myJson = this.setOperationalData(operations);
 
     return operations;
   }
@@ -188,29 +189,34 @@ export class OperationsService {
     return this.myJson;
   }
 
+  clearOperationalData() {
+    console.log('-------- OperationsService.clearJson --------');
+    this.myJson = '{}';
+  }
+
   calculateValues(operations:any):any {
     console.log('-------- OperationsService.calculateValues -------- ');
 
-    const ACtoCF = 43560;
-    const secondsDay = 86400;
+    //const ACtoCF = 43560;
+    //const secondsDay = 86400;
 
-    const elevationWarning    = 9327;
-    const elevationMaxWarning = 9329;
-    const warningBackground = 'yellow';
-    const maxBackground = 'red';
+    //const elevationWarning    = 9327;
+    //const elevationMaxWarning = 9329;
+    //const warningBackground = 'yellow';
+    //const maxBackground = 'red';
 
     for (let i = 0; i < operations.data.length; i++) {
-      operations.data[i].inflowCF = operations.data[i].inflow   * ACtoCF;
-      operations.data[i].outflowCF = operations.data[i].outflow * ACtoCF;
-      operations.data[i].avgInflowCFS = operations.data[i].inflowCF / (operations.data[i].days * secondsDay);
-      operations.data[i].avgOutflowCFS = operations.data[i].outflowCF / (operations.data[i].days * secondsDay);
+      operations.data[i].inflowCF = operations.data[i].inflow   * constants.ACTOSQFT;
+      operations.data[i].outflowCF = operations.data[i].outflow * constants.ACTOSQFT;
+      operations.data[i].avgInflowCFS = operations.data[i].inflowCF / (operations.data[i].days * constants.SECONDSPERDAY);
+      operations.data[i].avgOutflowCFS = operations.data[i].outflowCF / (operations.data[i].days * constants.SECONDSPERDAY);
   
       //TODO this is also in the elevation service need to design it so it is only one place.
       operations.data[i].elevationWarning = '';
-      if (operations.data[i].eomElevation > elevationMaxWarning) {
-        operations.data[i].elevationWarning = maxBackground;
-      } else if (operations.data[i].eomElevation > elevationWarning) {
-        operations.data[i].elevationWarning = warningBackground;
+      if (operations.data[i].eomElevation > constants.MAX_ELEVATION_LEVEL) {
+        operations.data[i].elevationWarning = constants.EOM_MAX_LEVEL;
+      } else if (operations.data[i].eomElevation > constants.WARNING_ELEVATION_LEVEL) {
+        operations.data[i].elevationWarning = constants.EOM_WARNING_LEVEL;
       }
 
     }
@@ -221,9 +227,9 @@ export class OperationsService {
 
   }
 
-  //setJson(operations: any[]): string {
-  setJson(operations: any[]): any {
-    console.log('-------- OperationsService.setJson --------');
+  //setOperationalData(operations: any[]): string {
+  setOperationalData(operations: any[]): any {
+    console.log('-------- OperationsService.setOperationalData --------');
 
     // for (let i = 0; i < operations.length; i++) {
     //   console.log(" index " + i + "******* " + operations[i] +  " *******");

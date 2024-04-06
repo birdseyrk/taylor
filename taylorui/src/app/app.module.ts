@@ -6,13 +6,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 
 //NG Prime Widgets
-//import { PrimeNGConfig } from 'primeng/api';
-
+//import { PrimeNGConfig } from 'primeng/api'; 
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
 import { ButtonModule } from 'primeng/button';
-//import { CalendarModule } from 'primeng/calendar';
+import { CalendarModule } from 'primeng/calendar';
 import { ChartModule } from 'primeng/chart';
+import { ChipModule } from 'primeng/chip';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
@@ -46,11 +50,16 @@ import { OperationsDataComponent } from './operations-data/operations-data.compo
     FormsModule,
 
     // NG Prime Widgets
+    AvatarModule,
+    AvatarGroupModule,
     ButtonModule,
-    //CalendarModule,
+    CalendarModule,
     ChartModule,
+    ChipModule,
+    ConfirmPopupModule,
     DialogModule,
     DividerModule,
+    FloatLabelModule,
     InputNumberModule,
     InputTextareaModule,
     InputTextModule,

@@ -1,382 +1,486 @@
 import { Component } from '@angular/core';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { interval, Subscription, take } from 'rxjs';
 
 import { ElevationService } from '../elevation.service';
 import { OperationsService } from '../operations.service';
+import * as constants from '../../constants';
 
 @Component({
   selector: 'app-operations-data',
   templateUrl: './operations-data.component.html',
-  styleUrl: './operations-data.component.css'
+  styleUrl: './operations-data.component.css',
+  providers: [ConfirmationService, MessageService]
 })
 
 export class OperationsDataComponent {
+  constructor(
+    public operationsService: OperationsService,
+    public elevationService: ElevationService,
+    private confirmationService: ConfirmationService, 
+    private messageService: MessageService
+  ) {}
 
-  constructor( 
-    public operationsService: OperationsService, public elevationService: ElevationService) { }
+  myDate: Date = new Date;
+  operationsData: any;
+  operationMonthlyData: any = [];
+  startingEOMContent: number = 0.0;
+  eomContentLabel: string = '';
+  yearTypeLabel: string = '';
+  yearTypeBackground: string = '';
 
-    //TODO put elevation service in operations, change calls to call operations.
+  operations: string[] = [];
+  proposedOperations: any = '';
 
-    elevationWarning:number    = 9327;
-    elevationMaxWarning:number = 9329;
-    warningBackground = 'yellow'; 
-    maxBackground = 'LightCoral';
-    elevationGridTitle = 'Taylor Park Reservior Level';
-    elevationGridYLabel = 'Water Elevation (ft)'
-    elevationGridXLabel = 'Months'
+  elevationGridData: any = '';
+  elevationGridOptions: any = '';
 
+  dataDialogVisible = false;
+  elevationVisible = false;
+  clearOperationDataVisible = false;
+  calendarVisible = false;
 
+  yearTypeInflow = 0.0;
+  recaculateYearType = 0.0;
 
-    operationsData:any;
-    operationMonthlyData:any = [];
-    startingEOMContent:number = 0.0;
-    eomContentLabel:string = '';
+  showClearOperationalDataDialog() {
+    console.log('-------- OperationsDataComponent.showClearOperationalDataDialog -------- ' + this.clearOperationDataVisible );
 
-    operations: string[] = [];
-    proposedOperations: any = "";
+    this.clearOperationDataVisible = !this.clearOperationDataVisible;
+  }
 
-    elevationGridData:any = "";
-    // elevationWarningData:any = "";
-    // elevationMaxData:any = "";
-    // elevationAdjustedData:any = "";
-    elevationGridOptions:any = "";
+  closeClearOperationalDataDialog() {
+    console.log('-------- OperationsDataComponent.closeClearOperationalDataDialog -------- ' );
 
-    dataDialogVisible = false;
-    elevationVisible  = false;
+    this.clearOperationDataVisible = false;
+  }
 
-    // getElevation(acrefeet:number):number {
-    //   console.log('-------- OperationsDataComponent.getElevation --------');
-    //   //TODO where do i put this combone the two
-    //   return this.elevationService.getElevation(acrefeet);
-    // }
+  showDataDialog() {
+    console.log('-------- OperationsDataComponent.showDataDialog --------');
 
-    // getElevations(eomContent:number[]):number[] {
-    //   console.log('-------- OperationsDataComponent.getElevations --------');
+    this.dataDialogVisible = !this.dataDialogVisible;
+  }
 
-    //   return this.elevationService.getElevations(eomContent);
-    // }
+  clearOperationalData() {
+    console.log('-------- OperationsDataComponent.clearOperationalData --------');
 
-    showDataDialog() {
-      this.dataDialogVisible = !this.dataDialogVisible;
-    }
+    this.startingEOMContent = 0.0;
+    this.eomContentLabel = '';
+    this.elevationGridData = {};
+    this.elevationGridOptions = '';
+    this.eomContentLabel = '';
+    this.yearTypeLabel = '';
+    this.proposedOperations = '';
+    this.operationsService.clearOperationalData();
+    this.operationMonthlyData = [];
+    this.clearOperationDataVisible = false;
+  }
 
-    showElevationDialog() {
-      this.elevationVisible = !this.elevationVisible;
-    }
+  showElevationDialog() {
+    console.log('-------- OperationsDataComponent.showElevationDialog --------');
 
-    addToGridElevation() {
-      console.log('-------- OperationsDataComponent.addToGridElevation --------');
+    this.elevationVisible = !this.elevationVisible;
+  }
 
-      //https://htmlcolorcodes.com/color-names/
-      //BlueViolet	  #8A2BE2	rgb(138, 43, 226)
-      //MediumPurple	#9370DB	rgb(147, 112, 219)  //TODO all colres to constants
-      //The fourth value denotes alpha and needs to be between 0.0 (absolute transparency) and 1.0 (absolute opacity). For example, 0.5 would be 50% opacity and 50% transparency.
+  showCalendarDialog() {
+    console.log('-------- OperationsDataComponent.showCalendarDialog --------');
+    this.calendarVisible = !this.calendarVisible;
 
-      let myModifiedData:any = [];
+  }
+
+// confirm1(event: Event) {
+//   this.confirmationService.confirm({
+//       target: event.target as EventTarget,
+//       message: 'Are you sure you want to proceed?',
+//       icon: 'pi pi-exclamation-triangle',
+//       accept: () => {
+//           this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+//       },
+//       reject: () => {
+//           this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+//       }
+//   });
+// }
+
+confirm2(event: Event) {
+    this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: 'Do you want to delete this record?',
+        icon: 'pi pi-info-circle',
+        acceptButtonStyleClass: 'p-button-danger p-button-sm',
+        accept: () => {
+            this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Data Cleared', life: 2000 });
+
+            //setTimeout(this.closeClearOperationalDataDialog, 2100);
+
+            this.clearOperationalData();
+
+          //   this.closeDialogTimer.subscribe(x => {
+          //     console.log("");
+          //     console.log("");
+          //     console.log('********** Remove Dialog: ********** ', x);
+          //     this.clearOperationDataVisible = !this.clearOperationDataVisible;
+          //     clearInterval(this.closeTime);
+          // });
+        },
+        reject: () => {
+            this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 2000 });
+            //setTimeout(this.closeClearOperationalDataDialog, 2100);
+
+          //   this.closeDialogTimer.subscribe(x => {
+          //     console.log("");
+          //     console.log("");
+          //     console.log('********** Remove Dialog: ********** ', x);
+          //     this.clearOperationDataVisible = !this.clearOperationDataVisible;
+          // });
+        }
+    });
+    setTimeout(this.closeClearOperationalDataDialog, 2100);
+}
+
+  setYearType() {
+    console.log('-------- OperationsDataComponent.setYearType --------');
+
+    this.yearTypeBackground = '';
+
+    if (this.yearTypeInflow < constants.DRY_YEAR.low) {
       
+      this.yearTypeLabel = constants.DRY_YEAR_LABEL;
+      this.yearTypeBackground = constants.DRY_YEAR_BACKGROUND;
 
-      let myAdjustedLevel = '{"data":[],"backgroundColor":"rgb(147, 112, 219, .5)","fill":false,"borderColor":"rgb(138, 43, 226)","tension":".4","label":"Adjusted Water Elevation"}';
-      let elevationAdjustedData = JSON.parse(myAdjustedLevel);
-
-      console.log(elevationAdjustedData);
-
-      for (let i = 0; i < this.operationMonthlyData.length; i++) {
-        myModifiedData[i] = this.operationMonthlyData[i].eomElevation;
-      }
-
+    } else if (this.yearTypeInflow < constants.WET_YEAR.low) {
       
-      elevationAdjustedData.data =  myModifiedData;
+      this.yearTypeLabel = constants.AVG_YEAR_LABEL;
+      this.yearTypeBackground = constants.AVG_YEAR_BACKGROUND;
 
-      this.elevationGridData.datasets[3] = elevationAdjustedData;  //TODO mayb all of these need to be local not global
+    } else {
+      
+      this.yearTypeLabel = constants.WET_YEAR_LABEL;
+      this.yearTypeBackground = constants.WET_YEAR_BACKGROUND;
+      
+    }
+  }
 
+  addToGridElevation() {
+    console.log('-------- OperationsDataComponent.addToGridElevation --------');
+
+    let myModifiedData: any = [];
+
+    let myAdjustedLevel =
+      '{"data":[],"backgroundColor":"' +
+      constants.ADJUST_GRID_BACKGROUND +
+      '","fill":false,"borderColor":"' +
+      constants.ADJUST_GRID_LINECOLOR +
+      '","tension":".4","label":"' +
+      constants.ADJUST_LABEL +
+      '"}';
+    let elevationAdjustedData = JSON.parse(myAdjustedLevel);
+
+    console.log(elevationAdjustedData);
+
+    for (let i = 0; i < this.operationMonthlyData.length; i++) {
+      myModifiedData[i] = this.operationMonthlyData[i].eomElevation;
     }
 
-    getElevationGridData() {
-      console.log('-------- OperationsDataComponent.getElevationGridData --------');
+    elevationAdjustedData.data = myModifiedData;
 
-      //https://htmlcolorcodes.com/color-names/
-      //Yellow	        #FFFF00	rgb(255, 255, 0)
-      //LightYellow	    #FFFFE0	rgb(255, 255, 224)
-      //CornflowerBlue	#6495ED	rgb(100, 149, 237)
-      //Blue	          #0000FF	rgb(0, 0, 255)
-      //Salmon	        #FA8072	rgb(250, 128, 114)
-      //Red	            #FF0000	rgb(255, 0, 0)
-      //The fourth value denotes alpha and needs to be between 0.0 (absolute transparency) and 1.0 (absolute opacity). For example, 0.5 would be 50% opacity and 50% transparency.
+    this.elevationGridData.datasets[3] = elevationAdjustedData;
+  }
 
+  getElevationGridData() {
+    console.log(
+      '-------- OperationsDataComponent.getElevationGridData --------'
+    );
 
-      let myJSONstring    = '{"datasets":[],"labels":[]}';
-      let myProposedLevel = '{"data":[],"backgroundColor":"rgb(100, 149, 237, .5)","fill":true,"borderColor":"rgb(0, 0, 255, .5)","tension":".4","label":"Proposed Water Elevation"}';
-      let myWarningLevel  = '{"data":[],"backgroundColor":"rgb(255, 255, 224)","borderDash": [5, 5],"fill":false,"borderColor":"rgb(255, 255, 0)","tension":".4","label":"Warning Water Elevation"}';
-      let myMaxLevel      = '{"data":[],"backgroundColor":"rgb(250, 128, 114)","borderDash": [5, 5],"fill":false,"borderColor":"rgb(255, 0, 0)","tension":".4","label":"Max Water Elevation"}';
-      
-      let myProposedData:any = [];
-      let myLabels:any = [];
-      let myWarning:any = [];
-      let myMax:any = [];
+    let myJSONstring = '{"datasets":[],"labels":[]}';
+    let myProposedLevel =
+      '{"data":[],"backgroundColor":"' +
+      constants.PROPOSED_GRID_BACKGROUND +
+      '","fill":true,"borderColor":"' +
+      constants.PROPOSED_GRID_LINECOLOR +
+      '","tension":".4","label":"' +
+      constants.PROPOSED_LABEL +
+      '"}';
+      let myOutFlowLevel =
+        '{"data":[],"borderColor":"' +
+        constants.OUTFLOW_GRID_LINECOLOR +
+        '","tension":".4","label":"' +
+        constants.OUTFLOW_LABEL +
+        '"}';
+      let myInFlowLevel =
+        '{"data":[],"borderColor":"' +
+        constants.INFLOW_GRID_LINECOLOR +
+        '","tension":".4","label":"' +
+        constants.INFLOW_LABEL +
+        '"}';
+    let myWarningLevel =
+      '{"data":[],"backgroundColor":"' +
+      constants.WARNING_GRID_BACKGROUND +
+      '","borderDash": [5, 5],"fill":false,"borderColor":"' +
+      constants.WARNING_GRID_LINECOLOR +
+      '","tension":".4","label":"' +
+      constants.WARNING_LABEL +
+      '"}';
+    let myMaxLevel =
+      '{"data":[],"backgroundColor":"' +
+      constants.MAX_GRID_BACKGROUND +
+      '","borderDash": [5, 5],"fill":false,"borderColor":"' +
+      constants.MAX_GRID_LINECOLOR +
+      '","tension":".4","label":"' +
+      constants.MAX_LABEL +
+      '"}';
 
-      this.elevationGridData = JSON.parse(myJSONstring);
-      let elevationProposedData = JSON.parse(myProposedLevel);
-      let elevationWarningData = JSON.parse(myWarningLevel);
-      let elevationMaxData = JSON.parse(myMaxLevel);
+    let myProposedData: any = [];
+    let myInflowData: any = [];
+    let myOutflowData: any = [];
+    let myLabels: any = [];
+    let myWarning: any = [];
+    let myMax: any = [];
 
-      console.log( this.elevationGridData );
+    this.elevationGridData = JSON.parse(myJSONstring);
+    let elevationProposedData = JSON.parse(myProposedLevel);
+    let outFlowData = JSON.parse(myOutFlowLevel);
+    let inFlowData = JSON.parse(myInFlowLevel);
+    let elevationWarningData = JSON.parse(myWarningLevel);
+    let elevationMaxData = JSON.parse(myMaxLevel);
 
-      for (let i = 0; i < this.operationMonthlyData.length; i++) {
-        myProposedData[i] = this.operationMonthlyData[i].eomElevation;
-        myLabels[i] = this.operationMonthlyData[i].month + ' ' + this.operationMonthlyData[i].dateRange;
-        myWarning[i] = 9327; //TODO use constant value
-        myMax[i] = 9329; //TODO use constant value
-      }
+    console.log(this.elevationGridData);
 
-      elevationProposedData.data = myProposedData;
-      elevationWarningData.data =  myWarning;
-      elevationMaxData.data =  myMax;
-
-
-      this.elevationGridData.datasets[0] = elevationWarningData;
-      this.elevationGridData.datasets[1] = elevationMaxData;
-      this.elevationGridData.datasets[2] = elevationProposedData;
-      this.elevationGridData.labels = myLabels;
-
-      console.log( this.elevationGridData );
-
-      this.elevationGridOptions = { 
-        plugins: { 
-            legend: { 
-                labels: { 
-                    color: '#495057' 
-                } 
-            } 
-        }, 
-        scales: { 
-            r: { 
-                grid: { 
-                    color: '#ebedef' 
-                } 
-            } 
-        } 
-      } 
-
+    for (let i = 0; i < this.operationMonthlyData.length; i++) {
+      myProposedData[i] = this.operationMonthlyData[i].eomElevation;
+      myInflowData[i] = Number(this.operationMonthlyData[i].inflow)
+      myOutflowData[i] = Number(this.operationMonthlyData[i].outflow)
+      myLabels[i] =
+        this.operationMonthlyData[i].month +
+        ' ' +
+        this.operationMonthlyData[i].dateRange;
+      myWarning[i] = constants.WARNING_ELEVATION_LEVEL;
+      myMax[i] = constants.MAX_ELEVATION_LEVEL;
     }
-  
-    processData(event: MouseEvent) {
-      console.log('-------- OperationsDataComponent.processData --------');
-      if (this.proposedOperations.length > 0) {
-        this.operations = this.operationsService.getOperations(this.proposedOperations);
-      } else {
-        console.log("proposedOperations data is empty");
-      }
-  
-      console.log(this.operations);
-      this.showDataDialog();
-      this.getOperationData();
 
+    elevationProposedData.data = myProposedData;
+    inFlowData.data  = myInflowData;
+    outFlowData.data = myOutflowData;
+    elevationWarningData.data = myWarning;
+    elevationMaxData.data = myMax;
+
+    this.elevationGridData.datasets[0] = elevationWarningData;
+    this.elevationGridData.datasets[1] = elevationMaxData;
+    this.elevationGridData.datasets[2] = elevationProposedData;
+    //this.elevationGridData.datasets[3] = inFlowData;
+    //this.elevationGridData.datasets[4] = outFlowData;
+    this.elevationGridData.labels = myLabels;
+
+    console.log(this.elevationGridData);
+
+    this.elevationGridOptions = {
+      plugins: {
+        legend: {
+          labels: {
+            color: constants.GRID_LEGEND_LABEL,
+          },
+        },
+      },
+      scales: {
+        r: {
+          grid: {
+            color: constants.GRID_SCALES_LABEL,
+          },
+        },
+      },
     };
+  }
 
-    getEOMContent(baseContent:number, inflow:number, outflow:number):number {
-      console.log('-------- OperationsDataComponent.getEOMContent -------- ' + baseContent + ' ' + inflow + ' ' + outflow);
-
-      return baseContent + inflow - outflow;
-
+  processData(event: MouseEvent) {
+    console.log('-------- OperationsDataComponent.processData --------');
+    if (this.proposedOperations.length > 0) {
+      this.operations = this.operationsService.getOperations(
+        this.proposedOperations
+      );
+    } else {
+      console.log('proposedOperations data is empty');
     }
 
-    setEOMContent(baseContent:number, inflow:number, outflow:number):number {
-      console.log('-------- OperationsDataComponent.setEOMContent -------- ' + baseContent + ' ' + inflow + ' ' + outflow);
+    console.log(this.operations);
+    this.showDataDialog();
+    this.getOperationData();
+  }
 
-      return this.getEOMContent(baseContent, inflow, outflow);
+  clearData(event: MouseEvent) {
+    this.proposedOperations = '';
+  }
 
+  getEOMContent(baseContent: number, inflow: number, outflow: number): number {
+    console.log(
+      '-------- OperationsDataComponent.getEOMContent -------- ' +
+        baseContent +
+        ' ' +
+        inflow +
+        ' ' +
+        outflow
+    );
+
+    return baseContent + inflow - outflow;
+  }
+
+  setEOMContent(baseContent: number, inflow: number, outflow: number): number {
+    console.log(
+      '-------- OperationsDataComponent.setEOMContent -------- ' +
+        baseContent +
+        ' ' +
+        inflow +
+        ' ' +
+        outflow
+    );
+
+    return this.getEOMContent(baseContent, inflow, outflow);
+  }
+
+  getElevationWarning(elevation: number): any {
+    console.log(
+      '-------- OperationsDataComponent.getElevationWarning --------'
+    );
+
+    let warning = '';
+    if (elevation > constants.MAX_ELEVATION_LEVEL) {
+      warning = constants.EOM_MAX_LEVEL;
+    } else if (elevation > constants.WARNING_ELEVATION_LEVEL) {
+      warning = constants.EOM_WARNING_LEVEL;
     }
 
-    getElevationWarning(elevation:number):any {
-      console.log('-------- OperationsDataComponent.getElevationWarning --------');
+    return warning;
+  }
 
-        let warning = '';
-        if (elevation > this.elevationMaxWarning) {
-          warning = this.maxBackground;
-        } else if (elevation > this.elevationWarning) {
-          warning = this.warningBackground;
-        }
+  recalculateEOM(inputData: any) {
+    console.log(
+      '-------- OperationsDataComponent.recalculateEOM -------- ' +
+        inputData.index +
+        ' ' +
+        inputData.manualInflow
+    );
 
-        return warning;
+    let myEomContent = 0;
+    let myInflow = Number(inputData.manualInflow);
+    let myOutflow = Number(inputData.manualOutflow);
+    let myIndex = Number(inputData.index);
+    this.recaculateYearType = 0.0;
+
+    if (myInflow > 0) {
+      this.operationMonthlyData[Number(inputData.index)].manualInflow =
+        myInflow;
+    }
+    if (myOutflow > 0) {
+      this.operationMonthlyData[Number(inputData.index)].manualOutflow =
+        myOutflow;
     }
 
-    recalculateEOM(inputData:any) {
-      console.log('-------- OperationsDataComponent.recalculateEOM -------- ' + inputData.index + ' ' + inputData.manualInflow);
-      //console.log(inputData);
-      
-      let myEomContent = 0;
-      let myInflow = Number(inputData.manualInflow);
-      let myOutflow  = Number(inputData.manualOutflow);
-      let myIndex  = Number(inputData.index);
-
-     // console.log(this.operationMonthlyData);
-
-
-      if (myInflow > 0){
-        this.operationMonthlyData[Number(inputData.index)].manualInflow = myInflow;
-      }
-      if (myOutflow > 0){
-        this.operationMonthlyData[Number(inputData.index)].manualOutflow = myOutflow;
-      }
-
-      // if  (myIndex === 0 ) {
-
-      //   console.log('-------- 0 --------');
-
-      //   myEomContent = this.startingEOMContent;
-
-      // } else {
-
-      //   console.log('-------- Not 0 --------');
-
-      //   myEomContent = this.operationMonthlyData[(myIndex-1)].eomContent;
-      // }
-      
-      //this.operationMonthlyData[Number(inputData.index)].eomContent = myEomContent + myInflow - myOutflow;
-    
-
-      for (let i = (Number(inputData.index) ); i < this.operationMonthlyData.length; i++) {
-
-        //console.log(typeof i + ' ' + i);
-        //console.log(this.operationMonthlyData[i]);
-
-
-        if  (i === 0 ) {
-
-          //console.log('-------- 0 --------');
-
-          myEomContent = this.startingEOMContent;
-
-        } else {
-
-         // console.log('-------- Not 0 --------');
-
-          myEomContent = this.operationMonthlyData[(i-1)].eomContent;
-        }
-
-        //console.log( i + ' myEomContent ' + typeof myEomContent+ ' ' + myEomContent);
-
-        //this.operationMonthlyData[i].eomContent = myEomContent + myInflow - myOutflow;
-
-        //console.log(' man inflow ' + this.operationMonthlyData[i].manualInflow + ' man outflow ' + this.operationMonthlyData[i].manualOutflow + ' eom Content ' + this.operationMonthlyData[i].eomContent);
-        //console.log(' inflow ' + typeof this.operationMonthlyData[i].inflow + '  outflow ' + typeof this.operationMonthlyData[i].outflow + ' eom Content ' + typeof this.operationMonthlyData[i].eomContent);
-        //console.log(' man inflow ' + typeof this.operationMonthlyData[i].manualInflow + ' man outflow ' + typeof this.operationMonthlyData[i].manualOutflow + ' eom Content ' + typeof this.operationMonthlyData[i].eomContent);
-
-        
-        if (Number(this.operationMonthlyData[i].manualInflow) === 0 ) {
-          myInflow = Number(this.operationMonthlyData[i].inflow);
-          //console.log( i + ' inflow zero ' + this.operationMonthlyData[i].inflow);
-        } else {
-          myInflow = Number(this.operationMonthlyData[i].manualInflow);
-          //console.log( i + ' not inflow zero ' + myInflow);
-        }
-
-        
-        //console.log( i + ' myInflow ' + typeof myInflow + ' ' + myInflow);
-        
-        if (this.operationMonthlyData[i].manualOutflow === 0 ) {
-          myOutflow = this.operationMonthlyData[i].outflow;
-          //console.log( i + '  outflow zero ' + myOutflow);
-        } else {
-          myOutflow = Number(this.operationMonthlyData[i].manualOutflow);
-          //console.log( i + ' outflow not zero ' + myOutflow);
-        }
-
-        //console.log( i + ' ' + typeof myOutflow + ' ' + myOutflow);
-
-
-
-        //console.log( myEomContent + ' ' + myInflow + ' ' + myOutflow + ' ' +(myEomContent + myInflow - myOutflow ) );
-        
-        //console.log( i + ' ' + typeof myOutflow+ ' ' + myOutflow + ' ' + (myEomContent + myInflow - myOutflow) );
-
-        //console.log('eomContent ' + myEomContent + ' infow ' + myInflow + ' outflow ' + myOutflow);
-        
-        this.operationMonthlyData[i].eomContent = myEomContent + myInflow - myOutflow;
-
-        //remove this.operationMonthlyData[i].eomElevation = this.getElevation(this.operationMonthlyData[i].eomContent);
-        this.operationMonthlyData[i].eomElevation = this.elevationService.getElevation(this.operationMonthlyData[i].eomContent);
-
-        this.operationMonthlyData[i].elevationWarning = this.getElevationWarning(this.operationMonthlyData[i].eomElevation);
-
-       // console.log('[' + this.operationMonthlyData[i].elevationWarning + ']');
-
-      }
-      console.log(this.operationMonthlyData);
-
-      this.addToGridElevation();
-
-    }
-
-    getEOMContentList(data:any):number[] {
-      console.log('-------- OperationsDataComponent.getEOMContentList --------');
-
-      let eomContent = new Array();
-      
-      let myEomContent = 0;
-
-      eomContent =[];
-
-      for (let i = 0; i < data.length; i++) {
-        
-        myEomContent = (this.startingEOMContent + data[i].inflow - data[i].outflow); 
-        eomContent.push(myEomContent);
-      }
-        
-      console.log(eomContent);
-
-      return eomContent;
-    }
-
-    setEOMContentList(data:any, baseContent:number) {
-      console.log('-------- OperationsDataComponent.setEOMContentList --------');
-
-      let baseEOM = 0;
-
-      for (let i = 0; i < data.length; i++) {
-        
-        //console.log(i + ' ' + data[i].eomContent + ' ' + data[i].inflow + ' ' + data[i].outflow);
-
-        if ( i === 0 ) {
-          baseEOM = this.startingEOMContent;
-        } else {
-          baseEOM = data[(i-1)].eomContent;
-        }
-
-        let myEOM = this.setEOMContent( baseEOM, data[i].inflow, data[i].outflow);
-        data[i].eomContent = myEOM;
-
-        //console.log(i + ' ' + data[i].eomContent + ' ' + data[i].inflow + ' ' + data[i].outflow);
-
+    for (
+      let i = Number(inputData.index);
+      i < this.operationMonthlyData.length;
+      i++
+    ) {
+      if (i === 0) {
+        myEomContent = this.startingEOMContent;
+      } else {
+        myEomContent = this.operationMonthlyData[i - 1].eomContent;
       }
 
-    }
-
-    getOperationData() {
-      console.log('-------- OperationsDataComponent.getOperationData --------');
-
-      this.startingEOMContent = 0.0;
-      let temp:any = this.operationsService.getJson();
-
-      //const obj = JSON.parse(temp);
-
-      //if (temp.length > 2) {
-      if (temp) {
-  
-        //this.operationMonthlyData = obj.data;
-        this.operationMonthlyData = temp.data;
-
-        this.startingEOMContent = parseInt( temp.initialAcreFeet.replace(',','')); 
-        //this.startingEOMContent = parseInt( obj.initialAcreFeet.replace(',','')); 
-  
-        //this.eomContentLabel = "EOM Content " +  this.startingEOMContent + " elevation " + this.getElevation( this.startingEOMContent).toFixed(2);
-        this.eomContentLabel = "EOM Content " +  this.startingEOMContent + " elevation " + this.elevationService.getElevation(this.startingEOMContent).toFixed(2);
-
-        this.setEOMContentList(this.operationMonthlyData, this.startingEOMContent);
-
-        this.getElevationGridData();
-
+      if (Number(this.operationMonthlyData[i].manualInflow) === 0) {
+        myInflow = Number(this.operationMonthlyData[i].inflow);
+      } else {
+        myInflow = Number(this.operationMonthlyData[i].manualInflow);
       }
-  
+
+      if (this.operationMonthlyData[i].manualOutflow === 0) {
+        myOutflow = this.operationMonthlyData[i].outflow;
+      } else {
+        myOutflow = Number(this.operationMonthlyData[i].manualOutflow);
+      }
+
+      this.operationMonthlyData[i].eomContent =
+        myEomContent + myInflow - myOutflow;
+
+      this.operationMonthlyData[i].eomElevation =
+        this.elevationService.getElevation(
+          this.operationMonthlyData[i].eomContent
+        );
+
+      this.operationMonthlyData[i].elevationWarning = this.getElevationWarning(
+        this.operationMonthlyData[i].eomElevation
+      );
+    }
+    console.log(this.operationMonthlyData);
+
+    this.addToGridElevation();
+  }
+
+  getEOMContentList(data: any): number[] {
+    console.log('-------- OperationsDataComponent.getEOMContentList --------');
+
+    let eomContent = new Array();
+
+    let myEomContent = 0;
+
+    eomContent = [];
+
+    for (let i = 0; i < data.length; i++) {
+      myEomContent = this.startingEOMContent + data[i].inflow - data[i].outflow;
+      eomContent.push(myEomContent);
     }
 
+    console.log(eomContent);
+
+    return eomContent;
+  }
+
+  setEOMContentList(data: any, baseContent: number) {
+    console.log('-------- OperationsDataComponent.setEOMContentList --------');
+
+    let baseEOM = 0;
+    this.yearTypeInflow = 0.0;
+
+    for (let i = 0; i < data.length; i++) {
+      if (i === 0) {
+        baseEOM = this.startingEOMContent;
+      } else {
+        baseEOM = data[i - 1].eomContent;
+      }
+
+      let myEOM = this.setEOMContent(baseEOM, data[i].inflow, data[i].outflow);
+      data[i].eomContent = myEOM;
+
+      if ( (i > 9) && (i<18)) {
+        console.log(data[i].inflow);
+        this.yearTypeInflow = this.yearTypeInflow + data[i].inflow;
+      }
+    }
+    console.log(this.yearTypeInflow);
+  }
+
+  getOperationData() {
+    console.log('-------- OperationsDataComponent.getOperationData --------');
+
+    this.startingEOMContent = 0.0;
+    let temp: any = this.operationsService.getJson();
+
+    if (temp) {
+      this.operationMonthlyData = temp.data;
+
+      this.startingEOMContent = parseInt(temp.initialAcreFeet.replace(',', ''));
+
+      this.eomContentLabel =
+        'EOM Content ' +
+        this.startingEOMContent +
+        ' elevation ' +
+        this.elevationService.getElevation(this.startingEOMContent).toFixed(2);
+
+      this.setEOMContentList(
+        this.operationMonthlyData,
+        this.startingEOMContent
+      );
+
+      this.getElevationGridData();
+      this.setYearType();
+    }
+  }
 }
