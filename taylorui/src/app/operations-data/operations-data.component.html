@@ -33,15 +33,8 @@
     <span ><b>   April-July inflow  </b></span>
     <span [ngStyle]="{background:yearTypeBackground}"><b>{{yearTypeInflow}}</b></span>
     <span [ngStyle]="{background:yearTypeBackground}"><b>{{yearTypeLabel}}</b></span>
-    <!-- <span [ngStyle]="{color:'var(WET_YEAR_BACKGROUND)'}">TEST</span> -->
-    <!-- <p-chips field="value" [(ngModel)]="yearTypeLabel" [inputStyle]="{background:yearTypeBackground}"></p-chips> -->
-    <!-- <p-avatar-text  styleClass="mr-9" [style]="{ 'background-color': '#2196F3', color: '#ffffff', width:'100px' }"> <span class="text-base">content</span></p-avatar-text> -->
-    <!-- <p-avatar size="xlarge">
-        <span class="text-base">Content</span>
-    </p-avatar> -->
 
-
-    <p-table [value]="operationMonthlyData" [tableStyle]="{ 'min-width': '50rem' }">
+    <p-table [scrollable]="true" scrollHeight="800px" [value]="operationMonthlyData" [tableStyle]="{ 'min-width': '60rem' }" [autoLayout]="true">
         <ng-template pTemplate="header">
             <tr padding="3px">
                 <th width="15px" class="text-center">Month</th>
@@ -61,25 +54,25 @@
         </ng-template>
         <ng-template pTemplate="body" let-myData>
             <tr padding="3px">
-                <td width="15px" class="text-center"><label class="p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</label></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="minmax" mode="decimal" [size]="2" [min]="1" [max]="16"                             [(ngModel)]="myData.days"             placeholder="Days"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="minmax" mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualInflow"     placeholder="Manual Inflow (AC)"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="minmax" mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.inflow"           placeholder="Predicted Inflow (AC)"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="minmax" mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.inflowCF"         placeholder="Inflow CF"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="minmax" mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Manual Outflow (AC)"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="minmax" mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflow"          placeholder="Outflow (AF)"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="minmax" mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflowCF"        placeholder="Outflow (CF)"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="minmax" mode="decimal" [size]="7" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgInflowCFS"     placeholder="Avg Inflow CS"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="minmax" mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgOutflowCFS"    placeholder="Avg Outflow CS"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="minmax" mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="2" [(ngModel)]="myData.eomContent"       placeholder="EOM Content"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="minmax" mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.eomElevation"     placeholder="EOM Elevation" [inputStyle]="{background: myData.elevationWarning}"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="minmax" mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflowCFS" placeholder="acreFt-input"> </p-inputNumber></td>
+                <td width="15px" class="text-center" pFrozenColumn><label class="p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</label></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (keyup)="handleKeyUpEvent($event, 'manualInflow_', myData.index)"                                  [readonly]="true" inputId="days_{{myData.index}}"             mode="decimal" [size]="2" [min]="1" [max]="16"                             [(ngModel)]="myData.days"             placeholder="Days"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"               inputId="manualInflow_{{myData.index}}"     mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualInflow"     placeholder="Manual Inflow (AC)"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="inflow_{{myData.index}}"           mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.inflow"           placeholder="Predicted Inflow (AC)"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="inflowCF_{{myData.index}}"         mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.inflowCF"         placeholder="Inflow CF"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Manual Outflow (AC)"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="outflow_{{myData.index}}"          mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflow"          placeholder="Outflow (AF)"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="outflowCF_{{myData.index}}"        mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflowCF"        placeholder="Outflow (CF)"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgInflowCFS_{{myData.index}}"     mode="decimal" [size]="7" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgInflowCFS"     placeholder="Avg Inflow CS"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgOutflowCFS_{{myData.index}}"    mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgOutflowCFS"    placeholder="Avg Outflow CS"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId=".eomContent_{{myData.index}}"      mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="2" [(ngModel)]="myData.eomContent"       placeholder="EOM Content"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="eomElevation_{{myData.index}}"     mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.eomElevation"     placeholder="EOM Elevation" [inputStyle]="{background: myData.elevationWarning}"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="ManualOutflowCFS_{{myData.index}}" mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflowCFS" placeholder="acreFt-input"> </p-inputNumber></td>
                 
             </tr>
         </ng-template>
     </p-table>
 
-    <p-dialog header="Operations Data" [(visible)]="dataDialogVisible" [style]="{width: '32vw'}" [modal]="true" [draggable]="false" [resizable]="false">
+    <p-dialog header="Operations Data" [(visible)]="dataDialogVisible" [style]="{width: '32vw'}" [modal]="false" [draggable]="false" [resizable]="false">
 
         <textarea rows="30" cols="80" pInputTextarea [(ngModel)]="proposedOperations"></textarea>
         <p-divider></p-divider>
@@ -109,7 +102,7 @@
         <div class="card gap-2">
             <!-- <p-toast></p-toast>
             <p-confirmPopup></p-confirmPopup> -->
-            <p-button  [style]="{'float':'left'}" (click)="clearOperationalData()" label="Delete"></p-button>
+            <p-button  [style]="{'float':'left'}" (click)="clearOperationalData()" label="Clear Data"></p-button>
             <p-button  [style]="{'float':'right'}" (click)="closeClearOperationalDataDialog()" label="Cancel"></p-button>
         </div>
     </p-dialog>

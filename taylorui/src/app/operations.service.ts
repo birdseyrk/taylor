@@ -1,17 +1,28 @@
 import { Injectable } from '@angular/core';
 import * as constants from '../constants';
+import { LoggingService } from './logging.service';
 
 @Injectable({
   providedIn: 'root',
 })
+
+// class InputError extends Error {
+//   constructor(message: string) {
+//     super(message);
+//     this.name = "InputError";
+//   }
+// }
+
 export class OperationsService {
-  constructor() {}
+  constructor( 
+    private myLog:LoggingService) {}
+
 
   // operations: any = new Array();
   myJson:string = '{}';
 
   getOperations(proposedOperations: any): string[] {
-    console.log('-------- OperationsService.getOperations --------');
+    this.myLog.log('INFO', '-------- OperationsService.getOperations --------');
 
     let operations: any = new Array();
     let operIndex = 0;
@@ -31,6 +42,8 @@ export class OperationsService {
 
       if (proposedOperations.charCodeAt(i) === newLineChar) {
         //console.log(lineString.trim());
+        
+        this.myLog.log('INFO', '-------- OperationsService.getOperations --------');
         operations.push(lineString.trim());
         //console.log(operations[operIndex]);
         operIndex++;
@@ -74,7 +87,7 @@ export class OperationsService {
      // console.log(columnIndex);
 
       if (row.charCodeAt(i) === blank) {
-        //console.log('---------- ' + columnIndex + '----------');
+        //this.myLog.log('INFO', '---------- ' + columnIndex + '----------');
         // if (addComma) {
         //   rowJson = rowJson + '","';
         // }
@@ -178,7 +191,7 @@ export class OperationsService {
 
     myNewRow = myNewRow + '"eomElevation":' + myValue + ',"elevationWarning":"","manualInflow":0,"inflowCF":"","avgInflowCFS":"","manualOutflow":0,"manualOutflowCFS":0,"avgOutflowCFS":"","outflowCF":""}';
 
-    console.log("------> " + myNewRow + " <------");
+    //console.log("------> " + myNewRow + " <------");
 
     //console.log("------> " + rowJson + " <------");
 
@@ -190,20 +203,12 @@ export class OperationsService {
   }
 
   clearOperationalData() {
-    console.log('-------- OperationsService.clearJson --------');
+    this.myLog.log('INFO', '-------- OperationsService.clearJson --------');
     this.myJson = '{}';
   }
 
   calculateValues(operations:any):any {
-    console.log('-------- OperationsService.calculateValues -------- ');
-
-    //const ACtoCF = 43560;
-    //const secondsDay = 86400;
-
-    //const elevationWarning    = 9327;
-    //const elevationMaxWarning = 9329;
-    //const warningBackground = 'yellow';
-    //const maxBackground = 'red';
+    this.myLog.log('INFO', '-------- OperationsService.calculateValues -------- ');
 
     for (let i = 0; i < operations.data.length; i++) {
       operations.data[i].inflowCF = operations.data[i].inflow   * constants.ACTOSQFT;
@@ -221,64 +226,780 @@ export class OperationsService {
 
     }
 
-    console.log(operations);
+    //console.log(operations);
     
     return operations;
 
   }
 
-  //setOperationalData(operations: any[]): string {
-  setOperationalData(operations: any[]): any {
-    console.log('-------- OperationsService.setOperationalData --------');
+  checkOperationalData = (operations: any[]): string  => {
+    this.myLog.log('INFO', '-------- OperationsService.checkOperationalData --------');
+    let errorString:string = '{"errors":[';
+    let errorList = false;
+    let myComma = '';
+    console.log(operations);
 
+
+    try {
+      if (operations.length < 35) {
+        this.myLog.log('ERROR', '-------- Did not copy all the data - Need 35 rows, but only got [' + operations.length + '] rows-------- ');
+        errorString = '{"errors":[{"row:0, "error":"Data only contains "' + operations.length + '" there should be 35 lines", "errorFatal":true}] }';
+        throw new Error('Not all the data was copied');
+      }
+      for (let i = 0; i < operations.length; i++) {
+        switch (i) {
+          case 0: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+            if  ((spaceCount != 1) || (rowLength != 18) ||  (dataSplit[0] != 'Proposed') ) {
+              if ((spaceCount != 1) || (rowLength != 18)) {
+                myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
+              }
+              
+              // if (dataSplit[0] != 'Proposed') {
+              //   myErrorString = '{"row":' + i+1 + ", 'error':'Invalid Data', 'errorFatal':true}";
+              // }
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            //console.log(errorString);
+            break;
+          }
+          case 1: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+            if  ((spaceCount != 2) || (rowLength != 21) ||  (dataSplit[0] != 'Taylor') ) {
+              if ((spaceCount != 2) || (rowLength != 21)) {
+                myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
+              }
+              
+              // if (dataSplit[0] != 'Proposed') {
+              //   myErrorString = '{"row":' + i+1 + ", 'error':'Invalid Data', 'errorFatal':true}";
+              // }
+              
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            break;
+          }
+          case 2: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+            if  ((spaceCount != 6) || (rowLength != 37) ||  (dataSplit[2] != 'forecast') ) {
+              if ((spaceCount != 6) || (rowLength != 37)) {
+                myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
+              }
+              
+              // if (dataSplit[0] != 'Proposed') {
+              //   myErrorString = '{"row":' + i+1 + ", 'error':'Invalid Data', 'errorFatal':true}";
+              // }
+              
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            break;
+          }
+          case 3: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+            if  ((spaceCount != 2) || (rowLength != 13)  ) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            break;
+          }
+          case 4: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+            if  ((spaceCount != 3) || (rowLength != 23) ||  (dataSplit[0] != 'Average') ) {
+              if ((spaceCount != 3) || (rowLength != 23)) {
+                myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
+              }
+              
+              // if (dataSplit[0] != 'Proposed') {
+              //   myErrorString = '{"row":' + i+1 + ", 'error':'Invalid Data', 'errorFatal':true}";
+              // }
+              
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            break;
+          }
+          case 5: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+            if  ((spaceCount != 5) || (rowLength != 47) ||  (dataSplit[0] != 'Inflow') ) {
+              if ((spaceCount != 4) || (rowLength != 47)) {
+                myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
+              }
+              
+              // if (dataSplit[0] != 'Proposed') {
+              //   myErrorString = '{"row":' + i+1 + ", 'error':'Invalid Data', 'errorFatal':true}";
+              // }
+              
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            break;
+          }
+          case 6: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 6) || (rowLength != 34) ||  (dataSplit[0] != 'Month') ) {
+              if ((spaceCount != 6) || (rowLength != 34)) {
+                myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
+              }
+              
+              // if (dataSplit[0] != 'Proposed') {
+              //   myErrorString = '{"row":' + i+1 + ", 'error':'Invalid Data', 'errorFatal':true}";
+              // }
+              
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            break;
+          }
+          case 7: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+            if (rowLength < 1)   {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            break;
+          }
+          case 8: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Nov')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+
+            break;
+          }
+          case 9: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Nov')  ||  (dataSplit[1] != '16-30')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 10: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Dec')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 11: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Dec')  ||  (dataSplit[1] != '16-31')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 12: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jan')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 13: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jan')  ||  (dataSplit[1] != '16-31')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 14: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Feb')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 15: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Feb')  ||  (dataSplit[1] != '16-28')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+
+            break;
+          }
+          case 16: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Mar')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 17: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Mar')  ||  (dataSplit[1] != '16-31')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+
+            break;
+          }
+          case 18: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Apr')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 19: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Apr')  ||  (dataSplit[1] != '16-30')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 20: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'May')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 21: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'May')  ||  (dataSplit[1] != '16-31')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 22: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jun')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 23: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jun')  ||  (dataSplit[1] != '16-30')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 24: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jul')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 25: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jul')  ||  (dataSplit[1] != '16-31')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 26: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Aug')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 27: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Aug')  ||  (dataSplit[1] != '16-31')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 28: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Sep')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 29: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Sep')  ||  (dataSplit[1] != '16-30')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 30: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Oct')  ||  (dataSplit[1] != '1-15')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 31: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 7) ||  (dataSplit[0] != 'Oct')  ||  (dataSplit[1] != '16-31')) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 32: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 3) || (rowLength != 26) ||  (dataSplit[3] != 'inflow') ) {
+              if ((spaceCount != 6) || (rowLength != 34)) {
+                myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
+              }
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+            
+            break;
+          }
+          case 33: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 2) || (rowLength != 14) ||  (dataSplit[2] != 'normal') ) {
+              if ((spaceCount != 6) || (rowLength != 34)) {
+                myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
+              }
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+
+            break;
+          }
+          case 34: {
+            let dataSplit = operations[i].split(" ");
+            let spaceCount = ( operations[i].split(" ").length - 1);
+            let rowLength = operations[i].length;
+            let myErrorString = '';
+            console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+            console.log(dataSplit);
+           
+            if  ((spaceCount != 3) || (rowLength != 25) ||  (dataSplit[3] != 'Content') ) {
+              if ((spaceCount != 3) || (rowLength != 25)) {
+                myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
+              }
+              errorString = errorString + myComma + myErrorString;
+              myComma = ', ';
+              console.log("*** " + i + " ***");
+            }
+
+            break;
+          }
+        default : {
+          let dataSplit = operations[i].split(" ");
+          let spaceCount = ( operations[i].split(" ").length - 1);
+          let rowLength = operations[i].length;
+          let myErrorString = '';
+          console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+          console.log(dataSplit);
+         
+          if  ((spaceCount != 3) || (rowLength != 25) ||  (dataSplit[3] != 'Content') ) {
+            if ((spaceCount != 3) || (rowLength != 25)) {
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data - extra-row", "errorFatal":false, "line":"' + operations[i] +'"}';
+            }
+            errorString = errorString + myComma + myErrorString;
+            myComma = ', ';
+          }
+
+        }
+          // case 35: {
+          //   let dataSplit = operations[i].split(" ");
+          //   let spaceCount = ( operations[i].split(" ").length - 1);
+          //   let rowLength = operations[i].length;
+          //   let myErrorString = '';
+          //   console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
+          //   console.log(dataSplit);
+          //   break;
+          // }
+        }
+      }
+      errorString = errorString + "]}";
+      console.log(errorString);
+
+
+    } catch (e) {
+      //console.error(`${e.name}: ${e.message}`);
+      
+       console.log(errorString);
+      this.myLog.log('ERROR', '-------- OperationsService.checkOperationalData --------');
+      return errorString;
+    }
+
+    
+
+  //   for (let i = 0; i < operations.length; i++) {
+  //   switch(variable_expression) { 
+  //     case constant_expr1: { 
+  //        //statements; 
+  //        break; 
+  //     } 
+  //     case constant_expr2: { 
+  //        //statements; 
+  //        break; 
+  //     } 
+  //     default: { 
+  //        //statements; 
+  //        break; 
+  //     } 
+  //  } 
+  // }
+
+    return errorString;
+  }
+
+  //setOperationalData(operations: any[]): string {
+  setOperationalData = (operations: any[]): any  => {
+    this.myLog.log('INFO', '-------- OperationsService.setOperationalData --------');
+
+    let jsonString = '{}'
     // for (let i = 0; i < operations.length; i++) {
     //   console.log(" index " + i + "******* " + operations[i] +  " *******");
     // }
 
-    let jsonString = '{';
-    jsonString = jsonString + '"title":' + '"' + operations[0] + '",';
-    jsonString = jsonString + '"name":' + '"' + operations[1] + '",';
-    jsonString = jsonString + '"forcast":' + '"' + operations[2] + '",';
-    jsonString = jsonString + '"date":' + '"' + operations[3] + '",';
-    jsonString = jsonString + '"label1":' + '"' + operations[4] + '",';
-    jsonString = jsonString + '"label2":' + '"' + operations[5] + '",';
-    jsonString = jsonString + '"label3":' + '"' + operations[6] + '",';
-    jsonString = jsonString + '"initialAcreFeet":' + '"' + operations[7] + '",';
-    jsonString = jsonString + '"data":[';
-    jsonString = jsonString + this.getRowArray(operations[8],  0) + ',';
-    jsonString = jsonString + this.getRowArray(operations[9],  1) + ',';
-    jsonString = jsonString + this.getRowArray(operations[10], 2) + ',';
-    jsonString = jsonString + this.getRowArray(operations[11], 3) + ',';
-    jsonString = jsonString + this.getRowArray(operations[12], 4) + ',';
-    jsonString = jsonString + this.getRowArray(operations[13], 5) + ',';
-    jsonString = jsonString + this.getRowArray(operations[14], 6) + ',';
-    jsonString = jsonString + this.getRowArray(operations[15], 7) + ',';
-    jsonString = jsonString + this.getRowArray(operations[16], 8) + ',';
-    jsonString = jsonString + this.getRowArray(operations[17], 9) + ',';
-    jsonString = jsonString + this.getRowArray(operations[18], 10) + ',';
-    jsonString = jsonString + this.getRowArray(operations[19], 11) + ',';
-    jsonString = jsonString + this.getRowArray(operations[20], 12) + ',';
-    jsonString = jsonString + this.getRowArray(operations[21], 13) + ',';
-    jsonString = jsonString + this.getRowArray(operations[22], 14) + ',';
-    jsonString = jsonString + this.getRowArray(operations[23], 15) + ',';
-    jsonString = jsonString + this.getRowArray(operations[24], 16) + ',';
-    jsonString = jsonString + this.getRowArray(operations[25], 17) + ',';
-    jsonString = jsonString + this.getRowArray(operations[26], 18) + ',';
-    jsonString = jsonString + this.getRowArray(operations[27], 19) + ',';
-    jsonString = jsonString + this.getRowArray(operations[28], 20) + ',';
-    jsonString = jsonString + this.getRowArray(operations[29], 21) + ',';
-    jsonString = jsonString + this.getRowArray(operations[30], 22) + ',';
-    jsonString = jsonString + this.getRowArray(operations[31], 23) + '],';
-    jsonString = jsonString + '"inflowSummary":' + '"' + operations[32] + '",';
-    jsonString = jsonString + '"normal":' + '"' + operations[33] + '",';
-    jsonString = jsonString + '"maxContent":' + '"' + operations[34] + '"';
+    if (this.checkOperationalData(operations) ) {
 
-    jsonString = jsonString + '}';
+      jsonString = '{';
+      jsonString = jsonString + '"title":' + '"' + operations[0] + '",';
+      jsonString = jsonString + '"name":' + '"' + operations[1] + '",';
+      jsonString = jsonString + '"forcast":' + '"' + operations[2] + '",';
+      jsonString = jsonString + '"date":' + '"' + operations[3] + '",';
+      jsonString = jsonString + '"label1":' + '"' + operations[4] + '",';
+      jsonString = jsonString + '"label2":' + '"' + operations[5] + '",';
+      jsonString = jsonString + '"label3":' + '"' + operations[6] + '",';
+      jsonString = jsonString + '"initialAcreFeet":' + '"' + operations[7] + '",';
+      jsonString = jsonString + '"data":[';
+      jsonString = jsonString + this.getRowArray(operations[8],  0) + ',';
+      jsonString = jsonString + this.getRowArray(operations[9],  1) + ',';
+      jsonString = jsonString + this.getRowArray(operations[10], 2) + ',';
+      jsonString = jsonString + this.getRowArray(operations[11], 3) + ',';
+      jsonString = jsonString + this.getRowArray(operations[12], 4) + ',';
+      jsonString = jsonString + this.getRowArray(operations[13], 5) + ',';
+      jsonString = jsonString + this.getRowArray(operations[14], 6) + ',';
+      jsonString = jsonString + this.getRowArray(operations[15], 7) + ',';
+      jsonString = jsonString + this.getRowArray(operations[16], 8) + ',';
+      jsonString = jsonString + this.getRowArray(operations[17], 9) + ',';
+      jsonString = jsonString + this.getRowArray(operations[18], 10) + ',';
+      jsonString = jsonString + this.getRowArray(operations[19], 11) + ',';
+      jsonString = jsonString + this.getRowArray(operations[20], 12) + ',';
+      jsonString = jsonString + this.getRowArray(operations[21], 13) + ',';
+      jsonString = jsonString + this.getRowArray(operations[22], 14) + ',';
+      jsonString = jsonString + this.getRowArray(operations[23], 15) + ',';
+      jsonString = jsonString + this.getRowArray(operations[24], 16) + ',';
+      jsonString = jsonString + this.getRowArray(operations[25], 17) + ',';
+      jsonString = jsonString + this.getRowArray(operations[26], 18) + ',';
+      jsonString = jsonString + this.getRowArray(operations[27], 19) + ',';
+      jsonString = jsonString + this.getRowArray(operations[28], 20) + ',';
+      jsonString = jsonString + this.getRowArray(operations[29], 21) + ',';
+      jsonString = jsonString + this.getRowArray(operations[30], 22) + ',';
+      jsonString = jsonString + this.getRowArray(operations[31], 23) + '],';
+      jsonString = jsonString + '"inflowSummary":' + '"' + operations[32] + '",';
+      jsonString = jsonString + '"normal":' + '"' + operations[33] + '",';
+      jsonString = jsonString + '"maxContent":' + '"' + operations[34] + '"';
+  
+      jsonString = jsonString + '}';
+  
+      console.log(jsonString);
+      //return jsonString;
+  
+      return this.calculateValues(JSON.parse(jsonString)); 
+    
 
-    console.log(jsonString);
-    //return jsonString;
+  } else {
+    // raise pop up error.
+    this.clearOperationalData();
 
-    return this.calculateValues(JSON.parse(jsonString));
-
+    return [];
   }
+}
 }

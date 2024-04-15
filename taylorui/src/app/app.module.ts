@@ -36,6 +36,11 @@ import { ElevationComponent } from './elevation/elevation.component';
 // import { DataReaderComponent } from './data-reader/data-reader.component';
 import { OperationsDataComponent } from './operations-data/operations-data.component';
 
+//Services
+import { ElevationService } from './elevation.service';
+import { LoggingService } from './logging.service';
+import { OperationsService } from './operations.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -74,7 +79,10 @@ import { OperationsDataComponent } from './operations-data/operations-data.compo
 
   ],
   providers: [
-    provideClientHydration()
+    provideClientHydration(),
+    ElevationService,
+    LoggingService,
+    OperationsService
   ],
   bootstrap: [AppComponent]
 })
