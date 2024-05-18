@@ -1,23 +1,16 @@
 import { Injectable } from '@angular/core';
 import * as constants from '../constants';
 import { LoggingService } from './logging.service';
+import { InputError } from './InputError';
 
 @Injectable({
   providedIn: 'root',
 })
 
-// class InputError extends Error {
-//   constructor(message: string) {
-//     super(message);
-//     this.name = "InputError";
-//   }
-// }
-
 export class OperationsService {
   constructor( 
     private myLog:LoggingService) {}
-
-
+  
   // operations: any = new Array();
   myJson:string = '{}';
 
@@ -235,15 +228,27 @@ export class OperationsService {
   checkOperationalData = (operations: any[]): string  => {
     this.myLog.log('INFO', '-------- OperationsService.checkOperationalData --------');
     let errorString:string = '{"errors":[';
-    let errorList = false;
+    let errorJson:any = {"errors":[],"fatalError":false};
+    let errorJsonRow:any = {"row":0, "error": "", "errorFatal":false};
+    let fatalError = false;
     let myComma = '';
+    console.log(errorJson);
+    console.log("*** input data ***");
     console.log(operations);
+    console.log("*** input data ***");
 
 
     try {
       if (operations.length < 35) {
         this.myLog.log('ERROR', '-------- Did not copy all the data - Need 35 rows, but only got [' + operations.length + '] rows-------- ');
-        errorString = '{"errors":[{"row:0, "error":"Data only contains "' + operations.length + '" there should be 35 lines", "errorFatal":true}] }';
+        errorString = '{"errors":[{"row":0, "error":"Data only contains ' + operations.length + ' there should be 35 lines", "errorFatal":true}], "fatalError":' + true +  '}';
+        let mystring = '"Data only contains ' + operations.length + ' there should be 35 lines"';
+        const myError = new InputError(0, mystring, true);
+        // console.log("*** myError ***");
+        // console.log(myError.getJson());
+        // console.log("*** myError ***");
+
+        errorJson.errors.push(myError.getJson());
         throw new Error('Not all the data was copied');
       }
       for (let i = 0; i < operations.length; i++) {
@@ -266,6 +271,14 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             //console.log(errorString);
             break;
@@ -289,6 +302,14 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             break;
           }
@@ -311,6 +332,14 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             break;
           }
@@ -326,6 +355,14 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             break;
           }
@@ -348,6 +385,14 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             break;
           }
@@ -370,6 +415,14 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             break;
           }
@@ -393,6 +446,14 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             break;
           }
@@ -404,10 +465,19 @@ export class OperationsService {
             console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
             console.log(dataSplit);
             if (rowLength < 1)   {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             break;
           }
@@ -420,10 +490,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Nov')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
 
             break;
@@ -437,10 +516,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Nov')  ||  (dataSplit[1] != '16-30')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -454,10 +542,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Dec')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -471,10 +568,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Dec')  ||  (dataSplit[1] != '16-31')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -488,10 +594,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jan')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -505,10 +620,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jan')  ||  (dataSplit[1] != '16-31')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -522,10 +646,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Feb')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -539,10 +672,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Feb')  ||  (dataSplit[1] != '16-28')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
 
             break;
@@ -556,10 +698,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Mar')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -573,10 +724,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Mar')  ||  (dataSplit[1] != '16-31')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
 
             break;
@@ -590,10 +750,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Apr')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -607,10 +776,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Apr')  ||  (dataSplit[1] != '16-30')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -624,10 +802,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'May')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -641,6 +828,7 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'May')  ||  (dataSplit[1] != '16-31')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
@@ -658,10 +846,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jun')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -675,10 +872,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jun')  ||  (dataSplit[1] != '16-30')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -692,10 +898,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jul')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -709,10 +924,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Jul')  ||  (dataSplit[1] != '16-31')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -726,10 +950,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Aug')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -743,10 +976,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Aug')  ||  (dataSplit[1] != '16-31')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -760,10 +1002,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Sep')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -777,10 +1028,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Sep')  ||  (dataSplit[1] != '16-30')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -794,10 +1054,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Oct')  ||  (dataSplit[1] != '1-15')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -811,10 +1080,19 @@ export class OperationsService {
             console.log(dataSplit);
            
             if  ((spaceCount != 7) ||  (dataSplit[0] != 'Oct')  ||  (dataSplit[1] != '16-31')) {
+              fatalError = true;
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":true, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -834,6 +1112,14 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             
             break;
@@ -853,6 +1139,14 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
 
             break;
@@ -872,6 +1166,14 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
 
             break;
@@ -887,6 +1189,14 @@ export class OperationsService {
           if  ((spaceCount != 3) || (rowLength != 25) ||  (dataSplit[3] != 'Content') ) {
             if ((spaceCount != 3) || (rowLength != 25)) {
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data - extra-row", "errorFatal":false, "line":"' + operations[i] +'"}';
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data - extra-row.';
+              const myError = new InputError(i, mystring, false);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
+
+              errorJson.errors.push(myError.getJson());
             }
             errorString = errorString + myComma + myErrorString;
             myComma = ', ';
@@ -904,16 +1214,27 @@ export class OperationsService {
           // }
         }
       }
-      errorString = errorString + "]}";
+      errorString = errorString + "],"+'"fatalError":'+ fatalError+"}";
       console.log(errorString);
 
 
     } catch (e) {
       //console.error(`${e.name}: ${e.message}`);
       
-       console.log(errorString);
-      this.myLog.log('ERROR', '-------- OperationsService.checkOperationalData --------');
-      return errorString;
+      console.log(errorString);
+      //this.myLog.log('ERROR', '-------- OperationsService.checkOperationalData --------');
+      
+      console.log("*** errorString 1 ***");
+      console.log(errorString);
+      console.log("*** errorString 1 ***");
+      
+      console.log("*** errorJson 1 ***");
+      errorJson["fatalError"] = fatalError;
+      console.log(errorJson);
+      console.log("*** errorJson 1 ***");
+
+     //return  (JSON.parse(errorString));
+     return errorJson;
     }
 
     
@@ -934,8 +1255,20 @@ export class OperationsService {
   //     } 
   //  } 
   // }
+  console.log("*** errorString 2 ***");
+  console.log( (JSON.parse(errorString)) );
+  console.log("*** errorString 2 ***");
+  
+  errorJson["fatalError"] = fatalError;
+      
+  console.log("*** errorJson 2 ***");
+  
+  errorJson["fatalError"] = fatalError;
+  console.log(errorJson);
+  console.log("*** errorJson 2 ***");
 
-    return errorString;
+    //return  (JSON.parse(errorString));
+    return errorJson;
   }
 
   //setOperationalData(operations: any[]): string {
@@ -947,7 +1280,11 @@ export class OperationsService {
     //   console.log(" index " + i + "******* " + operations[i] +  " *******");
     // }
 
-    if (this.checkOperationalData(operations) ) {
+    //let myObject:any = {"fatalError": false};
+    let myObject:any = this.checkOperationalData(operations);
+
+    if ( !(myObject).fatalError ) {
+      console.log("*** checkOperationalData - good ***");
 
       jsonString = '{';
       jsonString = jsonString + '"title":' + '"' + operations[0] + '",';
@@ -997,6 +1334,7 @@ export class OperationsService {
 
   } else {
     // raise pop up error.
+    console.log("*** Else Part of Check operations ***");
     this.clearOperationalData();
 
     return [];
