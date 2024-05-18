@@ -272,7 +272,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -303,7 +303,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -320,10 +320,9 @@ export class OperationsService {
             let myErrorString = '';
             console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
             console.log(dataSplit);
-            if  ((spaceCount != 6) || (rowLength != 37) ||  (dataSplit[2] != 'forecast') ) {
-              if ((spaceCount != 6) || (rowLength != 37)) {
-                myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
-              }
+            if  ((spaceCount != 6) ||  (dataSplit[2] != 'forecast') ) {
+              
+              myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
               
               // if (dataSplit[0] != 'Proposed') {
               //   myErrorString = '{"row":' + i+1 + ", 'error':'Invalid Data', 'errorFatal':true}";
@@ -333,7 +332,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -350,13 +349,13 @@ export class OperationsService {
             let myErrorString = '';
             console.log(i + ' ' + operations[i].length + ' ' + ( operations[i].split(" ").length - 1) + ' ' + operations[i]);
             console.log(dataSplit);
-            if  ((spaceCount != 2) || (rowLength != 13)  ) {
+            if  ((spaceCount != 2)  ) {
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data", "errorFatal":false, "line":"' + operations[i] +'"}';
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -386,7 +385,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -416,7 +415,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -447,7 +446,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -471,7 +470,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -496,7 +495,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -522,7 +521,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -548,7 +547,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -574,7 +573,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -600,7 +599,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -626,7 +625,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -652,7 +651,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -678,7 +677,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -704,7 +703,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -730,7 +729,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -756,7 +755,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -782,7 +781,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -808,7 +807,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -833,6 +832,12 @@ export class OperationsService {
               errorString = errorString + myComma + myErrorString;
               myComma = ', ';
               console.log("*** " + i + " ***");
+
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
+              const myError = new InputError(i, mystring, true);
+              console.log("*** myError ***");
+              console.log(myError.getJson());
+              console.log("*** myError ***");
             }
             
             break;
@@ -852,7 +857,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -878,7 +883,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -904,7 +909,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -930,7 +935,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -956,7 +961,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -982,7 +987,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -1008,7 +1013,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -1034,7 +1039,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -1060,7 +1065,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -1086,7 +1091,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, true);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -1113,7 +1118,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -1140,7 +1145,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -1167,7 +1172,7 @@ export class OperationsService {
               myComma = ', ';
               console.log("*** " + i + " ***");
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data. line: line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -1190,7 +1195,7 @@ export class OperationsService {
             if ((spaceCount != 3) || (rowLength != 25)) {
               myErrorString = '{"row":' + i + ', "line":' + (i+1) + ', "error":"Invalid Row Data - extra-row", "errorFatal":false, "line":"' + operations[i] +'"}';
 
-              let mystring = 'line ' + (i+1) + ' Invalid Row Data - extra-row.';
+              let mystring = 'line ' + (i+1) + ' Invalid Row Data - extra-row. line: ' + operations[i];
               const myError = new InputError(i, mystring, false);
               console.log("*** myError ***");
               console.log(myError.getJson());
@@ -1237,24 +1242,7 @@ export class OperationsService {
      return errorJson;
     }
 
-    
 
-  //   for (let i = 0; i < operations.length; i++) {
-  //   switch(variable_expression) { 
-  //     case constant_expr1: { 
-  //        //statements; 
-  //        break; 
-  //     } 
-  //     case constant_expr2: { 
-  //        //statements; 
-  //        break; 
-  //     } 
-  //     default: { 
-  //        //statements; 
-  //        break; 
-  //     } 
-  //  } 
-  // }
   console.log("*** errorString 2 ***");
   console.log( (JSON.parse(errorString)) );
   console.log("*** errorString 2 ***");
