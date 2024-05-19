@@ -24,10 +24,6 @@ import * as constants from '../../constants';
   providers: [ConfirmationService, MessageService],
 })
 
-// @Injectable()
-// export class MyService {
-//   constructor(@Inject(DOCUMENT) private document: Document) {}
-// }
 export class OperationsDataComponent {
   constructor(
     private confirmationService: ConfirmationService,
@@ -37,9 +33,6 @@ export class OperationsDataComponent {
     public operationsService: OperationsService,
     @Inject(DOCUMENT) private document: Document
   ) {}
-
-  //document = inject(DOCUMENT);
-  //  DOCUMENT = new InjectionToken<Document>;
 
   myDate: Date = new Date();
   operationsData: any;
@@ -149,70 +142,22 @@ export class OperationsDataComponent {
     this.calendarVisible = !this.calendarVisible;
   }
 
-  // @HostListener('window:keydown.enter', ['$event'])
-  // handleKeyUp(event: KeyboardEvent) {
-  //   this.myLog.log('INFO', '-------- OperationsDataComponent.handleKeyUp --------');
-  //   // if(window.keydown.enter == KEY_CODE.DOWN_ARROW){
-  //   //   // Your row selection code
-  //   //   console.log(event);
-  //   // }
-
-  //   console.log(event);
-  // }
-
-  // KeyboardEventNames:any = 'keydown' | 'keyup';
-
-  // let listenTo = (window: Window) => {
-  //   const eventNames: KeyboardEventNames[] = ['keydown', 'keyup'];
-  //   eventNames.forEach(eventName => {
-  //      window.addEventListener(eventName, e => {
-  //        handleEvent(e);
-  //      });
-  //   });
-  // }
-
   handleKeyUpEvent = (event: any, column: string, index: string) => {
     this.myLog.log('INFO', '***** handleEvent ******');
-    // const { key } = event;
-    console.log(event);
-    console.log(event.key);
-    console.log(column);
-    console.log(index);
-    console.log(this.operationMonthlyData.length);
-    let myRows = this.operationMonthlyData.length - 1;
     let myIndex = Number(index);
     let myKey = '';
-
-    console.log(myKey);
-    //console.log(this.document.querySelector("#manualInflow_0"));
-
-    // let nextElementSiblingId = 'input'+ i+1;
-    // if (i<this.things.controls.length) {
-    //  document.querySelector(`#${nextElementSiblingId}`).focus()
-    // }
 
     if (myIndex < this.operationMonthlyData.length && myIndex > -1) {
       if (event.key === 'Enter') {
         this.myLog.log('INFO', 'Enter');
         myKey = '#' + column + (myIndex + 1);
-        console.log(myKey);
-        console.log(this.document.querySelector(myKey));
-        // let myInput = this.document.querySelector(myKey);
-        // myInput.focus();
       } else if (event.key === 'ArrowDown') {
         this.myLog.log('INFO', 'ArrowDown');
         myKey = '#' + column + (myIndex + 1);
-        console.log(myKey);
-        console.log(this.document.querySelector(myKey));
         this.document.querySelector(myKey);
-        //this.document.querySelector(`#${myKey}`).focus();
       } else if (event.key === 'ArrowUp') {
         this.myLog.log('INFO', 'ArrowUp');
         myKey = '#' + column + (myIndex - 1);
-        console.log(myKey);
-        //this.document.querySelector(`#${myKey}`).focus();
-
-        console.log(this.document.querySelector(myKey));
         this.document.querySelector(myKey);
       } else if (event.key === 'ArrowRight') {
         this.myLog.log('INFO', 'ArrowRight');
@@ -221,62 +166,6 @@ export class OperationsDataComponent {
       }
     }
   };
-
-  // myNavigate(event: KeyboardEventEvent) {
-  //   console.log(index);
-  //   const inputs = this.inputEl.nativeElement.querySelectorAll('input');
-  //   if (inputs.length > index + 1) {
-  //     inputs[index + 1].focus();
-  //   }
-  // }
-
-  // // confirm1(event: Event) {
-  // //   this.confirmationService.confirm({
-  // //       target: event.target as EventTarget,
-  // //       message: 'Are you sure you want to proceed?',
-  // //       icon: 'pi pi-exclamation-triangle',
-  // //       accept: () => {
-  // //           this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
-  // //       },
-  // //       reject: () => {
-  // //           this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-  // //       }
-  // //   });
-  // // }
-
-  // confirm2(event: Event) {
-  //     this.confirmationService.confirm({
-  //         target: event.target as EventTarget,
-  //         message: 'Do you want to delete this record?',
-  //         icon: 'pi pi-info-circle',
-  //         acceptButtonStyleClass: 'p-button-danger p-button-sm',
-  //         accept: () => {
-  //             this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Data Cleared', life: 2000 });
-
-  //             //setTimeout(this.closeClearOperationalDataDialog, 2100);
-
-  //             this.clearOperationalData();
-
-  //           //   this.closeDialogTimer.subscribe(x => {
-  //           //     this.myLog.log('INFO', '');
-  //           //     this.myLog.log('INFO', '********** Remove Dialog: ********** ', x);
-  //           //     this.clearOperationDataVisible = !this.clearOperationDataVisible;
-  //           //     clearInterval(this.closeTime);
-  //           // });
-  //         },
-  //         reject: () => {
-  //             this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 2000 });
-  //             //setTimeout(this.closeClearOperationalDataDialog, 2100);
-
-  //           //   this.closeDialogTimer.subscribe(x => {
-  //           //     this.myLog.log('INFO', '');
-  //           //     this.myLog.log('INFO', '********** Remove Dialog: ********** ', x);
-  //           //     this.clearOperationDataVisible = !this.clearOperationDataVisible;
-  //           // });
-  //         }
-  //     });
-  //     setTimeout(this.closeClearOperationalDataDialog, 2100);
-  // }
 
   setYearType() {
     this.myLog.log(
@@ -315,8 +204,6 @@ export class OperationsDataComponent {
       constants.ADJUST_LABEL +
       '"}';
     let elevationAdjustedData = JSON.parse(myAdjustedLevel);
-
-    //console.log(elevationAdjustedData);
 
     for (let i = 0; i < this.operationMonthlyData.length; i++) {
       myModifiedData[i] = this.operationMonthlyData[i].eomElevation;
@@ -385,8 +272,6 @@ export class OperationsDataComponent {
     let elevationWarningData = JSON.parse(myWarningLevel);
     let elevationMaxData = JSON.parse(myMaxLevel);
 
-    //console.log(this.elevationGridData);
-
     for (let i = 0; i < this.operationMonthlyData.length; i++) {
       myProposedData[i] = this.operationMonthlyData[i].eomElevation;
       myInflowData[i] = Number(this.operationMonthlyData[i].inflow);
@@ -408,11 +293,8 @@ export class OperationsDataComponent {
     this.elevationGridData.datasets[0] = elevationWarningData;
     this.elevationGridData.datasets[1] = elevationMaxData;
     this.elevationGridData.datasets[2] = elevationProposedData;
-    //this.elevationGridData.datasets[3] = inFlowData;
-    //this.elevationGridData.datasets[4] = outFlowData;
     this.elevationGridData.labels = myLabels;
 
-    //console.log(this.elevationGridData);
 
     this.elevationGridOptions = {
       plugins: {
@@ -446,7 +328,6 @@ export class OperationsDataComponent {
       this.myLog.log('INFO', 'proposedOperations data is empty');
     }
 
-    //console.log(this.operations);
     this.showDataDialog();
     this.getOperationData();
   }
@@ -573,7 +454,6 @@ export class OperationsDataComponent {
         this.operationMonthlyData[i].eomElevation
       );
     }
-    //console.log(this.operationMonthlyData);
 
     this.addToGridElevation();
   }
@@ -594,8 +474,6 @@ export class OperationsDataComponent {
       myEomContent = this.startingEOMContent + data[i].inflow - data[i].outflow;
       eomContent.push(myEomContent);
     }
-
-    //console.log(eomContent);
 
     return eomContent;
   }
@@ -621,11 +499,10 @@ export class OperationsDataComponent {
       data[i].eomContent = myEOM;
 
       if (i > 9 && i < 18) {
-        //console.log(data[i].inflow);
+        
         this.yearTypeInflow = this.yearTypeInflow + data[i].inflow;
       }
     }
-    //console.log(this.yearTypeInflow);
   }
 
   getOperationData() {
@@ -637,10 +514,6 @@ export class OperationsDataComponent {
     this.startingEOMContent = 0.0;
     let temp: any = this.operationsService.getJson();
     this.errors = this.operationsService.getErrorsJson();
-
-    console.log('rkb getOperationData');
-    //console.log(temp.length);
-    console.log(temp);
 
     if ( (temp.data) && (!this.errors.fatalError) ) {
       this.operationMonthlyData = temp.data;
@@ -662,7 +535,6 @@ export class OperationsDataComponent {
       this.setYearType();
     }
     else if (this.errors.fatalError) {
-      console.log(this.errors);
       this.errorInputVisible = true;
     }
   }

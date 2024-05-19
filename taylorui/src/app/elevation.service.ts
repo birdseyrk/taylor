@@ -30,9 +30,6 @@ export class ElevationService {
     let myDecimal = 0.0;
 
     this.elevationData.elevationTable.forEach(function (row: any) {
-
-      //console.log(row);
-      //console.log(acreFeet);
       
       if (row.low < acreFeet) {
         tabIndex++;
@@ -41,8 +38,6 @@ export class ElevationService {
       }
     });
 
-    //console.log(tabIndex); //todo remove
-    //console.log(this.elevationData.elevationTable); //todo remove
     this.elevation = this.elevationData.elevationTable[tabIndex - 1].elevation;
     
     if (acreFeet > this.elevationData.elevationTable[tabIndex - 1].max) {
