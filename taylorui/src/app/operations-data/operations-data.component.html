@@ -56,10 +56,10 @@
             <tr padding="3px">
                 <td width="15px" class="text-center" pFrozenColumn><label class="p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</label></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (keyup)="handleKeyUpEvent($event, 'manualInflow_', myData.index)"                                  [readonly]="true" inputId="days_{{myData.index}}"             mode="decimal" [size]="2" [min]="1" [max]="16"                             [(ngModel)]="myData.days"             placeholder="Days"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"               inputId="manualInflow_{{myData.index}}"     mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualInflow"     placeholder="Manual Inflow (AC)"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"               inputId="manualInflow_{{myData.index}}"         mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualInflow"     placeholder="Inflow (AF)" [inputStyle]="{background: myData.manualInflowColor}"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="inflow_{{myData.index}}"           mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.inflow"           placeholder="Predicted Inflow (AC)"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="inflowCF_{{myData.index}}"         mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.inflowCF"         placeholder="Inflow CF"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Manual Outflow (AC)"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Outflow (AF)" [inputStyle]="{background: myData.manualOutFlowColor}"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="outflow_{{myData.index}}"          mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflow"          placeholder="Outflow (AF)"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="outflowCF_{{myData.index}}"        mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflowCF"        placeholder="Outflow (CF)"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgInflowCFS_{{myData.index}}"     mode="decimal" [size]="7" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgInflowCFS"     placeholder="Avg Inflow CS"> </p-inputNumber></td>
@@ -79,7 +79,7 @@
         <p-button
            
             [disabled]="proposedOperations.length === 0 "
-            label="Load Proposed Operations 3"
+            label="Load Proposed Operations"
             (click)="processData($event)"
         ></p-button>
         <p-button
@@ -110,6 +110,31 @@
     <p-dialog header="Calendar" [(visible)]="calendarVisible" [style]="{width: '23vw', height: '23vw'}">
 
         <p-calendar class="max-w-full" [(ngModel)]="myDate"  [inline]="true" [showWeek]="true"></p-calendar>
+
+    </p-dialog>
+
+    <p-dialog header="Input Errors" [(visible)]="errorInputVisible" [style]="{width: '`100vw', height: '23vw'}">
+
+        <p-table [scrollable]="true" scrollHeight="800px" [value]="errors.errors" [tableStyle]="{ 'min-width': '60rem' }" [autoLayout]="true">
+            {{errors.fataError}}
+            <ng-template pTemplate="header">
+                <tr padding="3px">
+                    <th width="15px" class="text-center">Line</th>
+                    <th width="785px" class="text-center">Error</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-myError>
+                <tr padding="3px">
+                    <!-- <td width="15px"   class="text-left">{{myError.row}}</td>
+                    <td width="785px"  class="text-left">{{myError.error}}</td>
+                     -->
+                    <td>{{myError.row}}</td>
+                    <td>{{myError.error}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        
+        <p-button  [style]="{'float':'right'}" (click)="closeErrorInputDialog()" label="Close"></p-button>
 
     </p-dialog>
 

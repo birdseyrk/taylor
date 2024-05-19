@@ -6,7 +6,7 @@ export class InputError {
     private myJson:any = {};
 
     public constructor(row: number, error: string,  errorFatal:boolean) {
-        console.log ("*** CLASS Constructor Input Error  ***");
+        //console.log ("*** CLASS Constructor Input Error  ***");
         this.row = row;
         this.error = error;
         this.errorFatal = errorFatal;
@@ -25,18 +25,11 @@ export class InputError {
     }
 
     public getJson():any {
-        console.log ("*** CLASS Input Error - getJson  ***");
-        //let myJsonString:string = '{"row":' + this.row +', "error":"' + this.error + '", "errorFatal":' + this.errorFatal + '}';
+        //console.log ("*** CLASS Input Error - getJson  ***");
 
-        
         this.myJson["row"] = this.row;
         this.myJson["error"] = this.error;
         this.myJson["errorFatal"] = this.errorFatal;
-
-        // this.myJson = JSON.parse(myJsonString);
-
-        // console.log("*** CLASS Input Error - error json string ***");
-        // console.log(this.myJson);
 
         return this.myJson;
 

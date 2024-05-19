@@ -48,6 +48,7 @@ export class OperationsDataComponent {
   eomContentLabel: string = '';
   yearTypeLabel: string = '';
   yearTypeBackground: string = '';
+  errors: any = [];
 
   operations: string[] = [];
   proposedOperations: any = '';
@@ -55,10 +56,11 @@ export class OperationsDataComponent {
   elevationGridData: any = '';
   elevationGridOptions: any = '';
 
+  calendarVisible = false;
+  clearOperationDataVisible = false;
   dataDialogVisible = false;
   elevationVisible = false;
-  clearOperationDataVisible = false;
-  calendarVisible = false;
+  errorInputVisible = false;
 
   yearTypeInflow = 0.0;
   recaculateYearType = 0.0;
@@ -80,6 +82,15 @@ export class OperationsDataComponent {
     );
 
     this.clearOperationDataVisible = false;
+  }
+
+  closeErrorInputDialog() {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.closeErrorInputDialog -------- '
+    );
+
+    this.errorInputVisible = false;
   }
 
   showDataDialog() {
@@ -109,6 +120,7 @@ export class OperationsDataComponent {
     this.operationsService.clearOperationalData();
     this.operationMonthlyData = [];
     this.clearOperationDataVisible = false;
+    this.errors = [];
   }
 
   showElevationDialog() {
@@ -118,6 +130,15 @@ export class OperationsDataComponent {
     );
 
     this.elevationVisible = !this.elevationVisible;
+  }
+
+  showErrorInputDialog() {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.errorInputVisible --------'
+    );
+
+    this.errorInputVisible = !this.errorInputVisible;
   }
 
   showCalendarDialog() {
@@ -416,6 +437,7 @@ export class OperationsDataComponent {
       'INFO',
       '-------- OperationsDataComponent.processData --------'
     );
+    this.errors = [];
     if (this.proposedOperations.length > 0) {
       this.operations = this.operationsService.getOperations(
         this.proposedOperations
@@ -478,6 +500,7 @@ export class OperationsDataComponent {
   }
 
   recalculateEOM(inputData: any) {
+
     this.myLog.log(
       'INFO',
       '-------- OperationsDataComponent.recalculateEOM -------- ' +
@@ -491,14 +514,19 @@ export class OperationsDataComponent {
     let myOutflow = Number(inputData.manualOutflow);
     let myIndex = Number(inputData.index);
     this.recaculateYearType = 0.0;
+    this.operationMonthlyData[Number(inputData.index)].manualInflowColor = "";
+    this.operationMonthlyData[Number(inputData.index)].manualOutFlowColor = "";
 
     if (myInflow > 0) {
       this.operationMonthlyData[Number(inputData.index)].manualInflow =
         myInflow;
+        this.operationMonthlyData[Number(inputData.index)].manualInflowColor = constants.CELL_CHANGE_COLOR;
     }
     if (myOutflow > 0) {
       this.operationMonthlyData[Number(inputData.index)].manualOutflow =
         myOutflow;
+        
+      this.operationMonthlyData[Number(inputData.index)].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
     }
 
     for (
@@ -506,19 +534,28 @@ export class OperationsDataComponent {
       i < this.operationMonthlyData.length;
       i++
     ) {
+
       if (i === 0) {
         myEomContent = this.startingEOMContent;
       } else {
         myEomContent = this.operationMonthlyData[i - 1].eomContent;
       }
 
-      if (Number(this.operationMonthlyData[i].manualInflow) === 0) {
+      if (!myOutflow) {
+        myOutflow = 0;
+      }
+
+      if (!myInflow) {
+        myInflow = 0;
+      }
+
+      if ( (!this.operationMonthlyData[i].manualInflow) || (Number(this.operationMonthlyData[i].manualInflow) === 0) ) {
         myInflow = Number(this.operationMonthlyData[i].inflow);
       } else {
         myInflow = Number(this.operationMonthlyData[i].manualInflow);
       }
 
-      if (this.operationMonthlyData[i].manualOutflow === 0) {
+      if ( (!this.operationMonthlyData[i].manualOutflow) || (this.operationMonthlyData[i].manualOutflow === 0)) {
         myOutflow = this.operationMonthlyData[i].outflow;
       } else {
         myOutflow = Number(this.operationMonthlyData[i].manualOutflow);
@@ -599,12 +636,13 @@ export class OperationsDataComponent {
 
     this.startingEOMContent = 0.0;
     let temp: any = this.operationsService.getJson();
+    this.errors = this.operationsService.getErrorsJson();
 
     console.log('rkb getOperationData');
     //console.log(temp.length);
     console.log(temp);
 
-    if (temp.data) {
+    if ( (temp.data) && (!this.errors.fatalError) ) {
       this.operationMonthlyData = temp.data;
 
       this.startingEOMContent = parseInt(temp.initialAcreFeet.replace(',', ''));
@@ -622,6 +660,10 @@ export class OperationsDataComponent {
 
       this.getElevationGridData();
       this.setYearType();
+    }
+    else if (this.errors.fatalError) {
+      console.log(this.errors);
+      this.errorInputVisible = true;
     }
   }
 }
