@@ -6,3 +6,9 @@ tr {
     padding:3px;
     background-color: blueviolet;
 } */
+
+.p-field > * {
+    margin-top: 50px;
+    margin-bottom: 10px;
+    display: block;
+  }

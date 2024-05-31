@@ -48,11 +48,14 @@ export class OperationsService {
 
     this.myJson = this.setOperationalData(operations);
 
+    //console.log(this.myJson);
+
     return operations;
   }
 
   getRowArray(row: any): string {
     let rowData:any = [];
+    //let rowJson:any = {row:[]};
     let rowJson:any = [];
     
     rowData =  row.split(" ");
@@ -70,6 +73,7 @@ export class OperationsService {
     var mySplit1              =  rowData[1].split("-");
     rowJson["days"]           = parseInt(mySplit1[1]) - parseInt(mySplit1[0]) + 1;
 
+    //console.log(rowJson);
     return rowJson;
   }
 
@@ -120,7 +124,7 @@ export class OperationsService {
     try {
       if (operations.length < 35) {
         this.myLog.log('ERROR', '-------- Did not copy all the data - Need 35 rows, but only got [' + operations.length + '] rows-------- ');
-        let mystring = '"Data only contains ' + operations.length + ' there should be 35 lines"';
+        let mystring = '"Data only contains ' + operations.length + ' lines, there should be 35 lines"';
         const myError = new InputError(0, mystring, true);
         fatalError = true;
         this.errorJson.errors.push(myError.getJson());

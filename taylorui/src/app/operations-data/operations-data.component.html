@@ -12,12 +12,16 @@
 
     <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" [minFractionDigits]="2"></p-inputNumber> -->
     <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" ></p-inputNumber> -->
-
-    <p-button id="load"     icon="pi pi-external-link"                                                                  [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showDataDialog()"></p-button>
-    <p-button id="chart"    icon="pi pi-chart-line"                        [disabled]="proposedOperations.length === 0" [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showElevationDialog()"></p-button>
-    <p-button id="calendar" icon="pi-calendar"                                                                          [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showCalendarDialog()"></p-button>
-    <p-button id="clear"    icon="pi pi-times" [style]="{'float':'right'}" [disabled]="proposedOperations.length === 0" [text]="true" [rounded]="true" severity="danger " [outlined]="true" (click)="showClearOperationalDataDialog()"></p-button>
-
+    
+    <p-button id="file"         label="File Import"      icon="pi pi-file-o"                                                                                    [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showImportFileDialog()"></p-button>
+    
+    <p-button id="manual-load"  label="Load Data"        icon="pi pi-external-link"                                                                             [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showDataDialog()"></p-button>
+    <p-button id="chart"        label="Elevation Graph"  icon="pi pi-chart-line"                                 [disabled]="operationMonthlyData.length === 0"   [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showElevationDialog()"></p-button>
+    <p-button id="calendar"     label="Calendar"         icon="pi pi-calendar"                                                                                  [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showCalendarDialog()"></p-button>
+    <p-button id="save"         label="Save"             icon="pi pi-save"                                                                                      [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showSaveDataDialog()"></p-button>
+    <p-button id="clear"        label="Clear Data"       icon="pi pi-times-circle"   [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0"   [text]="true" [rounded]="true" severity="danger " [outlined]="true" (click)="showClearOperationalDataDialog()"></p-button>
+    <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"        [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0"   [text]="true" [rounded]="true" severity="danger " [outlined]="true" (click)="clearManualInputs()"></p-button>
+    
 
 <!-- <span class="p-input-icon-left"> 
     <i class="pi pi-external-link"  (click)="showDataDialog()"></i> 
@@ -41,32 +45,32 @@
                 <th width="5px" class="text-center">Days</th>
                 <th width="5px" class="text-center">Manual<br>Inflow<br>(AF)</th>
                 <th width="5px" class="text-center">Predicted<br>Inflow<br>(AF)</th>
-                <th width="5px" class="text-center">Inflow<br>(CF)</th>
+                <th width="5px" class="text-center">Inflow<br>(CFS)</th>
                 <th width="5px" class="text-center">Manual<br>Outflow<br>(AF)</th>
                 <th width="5px" class="text-center">Outflow</th>
-                <th width="5px" class="text-center">Outflow<br>(CF)</th>
+                <th width="5px" class="text-center">Outflow<br>(CFS)</th>
                 <th width="5px" class="text-center">Average<br>Inflow<br>(CFS)</th>
                 <th width="5px" class="text-center">Average<br>Outflow<br>(CFS)</th>
                 <th width="5px" class="text-center">EOM<br>Content</th>
                 <th width="5px" class="text-center">EOM<br>Elevation</th>
-                <th width="5px" class="text-center">Manual<br>Outflow<br>(CFS)</th>
+                <!--<th width="5px" class="text-center">Manual<br>Outflow<br>(CFS)</th> -->
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-myData>
             <tr padding="3px">
                 <td width="15px" class="text-center" pFrozenColumn><label class="p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</label></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (keyup)="handleKeyUpEvent($event, 'manualInflow_', myData.index)"                                  [readonly]="true" inputId="days_{{myData.index}}"             mode="decimal" [size]="2" [min]="1" [max]="16"                             [(ngModel)]="myData.days"             placeholder="Days"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"               inputId="manualInflow_{{myData.index}}"         mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualInflow"     placeholder="Inflow (AF)" [inputStyle]="{background: myData.manualInflowColor}"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (keyup)="handleKeyUpEvent($event, 'manualInflow_',myData.index)"                                  [readonly]="true" inputId="days_{{myData.index}}"             mode="decimal" [size]="2" [min]="1" [max]="16"                             [(ngModel)]="myData.days"             placeholder="Days"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"               inputId="manualInflow_{{myData.index}}"         mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualInflow"     placeholder="Inflow (AF)" [inputStyle]="{background:myData.manualInflowColor}"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="inflow_{{myData.index}}"           mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.inflow"           placeholder="Predicted Inflow (AC)"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="inflowCF_{{myData.index}}"         mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.inflowCF"         placeholder="Inflow CF"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Outflow (AF)" [inputStyle]="{background: myData.manualOutFlowColor}"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Outflow (AF)" [inputStyle]="{background:myData.manualOutFlowColor}"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="outflow_{{myData.index}}"          mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflow"          placeholder="Outflow (AF)"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="outflowCF_{{myData.index}}"        mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflowCF"        placeholder="Outflow (CF)"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgInflowCFS_{{myData.index}}"     mode="decimal" [size]="7" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgInflowCFS"     placeholder="Avg Inflow CS"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgOutflowCFS_{{myData.index}}"    mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgOutflowCFS"    placeholder="Avg Outflow CS"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId=".eomContent_{{myData.index}}"      mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="2" [(ngModel)]="myData.eomContent"       placeholder="EOM Content"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="eomElevation_{{myData.index}}"     mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.eomElevation"     placeholder="EOM Elevation" [inputStyle]="{background: myData.elevationWarning}"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="ManualOutflowCFS_{{myData.index}}" mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflowCFS" placeholder="acreFt-input"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="eomElevation_{{myData.index}}"     mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.eomElevation"     placeholder="EOM Elevation" [inputStyle]="{background:myData.elevationWarning}"> </p-inputNumber></td>
+                <!-- <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="ManualOutflowCFS_{{myData.row.index}}" mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflowCFS" placeholder="acreFt-input"> </p-inputNumber></td> -->
                 
             </tr>
         </ng-template>
@@ -120,14 +124,11 @@
             <ng-template pTemplate="header">
                 <tr padding="3px">
                     <th width="15px" class="text-center">Line</th>
-                    <th width="785px" class="text-center">Error</th>
+                    <th width="785px" class="text-left">Error</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-myError>
                 <tr padding="3px">
-                    <!-- <td width="15px"   class="text-left">{{myError.row}}</td>
-                    <td width="785px"  class="text-left">{{myError.error}}</td>
-                     -->
                     <td>{{myError.row}}</td>
                     <td>{{myError.error}}</td>
                 </tr>
@@ -137,6 +138,53 @@
         <p-button  [style]="{'float':'right'}" (click)="closeErrorInputDialog()" label="Close"></p-button>
 
     </p-dialog>
+
+    <p-dialog header="Save Data" [(visible)]="saveDialogVisible" [style]="{width: '23vw', height: '17vw'}">
+
+        <p-divider></p-divider>
+
+        <div class="p-field">
+            <span class="p-float-label">
+                <input pInputText id="filename" [style]="{width: '20vw'}" (keyup)="checkNameCharacter(fileName)"  [(ngModel)]="fileName" />
+                <label for="filename">File Name</label>
+            </span>
+        </div>
+        <span>
+            <small id="filename-help">
+                Only Alphnumeric chnaraters and a - (dash) are valid.  Dashes can not be the first or last character of the name.
+            </small>
+        </span>
+
+        <p-divider></p-divider>
+        
+        <p-button  [style]="{'float':'left'}" (click)="saveOperationalData()" label="Save Data"></p-button>
+        <p-button  [style]="{'float':'right'}" (click)="saveDialogVisible = !saveDialogVisible" label="Cancel"></p-button>
+
+    </p-dialog>
+    <p-dialog header="Import Saved Report" [(visible)]="importFileDialogVisible" [style]="{width: '23vw', height: '17vw'}">
+
+        <!-- <div pDraggable dragHandle=".p-panel-header"  (onDragStart)="dragStart($event)"  (onDragEnd)="dragEnd($event)" (onDrop)="fileDrop()"  [style]="{width: '20vw', height: '10vw'}">
+            <p-panel header="Drop Saved Reort">
+                <div  [style]="{width: '20vw', height: '5vw'}">
+                    Drop Saved Report
+                </div>
+               
+            </p-panel>
+        </div> -->
+
+        <p-fileUpload 
+        mode="basic" 
+        chooseLabel="Upload Saved Report" 
+        chooseIcon="pi pi-upload"
+        name="demo[]" 
+        url="https://www.primefaces.org/cdn/api/upload.php" 
+        accept="text/*" 
+        [auto]="true" 
+        [maxFileSize]="100000"
+        (onUpload)="readOperationalData($event)" />
+    </p-dialog>
+
+    
 
 </p-panel>  
 

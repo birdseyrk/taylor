@@ -16,6 +16,8 @@ import { ChipModule } from 'primeng/chip';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
+import { DragDropModule } from 'primeng/dragdrop';
+import { FileUploadModule } from 'primeng/fileupload';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -64,6 +66,8 @@ import { OperationsService } from './operations.service';
     ConfirmPopupModule,
     DialogModule,
     DividerModule,
+    DragDropModule,
+    FileUploadModule,
     FloatLabelModule,
     InputNumberModule,
     InputTextareaModule,

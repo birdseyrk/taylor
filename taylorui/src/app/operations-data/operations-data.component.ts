@@ -1,11 +1,5 @@
 import { Inject, Injectable, Component } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpParams,
-  HttpEventType,
-} from '@angular/common/http';
 
 import { interval, Subscription, take, Subject, throwError } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
@@ -16,6 +10,7 @@ import { ElevationService } from '../elevation.service';
 import { LoggingService } from '../logging.service';
 import { OperationsService } from '../operations.service';
 import * as constants from '../../constants';
+import { FileUploadEvent } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-operations-data',
@@ -41,7 +36,25 @@ export class OperationsDataComponent {
   eomContentLabel: string = '';
   yearTypeLabel: string = '';
   yearTypeBackground: string = '';
+  reportName: string = '';
+  reportDate:string = '';
+  reportYear:string = '';
+  reportDay:string = '';
+  reportMonth:string = '';
+  forcastDate:string    = '';
+  forcastPercent:string  = '';
+  forcastAcreFeet:string = '';
+  maxContent:string = '';
+  inflowSummary:string = '';
+  initialAcreFeet:string = '';
   errors: any = [];
+  fileName: string = "";
+  //dirName: string = "D:\\Taylor River\\2024-reports\\";
+  //dirName: string = "file:///D:/Taylor River/2024-reports/";
+  dirName: string = "";
+  fileNamePattern = /^[0-9a-zA-Z-]+$/;
+
+  maxFileSize: number = 1000000000;
 
   operations: string[] = [];
   proposedOperations: any = '';
@@ -49,11 +62,13 @@ export class OperationsDataComponent {
   elevationGridData: any = '';
   elevationGridOptions: any = '';
 
-  calendarVisible = false;
+  calendarVisible           = false;
   clearOperationDataVisible = false;
-  dataDialogVisible = false;
-  elevationVisible = false;
-  errorInputVisible = false;
+  dataDialogVisible         = false;
+  elevationVisible          = false;
+  errorInputVisible         = false;
+  saveDialogVisible         = false;
+  importFileDialogVisible   = false;
 
   yearTypeInflow = 0.0;
   recaculateYearType = 0.0;
@@ -66,6 +81,27 @@ export class OperationsDataComponent {
     );
 
     this.clearOperationDataVisible = !this.clearOperationDataVisible;
+  }
+
+  checkNameCharacter(event:any) {
+
+    if ( (this.fileName.length > 0) && ( (this.fileName[0] === "-") ||  (!this.fileName[(this.fileName.length-1)].match(this.fileNamePattern)) ) ) {
+      this.fileName = this.fileName.substring(0, (this.fileName.length-1));
+    }
+
+    if ( ( this.fileName[(this.fileName.length-1)] === "-" ) && ( this.fileName[(this.fileName.length-2)] === "-") ) {
+      this.fileName = this.fileName.substring(0, (this.fileName.length-1));
+    }
+  }
+
+  showSaveDataDialog() {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.showSaveDataDialog -------- ' +
+        this.saveDialogVisible
+    );
+
+    this.saveDialogVisible = !this.saveDialogVisible;
   }
 
   closeClearOperationalDataDialog() {
@@ -95,21 +131,43 @@ export class OperationsDataComponent {
     this.dataDialogVisible = !this.dataDialogVisible;
   }
 
+  showImportFileDialog() {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.showImportFileDialog --------'
+    );
+
+    this.importFileDialogVisible = !this.importFileDialogVisible;
+  }
+
   clearOperationalData() {
     this.myLog.log(
       'INFO',
       '-------- OperationsDataComponent.clearOperationalData --------'
     );
 
-    this.startingEOMContent = 0.0;
-    this.yearTypeInflow = 0.0;
-    this.eomContentLabel = '';
-    this.elevationGridData = {};
+    this.startingEOMContent   = 0.0;
+    this.yearTypeInflow       = 0.0;
+    this.eomContentLabel      = '';
+    this.elevationGridData    = {};
     this.elevationGridOptions = '';
-    this.eomContentLabel = '';
-    this.yearTypeLabel = '';
-    this.yearTypeBackground = '';
-    this.proposedOperations = '';
+    this.yearTypeLabel        = '';
+    this.yearTypeBackground   = '';
+    this.proposedOperations   = '';
+         
+    this.reportName           = '';
+    this.reportYear           = '';
+    this.reportDay            = '';
+    this.reportMonth          = '';
+    
+    this.forcastDate          = '';
+    this.forcastPercent       = '';
+    this.forcastAcreFeet      = '';
+    
+    this.maxContent           = '';
+    this.inflowSummary        = '';
+    this.initialAcreFeet      = '';
+
     this.operationsService.clearOperationalData();
     this.operationMonthlyData = [];
     this.clearOperationDataVisible = false;
@@ -167,6 +225,20 @@ export class OperationsDataComponent {
     }
   };
 
+  // //fileDrop = (event : DragEvent) => {
+  // fileDrop = () => {
+  //   console.log('--- file drop ---');
+  //   //console.log(event);
+  // }
+  // dragStart = (event: DragEvent) => {
+  //   console.log('--- dragStart ---');
+  //   //console.log(event);
+  // }
+  // dragEnd = (event: DragEvent) => {
+  //   console.log('--- dragEnd ---');
+  //   //console.log(event);
+  // }
+
   setYearType() {
     this.myLog.log(
       'INFO',
@@ -185,6 +257,179 @@ export class OperationsDataComponent {
       this.yearTypeLabel = constants.WET_YEAR_LABEL;
       this.yearTypeBackground = constants.WET_YEAR_BACKGROUND;
     }
+  }
+
+  saveOperationalJson (element: any): any {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.saveOperationalJson --------'
+    );
+    
+    let myElementJson: any = {};
+
+    Object.keys( element )
+
+
+    for ( let i = 0; i < (Object.keys( element )).length; i++ ) {
+      
+      myElementJson[Object.keys( element )[i]] = element[Object.keys( element )[i]];
+    }
+    //console.log(myElementJson);
+    return myElementJson;
+  }
+
+  readOperationalData(event: FileUploadEvent) {
+    let myReadJson:any = {};
+
+    let reader = new FileReader;
+    let fileLines:any = "";
+
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.readOperationalData --------'
+    );
+
+    reader.readAsText(event.files[0]);
+
+    reader.onload = () => {
+
+      fileLines = reader.result;
+
+      this.clearOperationalData();
+      
+      if (fileLines.length > 0 ) {
+        myReadJson = JSON.parse(fileLines);
+  
+         this.operationMonthlyData = myReadJson.data;
+         
+         this.startingEOMContent   = myReadJson.startingEOMContent;
+         this.yearTypeInflow       = myReadJson.yearTypeInflow;
+         this.eomContentLabel      = myReadJson.eomContentLabel;
+         this.elevationGridData    = myReadJson.elevationGridData;
+         this.elevationGridOptions = myReadJson.elevationGridOptions;
+         this.yearTypeLabel        = myReadJson.yearTypeLabel;
+         this.yearTypeBackground   = myReadJson.yearTypeBackground;
+         this.proposedOperations   = myReadJson.proposedOperations;
+         
+         this.reportName   = myReadJson.reportName;
+         this.reportYear   = myReadJson.reportYear;
+         this.reportDay   = myReadJson.reportName;
+         this.reportMonth   = myReadJson.reportName;
+         
+         this.forcastDate   = myReadJson.forcastDate;
+         this.forcastPercent   = myReadJson.forcastPercent;
+         this.forcastAcreFeet   = myReadJson.forcastAcreFeet;
+         
+         this.maxContent   = myReadJson.maxContent;
+         this.inflowSummary   = myReadJson.inflowSummary;
+         this.initialAcreFeet   = myReadJson.initialAcreFeet;
+  
+        this.importFileDialogVisible = !this.importFileDialogVisible
+
+      }
+    };
+  }
+
+  saveOperationalData() {
+
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.saveOperationalData -------- '
+    );
+    
+    let myJson: any = { data:[] };
+
+    if ( this.fileName[this.fileName.length-1] === "-" ) {
+      this.fileName = this.fileName.substring(0, (this.fileName.length-1));
+    }
+
+    this.fileName =  this.dirName + this.fileName + ".txt";
+
+    this.operationMonthlyData.forEach( (element: any) => myJson.data.push(this.saveOperationalJson( element ) ));
+ 
+    myJson.startingEOMContent   = this.startingEOMContent;
+    myJson.yearTypeInflow       = this.yearTypeInflow;
+    myJson.eomContentLabel      = this.eomContentLabel;
+    myJson.elevationGridData    = this.elevationGridData;
+    myJson.elevationGridOptions = this.elevationGridOptions;
+    myJson.yearTypeLabel        = this.yearTypeLabel;
+    myJson.yearTypeBackground   = this.yearTypeBackground;
+    myJson.proposedOperations   = this.proposedOperations;
+
+    myJson.reportName           = this.reportName;
+    myJson.reportYear           = this.reportYear;
+    myJson.reportDay            = this.reportDay;
+    myJson.reportMonth          = this.reportMonth;
+    
+    myJson.forcastDate          = this.forcastDate;
+    myJson.forcastPercent       = this.forcastPercent;
+    myJson.forcastAcreFeet      = this.forcastAcreFeet;
+    
+    myJson.maxContent   = this.maxContent;
+    myJson.inflowSummary   = this.inflowSummary;
+    myJson.initialAcreFeet   = this.initialAcreFeet;
+
+    console.log(myJson);
+
+    //This is what needs to be saved 
+    let fileContent:string = JSON.stringify(myJson);
+
+    const file = new Blob([fileContent], { type: "test/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(file);
+    link.download = this.fileName;
+    link.click();
+    link.remove();
+
+    this.saveDialogVisible = !this.saveDialogVisible;
+  }
+
+  clearManualInputs() {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.clearManualInputs -------- '
+    );
+
+    let myEomContent = this.startingEOMContent;
+    let myInflow  = 0;
+    let myOutflow = 0;
+    let myIndex   = 0;
+    this.recaculateYearType = 0.0;
+
+    for (
+      let i = myIndex;
+      i < this.operationMonthlyData.length;
+      i++
+    ) {
+
+      this.operationMonthlyData[i].manualInflowColor = "";
+      this.operationMonthlyData[i].manualOutFlowColor = "";
+      this.operationMonthlyData[i].manualInflow = null;
+      this.operationMonthlyData[i].manualOutflow = null;
+      myInflow  =  this.operationMonthlyData[i].inflow;
+      myOutflow =  this.operationMonthlyData[i].outflow;
+
+      if (i === 0) {
+        myEomContent = this.startingEOMContent;
+      } else {
+        myEomContent = this.operationMonthlyData[i - 1].eomContent;
+      }
+
+      this.operationMonthlyData[i].eomContent =
+        myEomContent + myInflow - myOutflow;
+
+      this.operationMonthlyData[i].eomElevation =
+        this.elevationService.getElevation(
+          this.operationMonthlyData[i].eomContent
+        );
+
+      this.operationMonthlyData[i].elevationWarning = this.getElevationWarning(
+        this.operationMonthlyData[i].eomElevation
+      );
+    }
+
+    this.addToGridElevation();
+
   }
 
   addToGridElevation() {
@@ -324,6 +569,9 @@ export class OperationsDataComponent {
       this.operations = this.operationsService.getOperations(
         this.proposedOperations
       );
+
+      //console.log(this.operations);
+
     } else {
       this.myLog.log('INFO', 'proposedOperations data is empty');
     }
@@ -337,29 +585,29 @@ export class OperationsDataComponent {
   }
 
   getEOMContent(baseContent: number, inflow: number, outflow: number): number {
-    this.myLog.log(
-      'INFO',
-      '-------- OperationsDataComponent.getEOMContent -------- ' +
-        baseContent +
-        ' ' +
-        inflow +
-        ' ' +
-        outflow
-    );
+    // this.myLog.log(
+    //   'INFO',
+    //   '-------- OperationsDataComponent.getEOMContent -------- ' +
+    //     baseContent +
+    //     ' ' +
+    //     inflow +
+    //     ' ' +
+    //     outflow
+    // );
 
     return baseContent + inflow - outflow;
   }
 
   setEOMContent(baseContent: number, inflow: number, outflow: number): number {
-    this.myLog.log(
-      'INFO',
-      '-------- OperationsDataComponent.setEOMContent -------- ' +
-        baseContent +
-        ' ' +
-        inflow +
-        ' ' +
-        outflow
-    );
+    // this.myLog.log(
+    //   'INFO',
+    //   '-------- OperationsDataComponent.setEOMContent -------- ' +
+    //     baseContent +
+    //     ' ' +
+    //     inflow +
+    //     ' ' +
+    //     outflow
+    // );
 
     return this.getEOMContent(baseContent, inflow, outflow);
   }
@@ -390,11 +638,14 @@ export class OperationsDataComponent {
         inputData.manualInflow
     );
 
+    //console.log(inputData);
+    
     let myEomContent = 0;
     let myInflow = Number(inputData.manualInflow);
     let myOutflow = Number(inputData.manualOutflow);
     let myIndex = Number(inputData.index);
     this.recaculateYearType = 0.0;
+    //console.log( this.operationMonthlyData[Number(inputData.index)]);
     this.operationMonthlyData[Number(inputData.index)].manualInflowColor = "";
     this.operationMonthlyData[Number(inputData.index)].manualOutFlowColor = "";
 
@@ -505,6 +756,85 @@ export class OperationsDataComponent {
     }
   }
 
+  convertReportDate(reportDate:string): string {
+    let myDate = reportDate.replace(',','');
+    
+    let dateArray:any = myDate.split(" ");
+
+    let myMonth:string = dateArray[0];
+    
+    this.reportYear = dateArray[2];
+    this.reportDay =  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+    
+    switch (myMonth) {
+      case "January": {
+        myDate = dateArray[2] + "-01-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '01';
+        break;
+      }
+      case "February": {
+        myDate = dateArray[2] + "-02-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '02';
+        break;
+      }
+      case "March": {
+        myDate = dateArray[2] + "-03-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '03';
+        break;
+      }
+      case "April": {
+        myDate = dateArray[2] + "-04-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '04';
+        break;
+      }
+      case "May": {
+        myDate = dateArray[2] + "-05-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '05';
+        break;
+      }
+      case "June": {
+        myDate = dateArray[2] + "-06-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '06';
+        break;
+      }
+      case "July": {
+        myDate = dateArray[2] + "-07-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '07';
+        break;
+      }
+      case "August": {
+        myDate = dateArray[2] + "-08-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '08';
+        break;
+      }
+      case "September": {
+        myDate = dateArray[2] + "-09-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '09';
+        break;
+      }
+      case "October": {
+        myDate = dateArray[2] + "-10-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '10';
+        break;
+      }
+      case "November": {
+        myDate = dateArray[2] + "-11-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '11';
+        break;
+      }
+      case "December": {
+        myDate = dateArray[2] + "-12-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '12';
+        break;
+      }
+      default : {
+        myDate = dateArray[2] + "-" + dateArray[0] + "-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+      }
+    }
+
+    return myDate;
+  }
+
   getOperationData() {
     this.myLog.log(
       'INFO',
@@ -515,7 +845,30 @@ export class OperationsDataComponent {
     let temp: any = this.operationsService.getJson();
     this.errors = this.operationsService.getErrorsJson();
 
+    console.log(temp);
+
     if ( (temp.data) && (!this.errors.fatalError) ) {
+
+      this.reportName = temp.name.replace(' ','-');
+      this.reportDate = temp.date;
+      this.reportDate = this.convertReportDate(this.reportDate);
+
+      let forcast:any = temp.forcast.split(" ");
+      
+      this.forcastDate = forcast[0] + " " + forcast[1] + " " + this.reportYear;
+      this.forcastPercent = forcast[4].replace('%','');
+      this.forcastAcreFeet = forcast[5].replace('(','').replace(')','').replace(',','');
+
+      this.initialAcreFeet = temp.initialAcreFeet.replace(',','');
+
+      let maxContent:any = temp.maxContent.split(" ");
+      this.maxContent = maxContent[0].replace(',','');
+      
+      let inflowSummary:any = temp.inflowSummary.split(" ");
+      this.inflowSummary = inflowSummary[0].replace(',','');
+
+      this.fileName = this.reportDate + "-" + this.reportName.replace(' ','-');;
+
       this.operationMonthlyData = temp.data;
 
       this.startingEOMContent = parseInt(temp.initialAcreFeet.replace(',', ''));
