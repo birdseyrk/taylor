@@ -46,7 +46,8 @@ export const EOM_MAX_LEVEL            = 'rgb(240, 128, 128)';      //LightCoral
 export const GRID_LEGEND_LABEL        = 'rgb(73, 80, 87)';         //grey
 export const GRID_SCALES_LABEL        = 'rgb(235, 237, 239)';      //light grey
 
-export const CELL_CHANGE_COLOR        = 'rgb(147, 112, 219, .4)';  //MediumPurpl
+export const CELL_CHANGE_COLOR        = 'rgb(147, 112, 219, .4)';  //MediumPurple
+export const INFLOW_SUMMARY_COLOR     = 'rgb(152, 251, 152)';  //PaleGreen
 
 //Water Level Constants
 export const WARNING_ELEVATION_LEVEL   = 9327;

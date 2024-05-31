@@ -369,7 +369,7 @@ export class OperationsDataComponent {
     myJson.inflowSummary   = this.inflowSummary;
     myJson.initialAcreFeet   = this.initialAcreFeet;
 
-    console.log(myJson);
+    //console.log(myJson);
 
     //This is what needs to be saved 
     let fileContent:string = JSON.stringify(myJson);
@@ -845,7 +845,7 @@ export class OperationsDataComponent {
     let temp: any = this.operationsService.getJson();
     this.errors = this.operationsService.getErrorsJson();
 
-    console.log(temp);
+    //console.log(temp);
 
     if ( (temp.data) && (!this.errors.fatalError) ) {
 

@@ -73,6 +73,30 @@ export class OperationsService {
     var mySplit1              =  rowData[1].split("-");
     rowJson["days"]           = parseInt(mySplit1[1]) - parseInt(mySplit1[0]) + 1;
 
+  
+    switch (rowJson["month"]) {
+      case "Apr": {
+        rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+        break;
+      }
+      case "May": {
+        rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+        break;
+      }
+      case "Jun": {
+        rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+        break;
+      }
+      case "Jul": {
+        rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+        break;
+      }
+      default : {
+        rowJson["inflowSummaryColor"] = "";
+      }
+    }
+
+
     //console.log(rowJson);
     return rowJson;
   }
