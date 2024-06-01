@@ -42,6 +42,7 @@ import { OperationsDataComponent } from './operations-data/operations-data.compo
 import { ElevationService } from './elevation.service';
 import { LoggingService } from './logging.service';
 import { OperationsService } from './operations.service';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import { OperationsService } from './operations.service';
   ],
   providers: [
     provideClientHydration(),
+    provideHttpClient(withFetch()),
     ElevationService,
     LoggingService,
     OperationsService
