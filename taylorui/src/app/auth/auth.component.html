@@ -1,0 +1,56 @@
+<!-- <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <form>
+        <div class="form-group">
+          <label for="email">E-Mail</label>
+          <input type="email" id="email" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-control" />
+        </div>
+        <div>
+          <button class="btn btn-primary">Sign Up</button> |
+          <button class="btn btn-primary">Switch to Login</button>
+        </div>
+      </form>
+    </div>
+  </div> -->
+
+<p-panel header="Authentication" [style]="{width: '20vw', height: '40vw'}">
+  <span>
+    <div class="p-grid p-fluid">
+      <div class="p-field p-col-12 p-md-3">
+        <p-floatLabel>
+          <input
+            type="email"
+            pInputText
+            id="email"
+            (keyup)="handleKeyUpEvent($event)"
+            [(ngModel)]="useremail"
+          />
+          <label for="email">User Email</label>
+        </p-floatLabel>
+
+        <small id="email-help" *ngIf="!userValid"> email is not valid. </small>
+      </div>
+
+      <p-divider></p-divider>
+
+      <div class="p-field p-col-12 p-md-3">
+        <p-floatLabel>
+          <p-password
+            id="password"
+            [(ngModel)]="myPassword"
+            promptLabel="Choose a password"
+            weakLabel="Too simple"
+            mediumLabel="Average complexity"
+            strongLabel="Complex password"
+          />
+
+          <label for="password">Password</label>
+        </p-floatLabel>
+      </div>
+    </div>
+  </span>
+</p-panel>
