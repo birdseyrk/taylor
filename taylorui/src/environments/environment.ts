@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    firebase: {
+    firebaseConfig: {
         "apiKey": "AIzaSyCan-G2X_p7bADaHheE0-LzP5V8zgxxW2U",
         "authDomain": "taylorui.firebaseapp.com",
         "databaseURL": "YOUR_DATABASE_URL",
