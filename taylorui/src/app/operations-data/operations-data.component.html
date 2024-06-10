@@ -1,3 +1,4 @@
+
 <!-- <p-button label="Get Data"  (click)="getOperationData($event)"></p-button> -->
 <!-- <p-button (click)="showDataDialog()" icon="pi pi-external-link" label="Get Data"></p-button> -->
 
@@ -13,14 +14,14 @@
     <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" [minFractionDigits]="2"></p-inputNumber> -->
     <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" ></p-inputNumber> -->
     
-    <p-button id="file"         label="File Import"      icon="pi pi-file-o"                                                                                    [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showImportFileDialog()"></p-button>
+    <p-button id="file"         label="File Import"      icon="pi pi-file-o"                                                                                    [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showImportFileDialog()"></p-button>
     
-    <p-button id="manual-load"  label="Load Data"        icon="pi pi-external-link"                                                                             [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showDataDialog()"></p-button>
-    <p-button id="chart"        label="Elevation Graph"  icon="pi pi-chart-line"                                 [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showElevationDialog()"></p-button>
-    <p-button id="calendar"     label="Calendar"         icon="pi pi-calendar"                                                                                  [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showCalendarDialog()"></p-button>
-    <p-button id="save"         label="Save"             icon="pi pi-save"                                                                                      [text]="true" [rounded]="true" severity="info "   [outlined]="true" (click)="showSaveDataDialog()"></p-button>
-    <p-button id="clear"        label="Clear Data"       icon="pi pi-times-circle"   [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger " [outlined]="true" (click)="showClearOperationalDataDialog()"></p-button>
-    <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger " [outlined]="true" (click)="clearManualInputs()"></p-button>
+    <p-button id="manual-load"  label="Load Data"        icon="pi pi-external-link"                                                                             [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showDataDialog()"></p-button>
+    <p-button id="chart"        label="Elevation Graph"  icon="pi pi-chart-line"                                 [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showElevationDialog()"></p-button>
+    <p-button id="calendar"     label="Calendar"         icon="pi pi-calendar"                                                                                  [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showCalendarDialog()"></p-button>
+    <p-button id="save"         label="Save"             icon="pi pi-save"                                                                                      [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showSaveDataDialog()"></p-button>
+    <p-button id="clear"        label="Clear Data"       icon="pi pi-times-circle"   [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="showClearOperationalDataDialog()"></p-button>
+    <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualInputs()"></p-button>
     
 
 <!-- <span class="p-input-icon-left"> 

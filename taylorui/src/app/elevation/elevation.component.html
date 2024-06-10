@@ -1,26 +1,27 @@
 <div class="p-grid p-fluid">
-  <div class="p-field p-col-12 p-md-3">
-    <label for="acrefeet">Acre Feet</label>
-    <p-inputNumber  inputId="acrefeet" class="p-inputtext-sm" [(ngModel)]="acrefeet" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber>
-  </div>
-
-  <div class="p-field p-col-12 p-md-3">
-    <label for="elevation">Elevation</label>
-      <p-inputNumber inputId="elevation"  class="p-inputtext-sm" [(ngModel)]="elevation"  mode="decimal" [min]="0" [max]="9329"> </p-inputNumber>
-  </div>
-</div>
-
-<!-- <span class="p-input-icon-left">
-  <p-button label="Get Elevation"  (click)="getElevation($event)"></p-button>
-</span> -->
-
-<p-panel header="Elevations">
-  <p-header>
-    <!-- <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button> -->
-  </p-header>
-  <p-inputNumber placeholder="acreFt-input" class="p-inputtext-sm" [(ngModel)]="acrefeet" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber>
+    <div class="p-field p-col-12 p-md-3">
+      <label for="acrefeet">Acre Feet</label>
+      <p-inputNumber  inputId="acrefeet" class="p-inputtext-sm" [(ngModel)]="acrefeet" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber>
+    </div>
   
-  <p-button label="Get Elevation"  (click)="getElevation($event)"></p-button>
-  <!-- <p-footer>
-  </p-footer> -->
-</p-panel>
+    <div class="p-field p-col-12 p-md-3">
+      <label for="elevation">Elevation</label>
+        <p-inputNumber inputId="elevation"  class="p-inputtext-sm" [(ngModel)]="elevation"  mode="decimal" [min]="0" [max]="9329"> </p-inputNumber>
+    </div>
+  </div>
+  
+  <!-- <span class="p-input-icon-left">
+    <p-button label="Get Elevation"  (click)="getElevation($event)"></p-button>
+  </span> -->
+  
+  <p-panel header="Elevations">
+    <p-header>
+      <!-- <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button> -->
+    </p-header>
+    <p-inputNumber placeholder="acreFt-input" class="p-inputtext-sm" [(ngModel)]="acrefeet" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber>
+    
+    <p-button label="Get Elevation"  (click)="getElevation($event)"></p-button>
+    <!-- <p-footer>
+    </p-footer> -->
+  </p-panel>
+  

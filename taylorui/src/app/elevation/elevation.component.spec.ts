@@ -11,7 +11,7 @@ describe('ElevationComponent', () => {
       declarations: [ElevationComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(ElevationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -11,7 +11,7 @@ describe('OperationsDataComponent', () => {
       declarations: [OperationsDataComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(OperationsDataComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

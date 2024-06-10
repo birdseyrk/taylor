@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as elevation from '../../../assets/taylorelevationtable.json';
+import * as elevation from '../assets/taylorelevationtable.json';
 
 @Injectable({
   providedIn: 'root',
