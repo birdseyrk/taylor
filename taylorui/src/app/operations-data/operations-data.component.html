@@ -46,14 +46,14 @@
                 <th width="5px" class="text-center">Days</th>
                 <th width="5px" class="text-center">Manual<br>Inflow<br>(AF)</th>
                 <th width="5px" class="text-center">Predicted<br>Inflow<br>(AF)</th>
-                <th width="5px" class="text-center">Inflow<br>(CFS)</th>
+                <th width="5px" class="text-center">Inflow<br>(CF)</th>
                 <th width="5px" class="text-center">Manual<br>Outflow<br>(AF)</th>
-                <th width="5px" class="text-center">Outflow</th>
-                <th width="5px" class="text-center">Outflow<br>(CFS)</th>
+                <th width="5px" class="text-center">Outflow<br>(AF)</th>
+                <th width="5px" class="text-center">Outflow<br>(CF)</th>
                 <th width="5px" class="text-center">Average<br>Inflow<br>(CFS)</th>
                 <th width="5px" class="text-center">Average<br>Outflow<br>(CFS)</th>
-                <th width="5px" class="text-center">EOM<br>Content</th>
-                <th width="5px" class="text-center">EOM<br>Elevation</th>
+                <th width="5px" class="text-center">EOM<br>Content<br>(AF)</th>
+                <th width="5px" class="text-center">EOM<br>Elevation<br>(FT)</th>
                 <!--<th width="5px" class="text-center">Manual<br>Outflow<br>(CFS)</th> -->
             </tr>
         </ng-template>
@@ -67,11 +67,11 @@
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Outflow (AF)" [inputStyle]="{background:myData.manualOutFlowColor,'text-align': 'right'}"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="outflow_{{myData.index}}"          mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflow"          placeholder="Outflow (AF)"> </p-inputNumber></td>
                 <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="outflowCF_{{myData.index}}"        mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflowCF"        placeholder="Outflow (CF)"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgInflowCFS_{{myData.index}}"     mode="decimal" [size]="7" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgInflowCFS"     placeholder="Avg Inflow CS"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgOutflowCFS_{{myData.index}}"    mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgOutflowCFS"    placeholder="Avg Outflow CS"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId=".eomContent_{{myData.index}}"      mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="2" [(ngModel)]="myData.eomContent"       placeholder="EOM Content"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="eomElevation_{{myData.index}}"     mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.eomElevation"     placeholder="EOM Elevation" [inputStyle]="{background:myData.elevationWarning,'text-align': 'right'}"> </p-inputNumber></td>
-                <!-- <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="ManualOutflowCFS_{{myData.row.index}}" mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflowCFS" placeholder="acreFt-input"> </p-inputNumber></td> -->
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgInflowCFS_{{myData.index}}"     mode="decimal" [size]="7" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgInflowCFS"     placeholder="Avg Inflow CFS"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgOutflowCFS_{{myData.index}}"    mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgOutflowCFS"    placeholder="Avg Outflow CFS"> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId=".eomContent_{{myData.index}}"      mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="2" [(ngModel)]="myData.eomContent"       placeholder="EOM Content (AF) "> </p-inputNumber></td>
+                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="eomElevation_{{myData.index}}"     mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.eomElevation"     placeholder="EOM Elevation (FT)" [inputStyle]="{background:myData.elevationWarning,'text-align': 'right'}"> </p-inputNumber></td>
+                <!-- <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="ManualOutflowCF_{{myData.row.index}}" mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflowCF" placeholder="acreFt-input"> </p-inputNumber></td> -->
                 
             </tr>
         </ng-template>
