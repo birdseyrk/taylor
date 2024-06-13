@@ -119,7 +119,7 @@ export class OperationsService {
   
       const newArray = operations.data.map((element: any,  array: any[]) => {
 
-        console.log(element["inflow"] + ' * ' + constants.ACTOSQFT + ' = ' + element["inflow"]    * constants.ACTOSQFT);
+        //console.log(element["inflow"] + ' * ' + constants.ACTOSQFT + ' = ' + element["inflow"]    * constants.ACTOSQFT);
   
         element["inflowCF"]       =  element["inflow"]    * constants.ACTOSQFT;
         element["outflowCF"]      =  element["outflow"]   * constants.ACTOSQFT;

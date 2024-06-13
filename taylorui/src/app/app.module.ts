@@ -12,9 +12,11 @@ import { OperationsDataComponent } from './operations-data/operations-data.compo
 //NG Prime Widgets
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
+import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { ChartModule } from 'primeng/chart';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ChipModule } from 'primeng/chip';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
@@ -22,16 +24,19 @@ import { DividerModule } from 'primeng/divider';
 import { DragDropModule } from 'primeng/dragdrop';
 import { FileUploadModule } from 'primeng/fileupload';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { FormsModule } from '@angular/forms';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
+import { MenubarModule } from 'primeng/menubar';
 import { MenuModule } from 'primeng/menu';
+import { PanelMenuModule } from 'primeng/panelmenu';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
+import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 
 //Services
@@ -39,13 +44,15 @@ import { ElevationService } from './elevation.service';
 import { LoggingService } from './logging.service';
 import { OperationsService } from './operations.service';
 import { environment } from '../environments/environment';
+import { AnalyticsComponent } from './analytics/analytics.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ElevationComponent,
     //DataReaderComponent,
-    OperationsDataComponent
+    OperationsDataComponent,
+    AnalyticsComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -55,9 +62,11 @@ import { environment } from '../environments/environment';
     // NG Prime Widgets
     AvatarModule,
     AvatarGroupModule,
+    BadgeModule,
     ButtonModule,
     CalendarModule,
     ChartModule,
+    CheckboxModule,
     ChipModule,
     ConfirmPopupModule,
     DialogModule,
@@ -68,13 +77,16 @@ import { environment } from '../environments/environment';
     InputNumberModule,
     InputTextareaModule,
     InputTextModule,
+    MenubarModule,
     MenuModule,
+    PanelMenuModule,
     PanelModule,
     PasswordModule,
     //PrimeNGConfig,
     ScrollPanelModule,
     TableModule,
     TabViewModule,
+    TagModule,
     ToastModule
   ],
   providers: [

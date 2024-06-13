@@ -5,12 +5,16 @@
       <p-tabPanel header="Operations">
         <app-operations-data></app-operations-data>
       </p-tabPanel>
-      <p-tabPanel header="Page 11">
+      <!-- <p-tabPanel header="Page 11">
         <app-operations-data></app-operations-data>
+      </p-tabPanel> -->
+      <p-tabPanel header="Analytics">
+        <app-analytics></app-analytics>
       </p-tabPanel>
       <p-tabPanel header="Elevation">
         <app-elevation></app-elevation>
       </p-tabPanel>
+      <!-- <p-panelMenu [model]="items" [style]="{'width':'300px'}"></p-panelMenu> -->
       <!-- <p-tabPanel header="Data Reader">
         <app-data-reader></app-data-reader>
       </p-tabPanel> -->
@@ -18,5 +22,10 @@
   </div>
 </main>
 
+<!-- <p-toast />
+<div class="card">
+<p-toast position="top-right" key="menu"></p-toast>
+<p-menubar [model]="items" />
+</div> -->
 
 <router-outlet />

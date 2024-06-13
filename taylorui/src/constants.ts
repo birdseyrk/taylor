@@ -62,9 +62,10 @@ export const DRY_YEAR_LABEL = " Dry Year";
 export const AVG_YEAR_LABEL = " Avg Year";
 export const WET_YEAR_LABEL = " Wet Year";
 
-export const DRY_YEAR_BACKGROUND = 'rgb(207, 159, 50)'; // Brownish #cf9f32
-export const AVG_YEAR_BACKGROUND = 'rgb(52, 214, 41)';  // green #34d629
-export const WET_YEAR_BACKGROUND = 'rgb(50, 121, 207)'; // blue #3279cf
+export const DRY_YEAR_BACKGROUND = 'rgb(207, 159, 50)';   // Brownish #cf9f32
+export const AVG_YEAR_BACKGROUND = 'rgb(52, 214, 41)';    // green #34d629
+//export const WET_YEAR_BACKGROUND = 'rgb(50, 121, 207)'; // blue #3279cf
+export const WET_YEAR_BACKGROUND = 'rgb(0, 191, 255)';    // DeepSkyBlue	#00BFFF	
 
 //conversions
 export const ACTOSQFT  = 43560.0;

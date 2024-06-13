@@ -11,6 +11,8 @@ import { LoggingService } from '../logging.service';
 import { OperationsService } from '../operations.service';
 import * as constants from '../../constants';
 import { FileUploadEvent } from 'primeng/fileupload';
+//import { saveAs } from 'file-saver';
+//import * as fileSaver from 'file-saver';
 
 @Component({
   selector: 'app-operations-data',
@@ -49,6 +51,7 @@ export class OperationsDataComponent {
   initialAcreFeet:string = '';
   errors: any = [];
   fileName: string = "";
+  reportId: string = "";
   //dirName: string = "D:\\Taylor River\\2024-reports\\";
   //dirName: string = "file:///D:/Taylor River/2024-reports/";
   dirName: string = "";
@@ -365,9 +368,10 @@ export class OperationsDataComponent {
     myJson.forcastPercent       = this.forcastPercent;
     myJson.forcastAcreFeet      = this.forcastAcreFeet;
     
-    myJson.maxContent   = this.maxContent;
-    myJson.inflowSummary   = this.inflowSummary;
-    myJson.initialAcreFeet   = this.initialAcreFeet;
+    myJson.maxContent           = this.maxContent;
+    myJson.inflowSummary        = this.inflowSummary;
+    myJson.initialAcreFeet      = this.initialAcreFeet;
+    myJson.reportId             = this.reportId;
 
     //console.log(myJson);
 
@@ -381,7 +385,15 @@ export class OperationsDataComponent {
     link.click();
     link.remove();
 
+    //fileSaver(file, this.fileName);
+
     this.saveDialogVisible = !this.saveDialogVisible;
+    this.showMessage('success', 'Success', 'File Saved in Downloads Folder', 3000);
+  }
+
+  showMessage(mySeverity:string, mySummary:string, myMessage:string, myLife:any) {
+    //severity: info success warn error
+      this.messageService.add({key: 'message', severity:mySeverity, summary: mySummary, detail: myMessage, life:myLife});
   }
 
   clearManualInputs() {
@@ -757,7 +769,7 @@ export class OperationsDataComponent {
   }
 
   convertReportDate(reportDate:string): string {
-    let myDate = reportDate.replace(',','');
+    let myDate = reportDate.replaceAll(',','');
     
     let dateArray:any = myDate.split(" ");
 
@@ -849,29 +861,40 @@ export class OperationsDataComponent {
 
     if ( (temp.data) && (!this.errors.fatalError) ) {
 
-      this.reportName = temp.name.replace(' ','-');
+      this.reportName = temp.name.replaceAll(' ','-');
       this.reportDate = temp.date;
       this.reportDate = this.convertReportDate(this.reportDate);
 
       let forcast:any = temp.forcast.split(" ");
       
+      console.log("forcast length " + forcast.length);
       this.forcastDate = forcast[0] + " " + forcast[1] + " " + this.reportYear;
-      this.forcastPercent = forcast[4].replace('%','');
-      this.forcastAcreFeet = forcast[5].replace('(','').replace(')','').replace(',','');
 
-      this.initialAcreFeet = temp.initialAcreFeet.replace(',','');
+      if (forcast.length === 7) {
+        this.forcastDate     = forcast[0] + " " + forcast[1] + " " + this.reportYear;
+        this.forcastPercent  = forcast[4].replaceAll('%','');
+        this.forcastAcreFeet = forcast[5].replaceAll('(','').replaceAll(')','').replaceAll(',','');
+
+      } else {
+        this.forcastDate     = forcast[0] + " " + this.reportYear;
+        this.forcastPercent  = forcast[3].replaceAll('%','');
+        this.forcastAcreFeet = forcast[4].replaceAll('(','').replaceAll(')','').replaceAll(',','');
+      }
+
+      this.initialAcreFeet = temp.initialAcreFeet.replaceAll(',','');
 
       let maxContent:any = temp.maxContent.split(" ");
-      this.maxContent = maxContent[0].replace(',','');
+      this.maxContent = maxContent[0].replaceAll(',','');
       
       let inflowSummary:any = temp.inflowSummary.split(" ");
-      this.inflowSummary = inflowSummary[0].replace(',','');
+      this.inflowSummary = inflowSummary[0].replaceAll(',','');
 
-      this.fileName = this.reportDate + "-" + this.reportName.replace(' ','-');;
+      this.fileName = this.reportDate + "-" + this.reportName.replaceAll(' ','-');
+      this.reportId =  this.reportDate.replaceAll('-','');
 
       this.operationMonthlyData = temp.data;
 
-      this.startingEOMContent = parseInt(temp.initialAcreFeet.replace(',', ''));
+      this.startingEOMContent = parseInt(temp.initialAcreFeet.replaceAll(',', ''));
 
       this.eomContentLabel =
         'EOM Content ' +
