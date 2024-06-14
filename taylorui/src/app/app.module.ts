@@ -25,6 +25,8 @@ import { DragDropModule } from 'primeng/dragdrop';
 import { FileUploadModule } from 'primeng/fileupload';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
@@ -34,6 +36,8 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { SliderModule } from 'primeng/slider';
+import { SidebarModule } from 'primeng/sidebar';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 import { TagModule } from 'primeng/tag';
@@ -74,6 +78,8 @@ import { AnalyticsComponent } from './analytics/analytics.component';
     DragDropModule,
     FileUploadModule,
     FloatLabelModule,
+    IconFieldModule,
+    InputIconModule,
     InputNumberModule,
     InputTextareaModule,
     InputTextModule,
@@ -84,6 +90,8 @@ import { AnalyticsComponent } from './analytics/analytics.component';
     PasswordModule,
     //PrimeNGConfig,
     ScrollPanelModule,
+    SliderModule,
+    SidebarModule,
     TableModule,
     TabViewModule,
     TagModule,

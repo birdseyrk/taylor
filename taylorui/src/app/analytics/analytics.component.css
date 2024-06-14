@@ -1,7 +1,35 @@
+  /* :host ::ng-deep {
+    .p-checkbox .p-checkbox-box {
+        width: 1px;
+        height: 1px;
+    }
+    .p-checkbox .p-checkbox-box .p-checkbox-icon {
+        font-size: 8px;
+    }
+  } */
+  
+
+  /* .small-checkbox.p-checkbox {
+    .p-checkbox-box {
+        width: 1px;
+        height: 1px;
+    } */
+
   /* .p-checkbox .p-checkbox-box {
-    width: 14px;
-    height: 14px;
+    width: 1px;
+    height: 1px;
   }
   .p-checkbox .p-checkbox-box .p-checkbox-icon {
     font-size: 8px;
+  } */
+
+  /* .p-checkbox-box.p-highlight .p-element.p-icon-wrapper::before {
+    content: '\e90b';
+    font-family: 'primeicons' !important;
+    font-size: 18px;
+    color: white;
+  }
+
+  .p-checkbox-box.p-highlight .p-element.p-icon-wrapper svg {
+    display: none;
   } */

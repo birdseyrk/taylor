@@ -22,7 +22,8 @@
     <p-button id="save"         label="Save"             icon="pi pi-save"                                       [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showSaveDataDialog()"></p-button>
     <p-button id="clear"        label="Clear Data"       icon="pi pi-times-circle"   [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="showClearOperationalDataDialog()"></p-button>
     <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualInputs()"></p-button>
-    
+    <p-button id="help"         label="Help"             icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="operationsHelpSidebarVisible=true"></p-button>
+
 
 <!-- <span class="p-input-icon-left"> 
     <i class="pi pi-external-link"  (click)="showDataDialog()"></i> 
@@ -77,6 +78,42 @@
         </ng-template>
     </p-table>
 
+    <div class="card flex justify-content-center">
+        <p-sidebar [(visible)]="operationsHelpSidebarVisible">
+            <h3>Operations</h3>
+            <p>
+                ToDo Operations Help.
+            </p>
+        </p-sidebar>
+    </div>
+
+    <div class="card flex justify-content-center">
+        <p-sidebar [(visible)]="loadDataHelpSidebarVisible">
+            <h3>Load Data</h3>
+            <p>
+                ToDo Load Data Help.
+            </p>
+        </p-sidebar>
+    </div>
+
+    <div class="card flex justify-content-center">
+        <p-sidebar [(visible)]="fileImportHelpSidebarVisible">
+            <h3>Import Saved Report</h3>
+            <p>
+                ToDo Import Saved Report Help.
+            </p>
+        </p-sidebar>
+    </div>
+
+    <div class="card flex justify-content-center">
+        <p-sidebar [(visible)]="saveDataHelpSidebarVisible">
+            <h3>Save Report</h3>
+            <p>
+                ToDo Save Report Help.
+            </p>
+        </p-sidebar>
+    </div>
+
     <p-dialog header="Operations Data" [(visible)]="dataDialogVisible" [style]="{width: '32vw'}" [modal]="false" [draggable]="false" [resizable]="false">
 
         <textarea rows="30" cols="75" pInputTextarea [(ngModel)]="proposedOperations"></textarea>
@@ -93,6 +130,8 @@
             label="Clear Proposed Operations"
             (click)="clearData($event)"
         ></p-button>
+        <p-button id="help"         label="Help"              icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="loadDataHelpSidebarVisible=true"></p-button>
+
 
     </p-dialog>
 
@@ -160,6 +199,8 @@
         
         <p-button  [style]="{'float':'left'}" (click)="saveOperationalData()" label="Save Data"></p-button>
         <p-button  [style]="{'float':'right'}" (click)="saveDialogVisible = !saveDialogVisible" label="Cancel"></p-button>
+        <p-button id="help"         label="Help"              icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="saveDataHelpSidebarVisible=true"></p-button>
+
 
     </p-dialog>
     <p-dialog header="Import Saved Report" [(visible)]="importFileDialogVisible" [style]="{width: '23vw', height: '17vw'}">
@@ -183,6 +224,8 @@
         [auto]="true" 
         [maxFileSize]="100000"
         (onUpload)="readOperationalData($event)" />
+        <p-button id="help"         label="Help"              icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="fileImportHelpSidebarVisible=true"></p-button>
+
     </p-dialog>
 
     

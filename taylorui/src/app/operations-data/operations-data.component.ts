@@ -72,6 +72,10 @@ export class OperationsDataComponent {
   errorInputVisible         = false;
   saveDialogVisible         = false;
   importFileDialogVisible   = false;
+  operationsHelpSidebarVisible  = false
+  loadDataHelpSidebarVisible = false
+  fileImportHelpSidebarVisible = false;
+  saveDataHelpSidebarVisible = false;
 
   yearTypeInflow = 0.0;
   recaculateYearType = 0.0;

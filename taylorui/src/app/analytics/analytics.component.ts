@@ -21,20 +21,50 @@ export class AnalyticsComponent {
   myCallback:any = null;
 
   fileDialogVisible = false;
+  clearfileDialogVisible = false;
+  analyticSidebarVisible = false;
+  fileImportSidebarVisible = false;
 
   masterChecked:boolean = false;
+
+  removeUploadedFileCallback = "removeUploadedFileCallback";
 
   constructor(private config: PrimeNGConfig, private messageService: MessageService) {}
 
   showFileDialog() {
-    console.log('--- showFileDialog ---');
+    console.log('--- AnalyticsComponent.showFileDialog ---');
 
     this.fileDialogVisible = !this.fileDialogVisible;
 
   }
+  
+  showClearReportDataDialog() {
+    console.log('--- AnalyticsComponent.showClearReportDataDialog ---');
+
+    this.clearfileDialogVisible = !this.clearfileDialogVisible;
+
+  }
+
+  closeClearReportDataDialog() {
+    console.log('--- AnalyticsComponent.clearfileDialogVisible ---');
+
+    this.clearfileDialogVisible = false;
+  }
+
+  clearReportData() {
+    console.log('--- AnalyticsComponent.clearReportData ---');
+
+    this.reports =[];
+    this.fileLines = [];
+    this.totalSize = 0
+    this.totalSizePercent = 0;
+    this.closeClearReportDataDialog();
+    this.messageService.add({ severity: 'success', summary: 'Reports Removed', detail: 'The loaded reports have been removed', life: 3000 });
+
+  }
 
   masterCheckChanged() {
-    console.log('--- showFileDialog --- ' + this.masterChecked);
+    console.log('--- AnalyticsComponent.masterCheckChanged --- ' + this.masterChecked);
     
 
     //This has to be put in another method
@@ -46,7 +76,7 @@ export class AnalyticsComponent {
   }
 
   choose(event:any, callback:any) {
-    console.log('choose');
+    console.log('--- AnalyticsComponent.choose ---');
     console.log(callback);
     this.myCallback= callback ;
 
@@ -54,21 +84,21 @@ export class AnalyticsComponent {
   }
 
   onRemoveTemplatingFile(event:any, file:any, removeFileCallback:any, index:any) {
-    console.log('onRemoveTemplatingFile index ' + index);
+    console.log('--- AnalyticsComponent.onRemoveTemplatingFile index ' + index + ' ---');
       removeFileCallback(event, index);
       this.totalSize -= parseInt(this.formatSize(file.size));
       this.totalSizePercent = this.totalSize / 10;
   }
 
   onClearTemplatingUpload(clear:any) {
-    console.log('onClearTemplatingUpload ');
+    console.log('--- AnalyticsComponent.onClearTemplatingUpload ---');
       clear();
       this.totalSize = 0;
       this.totalSizePercent = 0;
   }
 
   onTemplatedUpload(event:any) {
-    console.log('onTemplatedUpload ');
+    console.log('--- AnalyticsComponent.onTemplatedUpload ---');
 
     console.log(event.files);
 
@@ -84,7 +114,7 @@ export class AnalyticsComponent {
   }
 
   onSelectedFiles(event:any) {
-    console.log('onSelectedFiles');
+    console.log('--- AnalyticsComponent.onSelectedFiles ---');
       // this.files = event.currentFiles;
       // console.log(this.files.length);
       event.currentFiles.forEach((file:any) => {
@@ -98,7 +128,7 @@ export class AnalyticsComponent {
   }
 
   readOperationalData(myFile:any) {
-    console.log('readOperationalData ');
+    console.log('--- AnalyticsComponent.readOperationalData ---');
     console.log(myFile);
 
     let myReadJson:any = {};
@@ -126,9 +156,8 @@ export class AnalyticsComponent {
     };
   }
 
-
   uploadEvent(callback:any) {
-    console.log('uploadEvent');
+    console.log('--- AnalyticsComponent.uploadEvent ---');
     console.log(callback);
       callback();
   }
@@ -146,29 +175,6 @@ export class AnalyticsComponent {
       const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
 
       return `${formattedSize} ${sizes[i]}`;
-  }
-
-  
-  xreadOperationalData(event: FileUploadEvent) {
-    console.log('readOperationalData');
-    console.log(event);
-    let myReadJson:any = {};
-
-    let reader = new FileReader;
-    let fileLines:any = "";
-
-    reader.readAsText(event.files[0]);
-
-    reader.onload = () => {
-      console.log('reader.onload');
-
-      fileLines = reader.result;
-      
-      if (fileLines.length > 0 ) {
-        myReadJson = JSON.parse(fileLines);
-        console.log(myReadJson);
-      }
-    };
   }
 
 }
