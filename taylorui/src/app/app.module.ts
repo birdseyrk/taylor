@@ -35,6 +35,7 @@ import { MenuModule } from 'primeng/menu';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SliderModule } from 'primeng/slider';
 import { SidebarModule } from 'primeng/sidebar';
@@ -88,6 +89,7 @@ import { AnalyticsComponent } from './analytics/analytics.component';
     PanelMenuModule,
     PanelModule,
     PasswordModule,
+    RadioButtonModule,
     //PrimeNGConfig,
     ScrollPanelModule,
     SliderModule,

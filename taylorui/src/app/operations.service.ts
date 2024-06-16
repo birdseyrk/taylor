@@ -62,10 +62,12 @@ export class OperationsService {
   
       rowJson["month"]        = rowData[0];
       rowJson["dateRange"]    = rowData[1];
-      rowJson["inflow"]       =  Number(rowData[2].replace(/,/g, '')); 
+      rowJson["inflow"]           =  Number(rowData[2].replace(/,/g, '')); 
+      rowJson["OriginalInflow"]       =  Number(rowData[2].replace(/,/g, '')); 
       
       rowJson["avgInflow"]    =  Number(rowData[3].replace(/,/g, ''));
-      rowJson["outflow"]      =  Number(rowData[4].replace(/,/g, ''));
+      rowJson["outflow"]          =  Number(rowData[4].replace(/,/g, ''));
+      rowJson["originalOutflow"]  =  Number(rowData[4].replace(/,/g, ''));
       rowJson["avgOutflow"]   =  Number(rowData[5].replace(/,/g, ''));
       rowJson["eomContent"]   =  Number(rowData[6].replace(/,/g, ''));
       rowJson["eomElevation"] =  Number(rowData[7].replace(/,/g, ''));

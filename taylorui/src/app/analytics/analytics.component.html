@@ -10,7 +10,7 @@
     
     <p-table [scrollable]="true" scrollHeight="800px" [value]="reports" [tableStyle]="{ 'min-width': '60rem' }" [autoLayout]="true">
         <ng-template pTemplate="header">
-            <tr padding="3px">
+            <tr padding="1px">
                 <th width="5px" class="text-center"><p-checkbox  (onChange)="masterCheckChanged()"   [(ngModel)]="masterChecked" [binary]="true"  inputId="binary" /></th>
                 <th width="5px" class="text-center">Year</th>
                 <th width="5px" class="text-center">Month</th>
@@ -24,7 +24,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-myData>  
-            <tr padding="3px">
+            <tr padding="1px">
                 
                 <th width="5px" class="text-center" ><p-checkbox  (onChange)="myData.checked = !myData.checked" [(ngModel)]="myData.checked" [binary]="true"  inputId="binary" /></th>
                 <td class="text-center">{{myData.reportYear}}</td>

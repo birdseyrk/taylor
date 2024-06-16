@@ -34,6 +34,7 @@ export class OperationsDataComponent {
   myDate: Date = new Date();
   operationsData: any;
   operationMonthlyData: any = [];
+  editMonthlyData: any = [];
   startingEOMContent: number = 0.0;
   eomContentLabel: string = '';
   yearTypeLabel: string = '';
@@ -57,6 +58,9 @@ export class OperationsDataComponent {
   dirName: string = "";
   fileNamePattern = /^[0-9a-zA-Z-]+$/;
 
+  outflowPercetage:number = 0;
+  outflowDirection:string = "Increase";
+
   maxFileSize: number = 1000000000;
 
   operations: string[] = [];
@@ -65,13 +69,17 @@ export class OperationsDataComponent {
   elevationGridData: any = '';
   elevationGridOptions: any = '';
 
+  editChecked:boolean = false;
+
   calendarVisible           = false;
   clearOperationDataVisible = false;
   dataDialogVisible         = false;
   elevationVisible          = false;
   errorInputVisible         = false;
+  editDialogVisible         = false;
   saveDialogVisible         = false;
   importFileDialogVisible   = false;
+  editHelpSidebarVisible    = false;
   operationsHelpSidebarVisible  = false
   loadDataHelpSidebarVisible = false
   fileImportHelpSidebarVisible = false;
@@ -79,6 +87,74 @@ export class OperationsDataComponent {
 
   yearTypeInflow = 0.0;
   recaculateYearType = 0.0;
+
+  showEditDialog() {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.showEditDialog -------- ' +
+        this.editDialogVisible
+    );
+
+    let myData:string = JSON.stringify(this.operationMonthlyData);
+
+    //const myData  = Object.assign([], this.operationMonthlyData);  //clone
+    this.editMonthlyData = JSON.parse(myData);
+
+    console.log(this.editMonthlyData);
+
+    this.editDialogVisible = !this.editDialogVisible;
+    
+    //TODO need to set the values on save so the values are the same.  think about the flow when 
+
+    this.outflowPercetage = 0;
+    this.outflowDirection = "";
+
+  }
+
+  closeEditDialog() {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.closeEditDialog -------- ' +
+        this.editDialogVisible
+    );
+
+    this.editDialogVisible = !this.editDialogVisible;
+  }
+
+  saveOperationalEditData(mySaveData:any) {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.saveOperationalEditData -------- '
+    );
+
+    let saveIndex = "0";
+
+    console.log(mySaveData);
+    console.log( this.operationMonthlyData);
+
+    for (let i = 0; i < mySaveData.length; i++) {
+      console.log(mySaveData[i].manualInflow + " " + mySaveData[i].manualOutflow );
+      console.log(this.operationMonthlyData[i].manualInflow + " " + this.operationMonthlyData[i].manualOutflow );
+      
+      if (mySaveData[i].manualOutflow) {
+        this.operationMonthlyData[i].manualOutflow = mySaveData[i].manualOutflow;
+        this.operationMonthlyData[i].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
+      }
+
+      if (mySaveData[i].manualInflow) { 
+
+        this.operationMonthlyData[i].manualInflow  = mySaveData[i].manualInflow;
+        this.operationMonthlyData[i].manualInFlowColor = constants.CELL_CHANGE_COLOR;
+      }
+
+    }
+
+    this.recalculateEOM(this.operationMonthlyData,saveIndex)
+
+    this.addToGridElevation()
+
+    this.editDialogVisible = !this.editDialogVisible;
+  }
 
   showClearOperationalDataDialog() {
     this.myLog.log(
@@ -88,6 +164,148 @@ export class OperationsDataComponent {
     );
 
     this.clearOperationDataVisible = !this.clearOperationDataVisible;
+  }
+
+  // onDirectionChange() {
+  //   console.log('--- OperationsDataComponent.onDirectionChange --- ');
+  //   console.log("outflowPercetage " + this.outflowPercetage);
+  //   console.log("outflowDirection " + this.outflowDirection);
+  // }
+
+  // old onPercentageChange(myData:any) {
+  //   console.log('--- OperationsDataComponent.onPercentageChange --- ');
+  //   console.log("outflowPercetage " + this.outflowPercetage);
+  //   console.log("outflowDirection " + this.outflowDirection);
+  //   console.log("reportMonth      " + Number(this.reportMonth));
+
+  //   let myIndex:number = 0;
+
+  //   for (let i = 0; i < myData.length; i++) {
+  //    console.log(myData.month + " " + this.convertMonthStringToNumber(this.operationMonthlyData[i].month) );
+  //    if (Number(this.reportMonth) === this.convertMonthStringToNumber(this.operationMonthlyData[i].month) ) {
+  //     myIndex = i;
+  //     console.log('-----------------------------------');
+  //    }
+
+  //    //convertMonthStringToNumber();
+
+  //     //this.recalculateEOM();
+
+  //   }
+
+  //   console.log('Starting index ' + myIndex);
+
+  //   for (let i = myIndex; i < this.operationMonthlyData.length; i++) {
+  //     if (this.outflowDirection === "Increase") {
+  //       console.log("myOutflow = "  + this.operationMonthlyData[i].outflow + " " + (this.operationMonthlyData[i].outflow + this.operationMonthlyData[i].outflow * (this.outflowPercetage / 100) ));
+        
+  //       //console.log(this.operationMonthlyData[i]);
+  //       this.operationMonthlyData[i].manualOutflow = (this.operationMonthlyData[i].outflow + this.operationMonthlyData[i].outflow * (this.outflowPercetage / 100)).toFixed(2);
+
+        
+  //       if ( this.operationMonthlyData[i].manualOutflow > 0) {
+            
+  //         this.operationMonthlyData[i].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
+  //       }
+    
+  //     } else if (this.outflowDirection === "Decrease") {
+  //       //console.log(this.operationMonthlyData[i]);
+  //       console.log("myOutflow = "  + this.operationMonthlyData[i].outflow + " " + (this.operationMonthlyData[i].outflow - this.operationMonthlyData[i].outflow * (this.outflowPercetage / 100) ));
+        
+  //       this.operationMonthlyData[i].manualOutflow = (this.operationMonthlyData[i].outflow - this.operationMonthlyData[i].outflow * (this.outflowPercetage / 100)).toFixed(2);
+          
+  //       if ( this.operationMonthlyData[i].manualOutflow > 0) {
+            
+  //         this.operationMonthlyData[i].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
+  //       }
+    
+  //     }
+
+  //   }
+
+  //   this.recalculateEOM( this.operationMonthlyData[myIndex]);
+
+
+  // } 
+
+  getStartingmonthlyIndex(myData:any):number {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.getStartingmonthlyIndex -------- ');
+  
+    let myIndex:number = 0;
+
+    for (let i = 0; i < myData.length; i++) {
+     console.log(myData.month + " " + this.convertMonthStringToNumber(myData[i].month) );
+     if (Number(this.reportMonth) === this.convertMonthStringToNumber(myData[i].month) ) {
+      myIndex = i;
+      console.log('-----------------------------------');
+     }
+
+    }
+
+    console.log('Starting index ' + myIndex);
+
+    return myIndex;
+    
+  }
+  
+  onPercentageChange(myData:any) {
+    console.log('--- OperationsDataComponent.onPercentageChange --- ');
+    console.log("outflowPercetage " + this.outflowPercetage);
+    console.log("outflowDirection " + this.outflowDirection);
+    console.log("reportMonth      " + Number(this.reportMonth));
+
+    let myIndex:number = 0;
+
+    // for (let i = 0; i < myData.length; i++) {
+    //  console.log(myData.month + " " + this.convertMonthStringToNumber(myData[i].month) );
+    //  if (Number(this.reportMonth) === this.convertMonthStringToNumber(myData[i].month) ) {
+    //   myIndex = i;
+    //   console.log('-----------------------------------');
+    //  }
+
+    // }
+
+    // console.log('Starting index ' + myIndex);
+
+    myIndex = this.getStartingmonthlyIndex(myData);
+
+    for (let i = myIndex; i < myData.length; i++) {
+      if (this.outflowDirection === "Increase") {
+        console.log("myOutflow = "  + myData[i].outflow + " " + (myData[i].outflow + myData[i].outflow * (this.outflowPercetage / 100) ));
+        
+        //console.log(myData[i]);
+        myData[i].manualOutflow = (myData[i].outflow + myData[i].outflow * (this.outflowPercetage / 100)).toFixed(2);
+
+        
+        if ( myData[i].manualOutflow > 0) {
+            
+          myData[i].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
+        }
+    
+      } else if (this.outflowDirection === "Decrease") {
+        //console.log(myData[i]);
+        console.log("myOutflow = "  + myData[i].outflow + " " + (myData[i].outflow - myData[i].outflow * (this.outflowPercetage / 100) ));
+        
+        myData[i].manualOutflow = (myData[i].outflow - myData[i].outflow * (this.outflowPercetage / 100)).toFixed(2);
+          
+        if ( myData[i].manualOutflow > 0) {
+            
+          myData[i].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
+        }
+    
+      }
+
+    }
+
+    this.recalculateEOM( myData, myIndex.toString());
+
+  }
+
+  editCheckChanged() {
+    console.log('--- OperationsDataComponent.editCheckChanged --- ' + this.editChecked);
+    //this.editChecked = !this.editChecked;
   }
 
   checkNameCharacter(event:any) {
@@ -179,6 +397,10 @@ export class OperationsDataComponent {
     this.operationMonthlyData = [];
     this.clearOperationDataVisible = false;
     this.errors = [];
+
+    this.outflowPercetage = 0;
+    this.outflowDirection = "";
+
   }
 
   showElevationDialog() {
@@ -320,8 +542,8 @@ export class OperationsDataComponent {
          
          this.reportName   = myReadJson.reportName;
          this.reportYear   = myReadJson.reportYear;
-         this.reportDay   = myReadJson.reportName;
-         this.reportMonth   = myReadJson.reportName;
+         this.reportDay   = myReadJson.reportDay;
+         this.reportMonth   = myReadJson.reportMonth;
          
          this.forcastDate   = myReadJson.forcastDate;
          this.forcastPercent   = myReadJson.forcastPercent;
@@ -398,6 +620,58 @@ export class OperationsDataComponent {
   showMessage(mySeverity:string, mySummary:string, myMessage:string, myLife:any) {
     //severity: info success warn error
       this.messageService.add({key: 'message', severity:mySeverity, summary: mySummary, detail: myMessage, life:myLife});
+  }
+
+  clearManualEditInputs(myClearEditData:any) {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.clearManualEditInputs -------- '
+    );
+
+
+    let myEomContent = this.startingEOMContent;
+    let myInflow  = 0;
+    let myOutflow = 0;
+    let myIndex   = 0;
+    //this.recaculateYearType = 0.0;
+    
+     this. outflowPercetage = 0;
+    this.outflowDirection = "";
+
+    for (
+      let i = myIndex;
+      i < myClearEditData.length;
+      i++
+    ) {
+
+      myClearEditData[i].manualInflowColor = "";
+      myClearEditData[i].manualOutFlowColor = "";
+      myClearEditData[i].manualInflow = null;
+      myClearEditData[i].manualOutflow = null;
+      myInflow  =  myClearEditData[i].inflow;
+      myOutflow =  myClearEditData[i].outflow;
+
+      if (i === 0) {
+        myEomContent = this.startingEOMContent;
+      } else {
+        myEomContent = myClearEditData[i - 1].eomContent;
+      }
+
+      myClearEditData[i].eomContent =
+        myEomContent + myInflow - myOutflow;
+
+      myClearEditData[i].eomElevation =
+        this.elevationService.getElevation(
+          myClearEditData[i].eomContent
+        );
+
+      myClearEditData[i].elevationWarning = this.getElevationWarning(
+        myClearEditData[i].eomElevation
+      );
+    }
+
+    //this.addToGridElevation();
+
   }
 
   clearManualInputs() {
@@ -644,49 +918,125 @@ export class OperationsDataComponent {
     return warning;
   }
 
-  recalculateEOM(inputData: any) {
+//  old  recalculateEOM(inputData: any) {
+
+//     this.myLog.log(
+//       'INFO',
+//       '-------- OperationsDataComponent.recalculateEOM -------- ' +
+//         inputData.index +
+//         ' ' +
+//         inputData.manualInflow
+//     );
+
+//     //console.log(inputData);
+    
+//     let myEomContent = 0;
+//     let myInflow = Number(inputData.manualInflow);
+//     let myOutflow = Number(inputData.manualOutflow);
+//     let myIndex = Number(inputData.index);
+//     this.recaculateYearType = 0.0;
+//     //console.log( this.operationMonthlyData[Number(inputData.index)]);
+//     this.operationMonthlyData[Number(inputData.index)].manualInflowColor = "";
+//     this.operationMonthlyData[Number(inputData.index)].manualOutFlowColor = "";
+
+//     if (myInflow > 0) {
+//       this.operationMonthlyData[Number(inputData.index)].manualInflow =
+//         myInflow;
+//         this.operationMonthlyData[Number(inputData.index)].manualInflowColor = constants.CELL_CHANGE_COLOR;
+//     }
+//     if (myOutflow > 0) {
+//       this.operationMonthlyData[Number(inputData.index)].manualOutflow =
+//         myOutflow;
+        
+//       this.operationMonthlyData[Number(inputData.index)].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
+//     }
+
+//     for (
+//       let i = Number(inputData.index);
+//       i < this.operationMonthlyData.length;
+//       i++
+//     ) {
+
+//       if (i === 0) {
+//         myEomContent = this.startingEOMContent;
+//       } else {
+//         myEomContent = this.operationMonthlyData[i - 1].eomContent;
+//       }
+
+//       if (!myOutflow) {
+//         myOutflow = 0;
+//       }
+
+//       if (!myInflow) {
+//         myInflow = 0;
+//       }
+
+//       if ( (!this.operationMonthlyData[i].manualInflow) || (Number(this.operationMonthlyData[i].manualInflow) === 0) ) {
+//         myInflow = Number(this.operationMonthlyData[i].inflow);
+//       } else {
+//         myInflow = Number(this.operationMonthlyData[i].manualInflow);
+//       }
+
+//       if ( (!this.operationMonthlyData[i].manualOutflow) || (this.operationMonthlyData[i].manualOutflow === 0)) {
+//         myOutflow = this.operationMonthlyData[i].outflow;
+//       } else {
+//         myOutflow = Number(this.operationMonthlyData[i].manualOutflow);
+//       }
+
+//       this.operationMonthlyData[i].eomContent =
+//         myEomContent + myInflow - myOutflow;
+
+//       this.operationMonthlyData[i].eomElevation =
+//         this.elevationService.getElevation(
+//           this.operationMonthlyData[i].eomContent
+//         );
+
+//       this.operationMonthlyData[i].elevationWarning = this.getElevationWarning(
+//         this.operationMonthlyData[i].eomElevation
+//       );
+//     }
+
+//     this.addToGridElevation();
+//   }
+
+  recalculateEOM(myRecalcData: any, myIndex:string) {
 
     this.myLog.log(
       'INFO',
       '-------- OperationsDataComponent.recalculateEOM -------- ' +
-        inputData.index +
-        ' ' +
-        inputData.manualInflow
+      myIndex
     );
 
     //console.log(inputData);
     
     let myEomContent = 0;
-    let myInflow = Number(inputData.manualInflow);
-    let myOutflow = Number(inputData.manualOutflow);
-    let myIndex = Number(inputData.index);
+    let index = Number(myIndex);
+    let myInflow = Number(myRecalcData[index].manualInflow);
+    let myOutflow = Number(myRecalcData[index].manualOutflow);
     this.recaculateYearType = 0.0;
-    //console.log( this.operationMonthlyData[Number(inputData.index)]);
-    this.operationMonthlyData[Number(inputData.index)].manualInflowColor = "";
-    this.operationMonthlyData[Number(inputData.index)].manualOutFlowColor = "";
+    //console.log( this.operationMonthlyData[Number(myRecalcData[index].index)]);
+    myRecalcData[index].manualInflowColor = "";
+    myRecalcData[index].manualOutFlowColor = "";
 
-    if (myInflow > 0) {
-      this.operationMonthlyData[Number(inputData.index)].manualInflow =
-        myInflow;
-        this.operationMonthlyData[Number(inputData.index)].manualInflowColor = constants.CELL_CHANGE_COLOR;
+    if  ( (myRecalcData[index].manualInflow) && (myRecalcData[index].manualInflow > 0) ) {
+      //myRecalcData[index].manualInflow = myInflow;
+      myRecalcData[index].manualInflowColor = constants.CELL_CHANGE_COLOR;
     }
-    if (myOutflow > 0) {
-      this.operationMonthlyData[Number(inputData.index)].manualOutflow =
-        myOutflow;
-        
-      this.operationMonthlyData[Number(inputData.index)].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
+    if ((myRecalcData[index].manualOutflow) && (myRecalcData[index].manualOutflow > 0) ) {
+      //myRecalcData[index].manualOutflow = myOutflow;
+      myRecalcData[index].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
     }
 
     for (
-      let i = Number(inputData.index);
-      i < this.operationMonthlyData.length;
+      let i = index;
+      i < myRecalcData.length;
       i++
     ) {
 
       if (i === 0) {
         myEomContent = this.startingEOMContent;
       } else {
-        myEomContent = this.operationMonthlyData[i - 1].eomContent;
+        myEomContent = myRecalcData[i - 1].eomContent;
       }
 
       if (!myOutflow) {
@@ -697,32 +1047,32 @@ export class OperationsDataComponent {
         myInflow = 0;
       }
 
-      if ( (!this.operationMonthlyData[i].manualInflow) || (Number(this.operationMonthlyData[i].manualInflow) === 0) ) {
-        myInflow = Number(this.operationMonthlyData[i].inflow);
+      if ( (!myRecalcData[i].manualInflow) || (Number(myRecalcData[i].manualInflow) === 0) ) {
+        myInflow = Number(myRecalcData[i].inflow);
       } else {
-        myInflow = Number(this.operationMonthlyData[i].manualInflow);
+        myInflow = Number(myRecalcData[i].manualInflow);
       }
 
-      if ( (!this.operationMonthlyData[i].manualOutflow) || (this.operationMonthlyData[i].manualOutflow === 0)) {
-        myOutflow = this.operationMonthlyData[i].outflow;
+      if ( (!myRecalcData[i].manualOutflow) || (myRecalcData[i].manualOutflow === 0)) {
+        myOutflow = myRecalcData[i].outflow;
       } else {
-        myOutflow = Number(this.operationMonthlyData[i].manualOutflow);
+        myOutflow = Number(myRecalcData[i].manualOutflow);
       }
 
-      this.operationMonthlyData[i].eomContent =
+      myRecalcData[i].eomContent =
         myEomContent + myInflow - myOutflow;
 
-      this.operationMonthlyData[i].eomElevation =
+      myRecalcData[i].eomElevation =
         this.elevationService.getElevation(
-          this.operationMonthlyData[i].eomContent
+          myRecalcData[i].eomContent
         );
 
-      this.operationMonthlyData[i].elevationWarning = this.getElevationWarning(
-        this.operationMonthlyData[i].eomElevation
+      myRecalcData[i].elevationWarning = this.getElevationWarning(
+        myRecalcData[i].eomElevation
       );
     }
 
-    this.addToGridElevation();
+    //this.addToGridElevation();  //TODO add when saving the data.
   }
 
   getEOMContentList(data: any): number[] {
@@ -771,6 +1121,121 @@ export class OperationsDataComponent {
       }
     }
   }
+
+
+  convertMonthStringToNumber(myMonthString:string): number {
+
+    let month:number = 0;
+
+    let myMonth:string = myMonthString.toLowerCase();
+
+    switch (myMonth) {
+      case "january": {
+        month  = 1;
+        break;
+      }
+      case "february": {
+        month  = 2;
+        break;
+      }
+      case "march": {
+        month  = 3;
+        break;
+      }
+      case "april": {
+        month  = 4;
+        break;
+      }
+      case "may": {
+        month  = 5;
+        break;
+      }
+      case "june": {
+        month  = 6;
+        break;
+      }
+      case "july": {
+        month  = 7;
+        break;
+      }
+      case "august": {
+        month  = 8;
+        break;
+      }
+      case "september": {
+        month  = 9;
+        break;
+      }
+      case "october": {
+        month  = 10;
+        break;
+      }
+      case "november": {
+        month  = 11;
+        break;
+      }
+      case "december": {
+        month  = 12;
+        break;
+      }
+      case "jan": {
+        month  = 1;
+        break;
+      }
+      case "feb": {
+        month  = 2;
+        break;
+      }
+      case "mar": {
+        month  = 3;
+        break;
+      }
+      case "apr": {
+        month  = 4;
+        break;
+      }
+      // case "may": {   -- above --
+      //   month  = 5;
+      //   break;
+      // }
+      case "jun": {
+        month  = 6;
+        break;
+      }
+      case "jul": {
+        month  = 7;
+        break;
+      }
+      case "aug": {
+        month  = 8;
+        break;
+      }
+      case "sep": {
+        month  = 9;
+        break;
+      }
+      case "oct": {
+        month  = 10;
+        break;
+      }
+      case "nov": {
+        month  = 11;
+        break;
+      }
+      case "dec": {
+        month  = 12;
+        break;
+      }
+      default : {
+        month  = 0;
+      }
+    }
+
+    return month;
+  }
+
+
+
 
   convertReportDate(reportDate:string): string {
     let myDate = reportDate.replaceAll(',','');
