@@ -15,6 +15,7 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
+import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ChipModule } from 'primeng/chip';
@@ -22,6 +23,7 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { DragDropModule } from 'primeng/dragdrop';
+import { FieldsetModule } from 'primeng/fieldset';
 import { FileUploadModule } from 'primeng/fileupload';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
@@ -70,6 +72,7 @@ import { AnalyticsComponent } from './analytics/analytics.component';
     BadgeModule,
     ButtonModule,
     CalendarModule,
+    CardModule,
     ChartModule,
     CheckboxModule,
     ChipModule,
@@ -78,6 +81,7 @@ import { AnalyticsComponent } from './analytics/analytics.component';
     DividerModule,
     DragDropModule,
     FileUploadModule,
+    FieldsetModule,
     FloatLabelModule,
     IconFieldModule,
     InputIconModule,

@@ -1,78 +1,28 @@
 
-<!-- <p-button label="Get Data"  (click)="getOperationData($event)"></p-button> -->
-<!-- <p-button (click)="showDataDialog()" icon="pi pi-external-link" label="Get Data"></p-button> -->
-
-<!-- <p-button (click)="showDataDialog()" icon="pi pi-external-link" label="Get Data"></p-button> -->
-
-
 
 <p-panel header="Operations">
-    <!-- <p-header> -->
-        <!-- <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button> -->
-    <!-- </p-header> -->
-
-    <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" [minFractionDigits]="2"></p-inputNumber> -->
-    <!-- <p-inputNumber [(ngModel)]=" startingEOMContent" inputId="eom-content" ></p-inputNumber> -->
+       
+    <p-button id="file"         label="File Import"         icon="pi pi-file-o"                                                                                    [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showImportFileDialog()"></p-button>
     
-    <p-button id="file"         label="File Import"      icon="pi pi-file-o"                                                                                    [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showImportFileDialog()"></p-button>
+    <p-button id="manual-load"  label="Load Data"           icon="pi pi-external-link"                                                                             [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showDataDialog()"></p-button>
+    <p-button id="edit"         label="edit"                icon="pi pi-user-edit"                                  [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showEditDialog()"></p-button>
+    <p-button id="chart"        label="Elevation Graph"     icon="pi pi-chart-line"                                 [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showElevationDialog()"></p-button>
+    <p-button id="calendar"     label="Calendar"            icon="pi pi-calendar"                                                                                  [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showCalendarDialog()"></p-button>
     
-    <p-button id="manual-load"  label="Load Data"        icon="pi pi-external-link"                                                                             [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showDataDialog()"></p-button>
-    <p-button id="edit"         label="edit"             icon="pi pi-user-edit"                                  [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showEditDialog()"></p-button>
-    <p-button id="chart"        label="Elevation Graph"  icon="pi pi-chart-line"                                 [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showElevationDialog()"></p-button>
-    <p-button id="calendar"     label="Calendar"         icon="pi pi-calendar"                                                                                  [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showCalendarDialog()"></p-button>
-    <p-button id="save"         label="Save"             icon="pi pi-save"                                       [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showSaveDataDialog()"></p-button>
+    <p-button id="links"         label="Links"              icon="pi pi-link"                                                                                      [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="linksVisible = true"></p-button>
     
-    <!-- <div>
-        <div class="flex flex-wrap gap-3">
-            <div class="flex align-items-center">
-                <p-radioButton 
-                    name="outflowPercent" 
-                    value="Decrease" 
-                    [(ngModel)]="outflowDirection" 
-                    inputId="outflowPercent1"
-                    (onClick)="onPercentageChange($event)"/>
-                <label for="outflowPercent1" class="ml-2">
-                    Decrease
-                </label>
-            </div>
-            
-            <div class="flex align-items-center">
-                <p-radioButton 
-                    name="outflowPercent" 
-                    value="Increase" 
-                    [(ngModel)]="outflowDirection" 
-                    inputId="outflowPercent2"
-                    (onClick)="onPercentageChange($event)"/>
-                <label for="outflowPercent2" class="ml-2">
-                    Increase
-                </label>
-            </div>
-        </div>
-        <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange($event)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %"> </p-inputNumber>
-
-        <p-slider [(ngModel)]="outflowPercetage"  (onChange)="onPercentageChange($event)" styleClass="w-20rem" />
-    </div> -->
-    <p-button id="clear"        label="Clear Data"       icon="pi pi-times-circle"   [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="showClearOperationalDataDialog()"></p-button>
+    <p-button id="save"         label="Save"                icon="pi pi-save"                                       [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showSaveDataDialog()"></p-button>
+    <p-button id="clear"        label="Clear Data"          icon="pi pi-times-circle"   [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="showClearOperationalDataDialog()"></p-button>
     <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualInputs()"></p-button>
-    <p-button id="help"         label="Help"             icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="operationsHelpSidebarVisible=true"></p-button>
-
-
-<!-- <span class="p-input-icon-left"> 
-    <i class="pi pi-external-link"  (click)="showDataDialog()"></i> 
-</span>
-<span class="p-input-icon-left"> 
-    <i class="pi pi-chart-line"     (click)="showElevationDialog()"></i> 
-</span> -->
+    <p-button id="help"         label="Help"                icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="operationsHelpSidebarVisible=true"></p-button>
 
 <p-divider></p-divider>
-    <!-- <label for="eom-content">{{eomContentLabel}}</label>
-    <label for="InflowLabel" ><b>   April-July inflow  </b></label> -->
     <span >{{eomContentLabel}}</span>
     <span ><b>   April-July inflow  </b></span>
     <span [ngStyle]="{background:yearTypeBackground}"><b>{{yearTypeInflow}}</b></span>
     <span [ngStyle]="{background:yearTypeBackground}"><b>{{yearTypeLabel}}</b></span>
 
-    <p-table [scrollable]="true" scrollHeight="900px" [value]="operationMonthlyData" [tableStyle]="{ 'min-width': '120rem' }" [autoLayout]="true">
+    <p-table [scrollable]="true" scrollHeight="900px" [styleClass]="selectedSize" [value]="operationMonthlyData" [tableStyle]="{ 'min-width': '120rem' }" [autoLayout]="true">
         <ng-template pTemplate="header">
             <tr padding="3px">
                 <th width="15px" class="text-left">Month</th>
@@ -87,27 +37,9 @@
                 <th width="5px"  class="text-center">Average<br>Outflow<br>(CFS)</th>
                 <th width="5px"  class="text-center">EOM<br>Content<br>(AF)</th>
                 <th width="5px"  class="text-center">EOM<br>Elevation<br>(FT)</th>
-                <!-- <th width="5px"  class="text-center"><p-checkbox  (onChange)="editCheckChanged()"   [(ngModel)]="editChecked" [binary]="true"  inputId="binary" />Edit</th> -->
-                
-                <!--<th width="5px" class="text-center">Manual<br>Outflow<br>(CFS)</th> -->
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-myData >  
-            <!-- <tr padding="3px"  >
-                <td width="15px" class="text-center" pFrozenColumn><label class="p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</label></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (keyup)="handleKeyUpEvent($event, 'manualInflow_',myData.index)"                                  [readonly]="true" inputId="days_{{myData.index}}"             mode="decimal" [size]="2" [min]="1" [max]="16"                             [(ngModel)]="myData.days"             placeholder="Days"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"               inputId="manualInflow_{{myData.index}}"         mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualInflow"     placeholder="Inflow (AF)" [inputStyle]="{background:myData.manualInflowColor,'text-align': 'right'}"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="inflow_{{myData.index}}"           mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.inflow"           placeholder="Predicted Inflow (AC)"  [inputStyle]="{background:myData.inflowSummaryColor,'text-align': 'right'}"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="inflowCF_{{myData.index}}"         mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.inflowCF"         placeholder="Inflow CF"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(myData)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Outflow (AF)" [inputStyle]="{background:myData.manualOutFlowColor,'text-align': 'right'}"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="outflow_{{myData.index}}"          mode="decimal" [size]="4" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflow"          placeholder="Outflow (AF)"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="outflowCF_{{myData.index}}"        mode="decimal" [size]="7" [min]="0" [max]="106200"                         [(ngModel)]="myData.outflowCF"        placeholder="Outflow (CF)"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgInflowCFS_{{myData.index}}"     mode="decimal" [size]="7" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgInflowCFS"     placeholder="Avg Inflow CFS"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="avgOutflowCFS_{{myData.index}}"    mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.avgOutflowCFS"    placeholder="Avg Outflow CFS"> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId=".eomContent_{{myData.index}}"      mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="2" [(ngModel)]="myData.eomContent"       placeholder="EOM Content (AF) "> </p-inputNumber></td>
-                <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm"                                   [readonly]="true" inputId="eomElevation_{{myData.index}}"     mode="decimal" [size]="4" [min]="0" [max]="106200" [maxFractionDigits]="4" [(ngModel)]="myData.eomElevation"     placeholder="EOM Elevation (FT)" [inputStyle]="{background:myData.elevationWarning,'text-align': 'right'}"> </p-inputNumber></td>
-               
-            </tr> -->
                
                 <tr padding="3px">
                                         
@@ -146,8 +78,6 @@
             </p>
         </p-sidebar>
     </div>
-
-    
 
     <div class="card flex justify-content-center">
         <p-sidebar [(visible)]="loadDataHelpSidebarVisible">
@@ -203,68 +133,129 @@
 
     </p-dialog>
 
-    <p-dialog header="Edit Inputs / outputs Data" [(visible)]="editDialogVisible" [style]="{width: '90vw', height: '90vw'}"  [modal]="true" [draggable]="true" [resizable]="true">
-        <!-- <div class="card flex justify-content-center gap-2"> -->
+    <p-dialog header="Edit Inputs / outputs Data" [(visible)]="editDialogVisible" [style]="{width: '90vw', height: '95vw'}"  [modal]="true" [draggable]="true" [resizable]="true">
         <div class="card gap-2">
-            <!-- <p-toast></p-toast>
-            <p-confirmPopup></p-confirmPopup> -->
-            <div>
-                <div class="flex flex-wrap gap-3">
-                    <div class="flex align-items-center">
-                        <label>Manual Outflow</label>
+            <!-- <div class="card gap-2 border-500 border-1 border-round  col"> -->
+
+                <p-fieldset legend="Manual Outflow (Change the remaining months)">
+                    <div class="grid flex-shrink-0">
+                        <div class="flex flex-shrink-0 col-4">
+                            <div class="flex  flex-shrink-0 text-left  border-200 border-1 p-1 border-round font-bold">
+                                <div class="flex-initial  flex-shrink-0 vertical-align-middle  p-5 border-round-sm font-bold">
+                                    <p-radioButton 
+                                        class=""
+                                        name="outflowPercent" 
+                                        value="Decrease" 
+                                        [(ngModel)]="outflowDirection" 
+                                        inputId="outflowPercent1"
+                                        (onClick)="onPercentageChange(editMonthlyData)"/>
+                                    <label for="outflowPercent1" class="font-bold">
+                                        Decrease %
+                                    </label>
+                                    
+                                    <p-radioButton 
+                                    class=""
+                                        name="outflowPercent" 
+                                        value="Increase" 
+                                        [(ngModel)]="outflowDirection" 
+                                        inputId="outflowPercent2"
+                                        (onClick)="onPercentageChange(editMonthlyData)"/>
+                                    <label for="outflowPercent2" class="font-bold">
+                                        Increase %
+                                    </label>
+                                </div>
+                                <!-- <p-checkbox  (onChange)="compareFiles(myData)" [(ngModel)]="overRideChecked" [binary]="true"  inputId="binary" /> -->
+                                <p-checkbox (onChange)="override(editMonthlyData)" [(ngModel)]="overRideChecked" [binary]="true"   label="Over Ride" inputId="binary" />
+                                <div class="flex-initial text-left   p-3 m-1 border-round-sm font-bold">
+                                    <div class="col">
+                                        <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange($event)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %"> </p-inputNumber>
+                                        <p-slider [(ngModel)]="outflowPercetage" class="mb-3 w-0" (onChange)="onPercentageChange(editMonthlyData)" styleClass="w-30rem" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            
+                            <div class="flex justify-content-end  p-1 border-round-sm ">
+                                <div class="flex justify-content-end  p-5 border-round-sm ">
+                                    <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualEditInputs(editMonthlyData)"></p-button>
+                                    <p-button id="help"         label="Help"               icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="editHelpSidebarVisible=true"></p-button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex align-items-center">
+                </p-fieldset>
+            
+                <!-- <p-divider></p-divider>
+
+                <div class="grid">
+                    <div class="col-1">
+                        <div class="flex align-items-center ml-3 mt-3 font-bold">
+                            <label>Manual Outflow</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="col-1 ml-1 mt-3">
                         <p-radioButton 
+                            class="text-xs "
                             name="outflowPercent" 
                             value="Decrease" 
                             [(ngModel)]="outflowDirection" 
                             inputId="outflowPercent1"
                             (onClick)="onPercentageChange(editMonthlyData)"/>
-                        <label for="outflowPercent1" class="ml-2">
+                        <label for="outflowPercent1" class="ml-1 font-bold">
                             Decrease %
                         </label>
                     </div>
                     
-                    <div class="flex align-items-center">
+                    <div class="col-1  ml-1 mt-3">
                         <p-radioButton 
+                            class="text-xs"
                             name="outflowPercent" 
                             value="Increase" 
                             [(ngModel)]="outflowDirection" 
                             inputId="outflowPercent2"
                             (onClick)="onPercentageChange(editMonthlyData)"/>
-                        <label for="outflowPercent2" class="ml-2">
+                        <label for="outflowPercent2" class="ml-1 font-bold">
                             Increase %
                         </label>
                     </div>
-                    <div class="flex align-items-center">
-                        <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange($event)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %"> </p-inputNumber>
-                
+                    
+                    <div class="col-3 ml-1 mt-5">
+                        <div class="flex align-items-center">
+                            <p-slider [(ngModel)]="outflowPercetage" class="mb-3 w-0" (onChange)="onPercentageChange(editMonthlyData)" styleClass="w-30rem" />
+                        </div>
                     </div>
-                    <div class="flex align-items-center">
-                        <p-slider [(ngModel)]="outflowPercetage" class="mb-3 w-0" (onChange)="onPercentageChange(editMonthlyData)" styleClass="w-30rem" />
+                    
+                    <div class="col-1 ml-1 mt-3">
+                        <div class="flex align-items-center">
+                            <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange($event)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %"> </p-inputNumber>
+                    
+                        </div>
                     </div>
-                </div>
-            </div>
-            <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualEditInputs(editMonthlyData)"></p-button>
-            <p-button id="help"         label="Help"               icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="editHelpSidebarVisible=true"></p-button>
+                    
+                    <div class="col ml-5 mr-5">
+                        <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualEditInputs(editMonthlyData)"></p-button>
+                        <p-button id="help"         label="Help"               icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="editHelpSidebarVisible=true"></p-button>
+                    </div>
+                </div> -->
+            <!-- </div> -->
 
             <p-divider></p-divider>
-            <p-table [scrollable]="true" scrollHeight="900px" [value]="editMonthlyData" [tableStyle]="{ 'min-width': '100rem' }" [autoLayout]="true">
+
+            <p-table [scrollable]="true" scrollHeight="600px" [styleClass]="selectedSize" [value]="editMonthlyData" [tableStyle]="{ 'min-width': '100rem' }" [autoLayout]="true">
                 <ng-template pTemplate="header">
                     <tr padding="3px">
                         <th width="15px" class="text-center">Month</th>
                         <th width="5px"  class="text-center">Days</th>
                         <th width="10px"  class="text-center">Manual<br>Inflow<br>(AF)</th>
                         <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF)</th>
-                        <!-- <th width="5px"  class="text-center">Inflow<br>(CF)</th> -->
                         <th width="5px"  class="text-center">Manual<br>Outflow<br>(AF)</th>
                         <th width="5px"  class="text-center">Outflow<br>(AF)</th>
-                        <!-- <th width="5px"  class="text-center">Outflow<br>(CF)</th>
-                        <th width="5px"  class="text-center">Average<br>Inflow<br>(CFS)</th>
-                        <th width="5px"  class="text-center">Average<br>Outflow<br>(CFS)</th> -->
                         <th width="5px"  class="text-center">EOM<br>Content<br>(AF)</th>
                         <th width="5px"  class="text-center">EOM<br>Elevation<br>(FT)</th>
-                        <!-- <th width="5px"  class="text-center"><p-checkbox  (onChange)="editCheckChanged()"   [(ngModel)]="editChecked" [binary]="true"  inputId="binary" />Override</th> -->
                         
                     </tr>
                 </ng-template>
@@ -272,28 +263,24 @@
                        
                         <tr padding="3px">
                                                 
-                            <label width="15px" class="p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</label>  
+                            <td width="15px" class="p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</td>  
                             <td width="5px"  class="text-center"  >{{ myData.days}}</td>
-                            <!-- <td *ngIf="!editChecked"  width="5px"  class="text-center p-inputtext-sm" [ngStyle]="{'background':myData.manualInflowColor}">{{myData.manualInflow}}</td> -->
                             <td width="8px"  class="text-center p-inputtext-sm"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(editMonthlyData,myData.index)"               inputId="manualInflow_{{myData.index}}"         mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualInflow"     placeholder="Inflow (AF)" [inputStyle]="{background:myData.manualInflowColor,'text-align': 'right'}"> </p-inputNumber></td>
-                            
                             <td width="5px" class="text-center p-inputtext-sm">{{myData.inflow}}</td>
-                            <!-- <td *ngIf="!editChecked" width="5px" class="text-center p-inputtext-sm" [ngStyle]="{'background':myData.manualOutFlowColor}">{{myData.manualOutflow}}</td> -->
                             <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(editMonthlyData,myData.index)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Outflow (AF)" [inputStyle]="{background:myData.manualOutFlowColor,'text-align': 'right'}"> </p-inputNumber></td>
-                        
                             <td width="5px" class="text-center p-inputtext-sm">{{myData.outflow}}</td>
-                            <!-- <td width="5px" class="text-center p-inputtext-sm">{{myData.outflowCF}}</td>
-                            <td width="5px" class="text-center p-inputtext-sm">{{myData.avgInflowCFS.toFixed(2)}}</td>
-                            <td width="5px" class="text-center p-inputtext-sm">{{myData.avgOutflowCFS.toFixed(2)}}</td> -->
                             <td width="5px" class="text-center p-inputtext-sm">{{myData.eomContent.toFixed(2)}}</td>
                             <td width="5px" class="text-center p-inputtext-sm"  [ngStyle]="{'background':myData.elevationWarning}" >{{myData.eomElevation.toFixed(2)}}</td>
                         </tr>
                     </ng-template>
             </p-table>
 
-
-            <p-button  [style]="{'float':'left'}" (click)="saveOperationalEditData(editMonthlyData)" label="Save Data"></p-button>
-            <p-button  [style]="{'float':'right'}" (click)="closeEditDialog()" label="Cancel"></p-button>
+            <div class="grid">
+                <div class="col ml-3 mt-3 mr-3">
+                    <p-button  [style]="{'float':'left'}" (click)="saveOperationalEditData(editMonthlyData)" label="Save Data"></p-button>
+                    <p-button  [style]="{'float':'right'}" (click)="closeEditDialog()" label="Cancel"></p-button>
+                </div>
+            </div>
         </div>
     </p-dialog>
 
@@ -307,9 +294,30 @@
         </div>
     </p-dialog>
 
-    <p-dialog header="Calendar" [(visible)]="calendarVisible" [style]="{width: '23vw', height: '23vw'}">
+    <p-dialog header="Calendar" class="flex-shrink-0 flex" [(visible)]="calendarVisible" [style]="{width: '17vw', height: '17vw'}">
+        <div class="flex-shrink-0 align-items-center justify-content-center">
+            <p-calendar class=" flex-shrink-0 flex align-items-center justify-content-center" [(ngModel)]="myDate"  [inline]="true" [showWeek]="true"></p-calendar>
+        </div>
 
-        <p-calendar class="max-w-full" [(ngModel)]="myDate"  [inline]="true" [showWeek]="true"></p-calendar>
+    </p-dialog>
+
+    <p-dialog header="Links" [(visible)]="linksVisible" [style]="{width: '`100vw', height: '23vw'}">
+
+        <p-table [scrollable]="true" scrollHeight="800px" [value]="myLinks" [tableStyle]="{ 'min-width': '60rem' }" [autoLayout]="true">
+            {{errors.fataError}}
+            <ng-template pTemplate="header">
+                <tr padding="3px">
+                    <th width="15px" class="text-left">Link</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-myLink>
+                <tr padding="3px">
+                    <td><a href="{{myLink.link}}" target="_blank">{{myLink.name}}</a></td>
+                </tr>
+            </ng-template>
+        </p-table>
+        
+        <p-button  [style]="{'float':'right'}" (click)="linksVisible = false" label="Close"></p-button>
 
     </p-dialog>
 
@@ -357,7 +365,6 @@
         <p-button  [style]="{'float':'right'}" (click)="saveDialogVisible = !saveDialogVisible" label="Cancel"></p-button>
         <p-button id="help"         label="Help"              icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="saveDataHelpSidebarVisible=true"></p-button>
 
-
     </p-dialog>
     <p-dialog header="Import Saved Report" [(visible)]="importFileDialogVisible" [style]="{width: '23vw', height: '17vw'}">
 
@@ -374,9 +381,6 @@
         <p-button id="help"         label="Help"              icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="fileImportHelpSidebarVisible=true"></p-button>
 
     </p-dialog>
-
-    
-
 </p-panel>  
 
 <p-toast position="top-center" key="message"></p-toast>

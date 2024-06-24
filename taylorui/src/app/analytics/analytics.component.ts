@@ -10,6 +10,7 @@ import { FileUploadEvent } from 'primeng/fileupload';
 })
 export class AnalyticsComponent {
   reports:any = [];
+  compareReports:any = [];
 
   reader = new FileReader;
   fileLines:any = [];
@@ -18,12 +19,15 @@ export class AnalyticsComponent {
 
   totalSizePercent : number = 0;
 
+  compareFileCount: number = 0;
+
   myCallback:any = null;
 
   fileDialogVisible = false;
   clearfileDialogVisible = false;
   analyticSidebarVisible = false;
   fileImportSidebarVisible = false;
+  compareFilesVisible = false
 
   masterChecked:boolean = false;
 
@@ -58,20 +62,9 @@ export class AnalyticsComponent {
     this.fileLines = [];
     this.totalSize = 0
     this.totalSizePercent = 0;
+    this.masterChecked = false;
     this.closeClearReportDataDialog();
     this.messageService.add({ severity: 'success', summary: 'Reports Removed', detail: 'The loaded reports have been removed', life: 3000 });
-
-  }
-
-  masterCheckChanged() {
-    console.log('--- AnalyticsComponent.masterCheckChanged --- ' + this.masterChecked);
-    
-
-    //This has to be put in another method
-    for (let i = 0; i < this.reports.length; i++) {
-      console.log('--- Changing checkbox ---');
-      this.reports[i].checked =   this.masterChecked;
-    }
 
   }
 
@@ -151,6 +144,9 @@ export class AnalyticsComponent {
        myReadJson.checked = false;
        //this.reports.push(JSON.parse(fileLines));
        this.reports.push(myReadJson);
+
+       this.reports.sort((a:any, b:any) => a.reportId.localeCompare(b.reportId));
+
        console.log(this.reports.length);
       }
     };
@@ -175,6 +171,71 @@ export class AnalyticsComponent {
       const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
 
       return `${formattedSize} ${sizes[i]}`;
+  }
+
+
+  allReportsChecked (myReports:any):boolean {
+    console.log('--- AnalyticsComponent.allReportsChecked --- ');
+    for (let i = 0; i < myReports.length; i++) {
+      if (!myReports[i].checked) {
+        console.log("--- returning false ");
+        return false
+      }
+    }
+    console.log("--- returning true ");
+    return true;
+  }
+
+
+  masterCheckChanged() {
+    console.log('--- AnalyticsComponent.masterCheckChanged --- ' + this.masterChecked);
+    
+
+    //This has to be put in another method
+    for (let i = 0; i < this.reports.length; i++) {
+      console.log('--- Changing checkbox ---');
+      this.reports[i].checked =   this.masterChecked;
+    }
+
+    if (this.masterChecked) {
+      this.compareFileCount = this.reports.length;
+    } else {
+      this.compareFileCount = 0;
+    }
+
+    console.log("Compare File Count is " + this.compareFileCount);
+
+  }
+  compareFiles (myData:any)  {
+    console.log('--- AnalyticsComponent.compareFiles ---');
+
+    console.log(myData);
+
+    if ( myData.checked ) { 
+      this.compareFileCount =  this.compareFileCount + 1;
+    } else if (this.compareFileCount > 0 )  {
+      this.compareFileCount =  this.compareFileCount - 1;
+    }
+
+    console.log("Compare File Count is " + this.compareFileCount);
+
+    this.masterChecked = this.allReportsChecked(this.reports);
+
+  }
+
+  compareFilesDialog() {
+    console.log('--- AnalyticsComponent.compareFilesDialog ---');
+    console.log(this.reports);
+     //This has to be put in another method
+     this.compareReports = [];
+     for (let i = 0; i < this.reports.length; i++) {
+      if ( this.reports[i].checked ) {
+        this.compareReports.push(this.reports[i]);
+      }
+     }
+      console.log(this.compareReports);
+
+      this.compareFilesVisible = !this.compareFilesVisible;
   }
 
 }

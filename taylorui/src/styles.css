@@ -46,3 +46,30 @@ body {
 html, body {
 	font-size: 10px;
 }
+
+
+.p-slider-handle {
+  width:15px;
+  height:15px;
+}
+
+.p-checkbox-box  {
+  width:15px;
+  height:15px;
+}
+
+.p-checkbox-icon   {
+  width:10px;
+  height:10px;
+}
+
+.p-radiobutton-box {
+  width: 15px;
+  Height: 15px;
+}
+
+.p-radiobutton-icon {
+  width: 10px;
+  Height: 10px;
+}
+
