@@ -1,27 +1,164 @@
-<div class="p-grid p-fluid">
-    <div class="p-field p-col-12 p-md-3">
-      <label for="acrefeet">Acre Feet</label>
-      <p-inputNumber  inputId="acrefeet" class="p-inputtext-sm" [(ngModel)]="acrefeet" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber>
-    </div>
-  
-    <div class="p-field p-col-12 p-md-3">
-      <label for="elevation">Elevation</label>
-        <p-inputNumber inputId="elevation"  class="p-inputtext-sm" [(ngModel)]="elevation"  mode="decimal" [min]="0" [max]="9329"> </p-inputNumber>
+<p-fieldset legend="Acre Feet to Elevation">
+  <div class="grid flex-shrink-0">
+    <div class="flex flex-shrink-0 col-4">
+      <div
+        class="flex flex-shrink-0 text-left border-200 border-1 p-1 border-round"
+      >
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle pl-3 pb-3 pt-3"
+        >
+          <p-inputNumber
+            [inputStyle]="{ 'text-align': 'right' }"
+            class="p-inputtext-sm mb-3 w-0"
+            [maxFractionDigits]="4"
+            inputId="acrefeet"
+            (onBlur)="getElevation(acrefeet2)"
+            mode="decimal"
+            [size]="10"
+            [min]="0"
+            [max]="106200"
+            [(ngModel)]="acrefeet"
+            placeholder="Acre Feet"
+          >
+          </p-inputNumber>
+        </div>
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle align-content-start pl-2 pt-4"
+        >
+          <label for="acrefeet">Acre Feet</label>
+        </div>
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle pl-3 pb-3 pt-3"
+        >
+          <p-inputNumber
+            [inputStyle]="{ 'text-align': 'right' }"
+            class="p-inputtext-sm mb-3 w-0"
+            [maxFractionDigits]="4"
+            inputId="elevation"
+            mode="decimal"
+            [size]="10"
+            [min]="0"
+            [max]="9329"
+            [(ngModel)]="elevation"
+            placeholder="Elevation"
+          >
+          </p-inputNumber>
+        </div>
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle pl-2 pt-4 pr-3"
+        >
+          <label for="elevation">Elevation</label>
+        </div>
+      </div>
     </div>
   </div>
-  
-  <!-- <span class="p-input-icon-left">
-    <p-button label="Get Elevation"  (click)="getElevation($event)"></p-button>
-  </span> -->
-  
-  <p-panel header="Elevations">
-    <p-header>
-      <!-- <button class="p-button-sm" pButton type="button" (click)="getElevation($event)" >Get Elevation</button> -->
-    </p-header>
-    <p-inputNumber placeholder="acreFt-input" class="p-inputtext-sm" [(ngModel)]="acrefeet" inputId="minmax" mode="decimal" [min]="0" [max]="106200"> </p-inputNumber>
-    
-    <p-button label="Get Elevation"  (click)="getElevation($event)"></p-button>
-    <!-- <p-footer>
-    </p-footer> -->
-  </p-panel>
-  
+</p-fieldset>
+
+<p-fieldset legend="Acre Feet to Cubic Feet">
+  <div class="grid flex-shrink-0">
+    <div class="flex flex-shrink-0 col-4">
+      <div
+        class="flex flex-shrink-0 text-left border-200 border-1 p-1 border-round"
+      >
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle pl-3 pb-3 pt-3"
+        >
+          <p-inputNumber
+            [inputStyle]="{ 'text-align': 'right' }"
+            class="p-inputtext-sm mb-3 w-0"
+            [maxFractionDigits]="4"
+            inputId="acrefeet2"
+            (onBlur)="getCubicFeet(acrefeet2)"
+            mode="decimal"
+            [size]="10"
+            [min]="0"
+            [max]="106200"
+            [(ngModel)]="acrefeet2"
+            placeholder="Acre Feet"
+          >
+          </p-inputNumber>
+        </div>
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle align-content-start pl-2 pt-4"
+        >
+          <label for="acrefeet2">Acre Feet</label>
+        </div>
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle pl-3 pb-3 pt-3"
+        >
+          <p-inputNumber
+            [inputStyle]="{ 'text-align': 'right' }"
+            class="p-inputtext-sm mb-3 w-0"
+            [maxFractionDigits]="4"
+            inputId="cubicfeet"
+            mode="decimal"
+            [size]="10"
+            [min]="0"
+            [(ngModel)]="cubicfeet2"
+            placeholder="Cubic Feet"
+          >
+          </p-inputNumber>
+        </div>
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle pl-2 pt-4 pr-3"
+        >
+          <label for="cubicfeet">Cubic Feet</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-fieldset>
+
+<p-fieldset legend="Cubic Feet to Acre Feet">
+  <div class="grid flex-shrink-0">
+    <div class="flex flex-shrink-0 col-4">
+      <div
+        class="flex flex-shrink-0 text-left border-200 border-1 p-1 border-round"
+      >
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle pl-3 pb-3 pt-3"
+        >
+          <p-inputNumber
+            [inputStyle]="{ 'text-align': 'right' }"
+            class="p-inputtext-sm mb-3 w-0"
+            [maxFractionDigits]="4"
+            inputId="cubicfeet3"
+            (onBlur)="getAcreFeet(cubicfeet3)"
+            mode="decimal"
+            [size]="10"
+            [min]="0"
+            [(ngModel)]="cubicfeet3"
+            placeholder="Cubic Feet"
+          >
+          </p-inputNumber>
+        </div>
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle align-content-start pl-2 pt-4"
+        >
+          <label for="cubicfeet3">Cubic Feet</label>
+        </div>
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle pl-3 pb-3 pt-3"
+        >
+          <p-inputNumber
+            [inputStyle]="{ 'text-align': 'right' }"
+            class="p-inputtext-sm mb-3 w-0"
+            [maxFractionDigits]="4"
+            inputId="acrefeet3"
+            mode="decimal"
+            [size]="10"
+            [min]="0"
+            [(ngModel)]="acrefeet3"
+            placeholder="Acre Feet"
+          >
+          </p-inputNumber>
+        </div>
+        <div
+          class="flex-initial flex-shrink-0 vertical-align-middle pl-2 pt-4 pr-3"
+        >
+          <label for="acrefeet3">Acre Feet</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-fieldset>

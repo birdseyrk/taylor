@@ -11,7 +11,7 @@ export class LoggingService {
   
 
   log = (level:string, info:string) => {
-    console.info('-- ' + level +' TODO Date ' + info + ' ---');
+    //console.info('-- ' + level +' TODO Date ' + info + ' ---');
     //TODO put in switch
     // console.warn();
     // console.error();

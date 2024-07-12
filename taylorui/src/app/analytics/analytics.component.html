@@ -170,11 +170,8 @@
                 <p-card class="flex col gap-2 m-5 "  [ngStyle]="{background:compareReport.yearTypeBackground}">
                     <ng-template pTemplate="header">
                         <span [ngStyle]="{background:compareReport.yearTypeBackground}"><b> {{compareReport.reportYear}}-{{compareReport.reportMonth}}-{{compareReport.reportDay}}</b></span>
-                        <!-- {{compareReport.reportYear}}-{{compareReport.reportMonth}}-{{compareReport.reportDay}} -->
                     </ng-template>
-                    <!-- <ng-template pTemplate="subheader">
-                        {{compareReport.forecastPercent}}% - {{compareReport.forecastAcreFeet}}
-                    </ng-template> -->
+
                     <ng-template pTemplate="content" >
                         <div class="flex flex-shrink-0 col gap-2">
                             <span [ngStyle]=""><b>Forecast - {{compareReport.forcastPercent}}% - {{compareReport.forcastAcreFeet}} af</b></span>
@@ -189,9 +186,52 @@
                             <span [ngStyle]=""><b>{{compareReport.maxContent}} Maximum Content</b></span>
                         </div>
                     </ng-template>
+
                 </p-card>
             </div>
          </div>
 
     </div>
 </p-dialog>
+
+
+
+<!-- <div class="card gap-2">
+
+    <div class="flex  gap-4 flex-wrap" *ngIf="compareReports.length > 0">
+        <div class="grid flex-shrink-0 gap-2" *ngFor="let compareReport of compareReports" >
+            <p-card class="flex col gap-2 m-5 "  [ngStyle]="{background:compareReport.yearTypeBackground}">
+                <ng-template pTemplate="header">
+                    <span [ngStyle]="{background:compareReport.yearTypeBackground}"><b> {{compareReport.reportYear}}-{{compareReport.reportMonth}}-{{compareReport.reportDay}}</b></span>
+                   
+                </ng-template>
+
+                <ng-template pTemplate="content" >
+                    <div class="flex flex-shrink-0 col gap-2">
+                        <span [ngStyle]=""><b>Forecast - {{compareReport.forcastPercent}}% - {{compareReport.forcastAcreFeet}} af</b></span>
+                    </div>
+                    <div class="flex flex-shrink-0 col gap-2">
+                        <span [ngStyle]=""><b>{{compareReport.inflowSummary}} - April-July Inflow</b></span>
+                    </div>
+                    <div class="flex flex-shrink-0 col gap-2">
+                        <span [ngStyle]=""><b>{{compareReport.normal}} of Normal</b></span>
+                    </div>
+                    <div class="flex flex-shrink-0 col gap-2">
+                        <span [ngStyle]=""><b>{{compareReport.maxContent}} Maximum Content</b></span>
+                    </div>
+                
+                    <div class="grid flex-shrink-0 gap-2" *ngFor="let data of compareReport.data" >
+                        <ng-template pTemplate="content" >
+                            <div class="flex flex-shrink-0 col gap-2">
+                                <span [ngStyle]=""><b>Forecast - {{data.inflow}} af-ft</b></span>
+                            </div>
+                        </ng-template>
+
+                    </div>
+                
+                </ng-template>
+            </p-card>
+        </div>
+     </div>
+
+</div> -->

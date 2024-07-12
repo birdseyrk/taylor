@@ -168,7 +168,7 @@
                                 <p-checkbox (onChange)="override(editMonthlyData)" [(ngModel)]="overRideChecked" [binary]="true"   label="Over Ride" inputId="binary" />
                                 <div class="flex-initial text-left   p-3 m-1 border-round-sm font-bold">
                                     <div class="col">
-                                        <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange($event)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %"> </p-inputNumber>
+                                        <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange(editMonthlyData)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %"> </p-inputNumber>
                                         <p-slider [(ngModel)]="outflowPercetage" class="mb-3 w-0" (onChange)="onPercentageChange(editMonthlyData)" styleClass="w-30rem" />
                                     </div>
                                 </div>
@@ -294,7 +294,7 @@
         </div>
     </p-dialog>
 
-    <p-dialog header="Calendar" class="flex-shrink-0 flex" [(visible)]="calendarVisible" [style]="{width: '17vw', height: '17vw'}">
+    <p-dialog header="Calendar" class="flex-shrink-0 flex" [(visible)]="calendarVisible" [style]="{width: '24vw', height: '22vw'}">
         <div class="flex-shrink-0 align-items-center justify-content-center">
             <p-calendar class=" flex-shrink-0 flex align-items-center justify-content-center" [(ngModel)]="myDate"  [inline]="true" [showWeek]="true"></p-calendar>
         </div>

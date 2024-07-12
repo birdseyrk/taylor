@@ -61,7 +61,7 @@ export class OperationsDataComponent {
   fileNamePattern = /^[0-9a-zA-Z-]+$/;
 
   outflowPercetage:number = 0;
-  outflowDirection:string = "Increase";
+  outflowDirection:string = "Decrease";
 
   maxFileSize: number = 1000000000;
 
@@ -71,7 +71,6 @@ export class OperationsDataComponent {
   elevationGridData: any = '';
   elevationGridOptions: any = '';
 
-  editChecked:boolean = false;
   overRideChecked:boolean = false;
 
   calendarVisible               = false;
@@ -108,14 +107,14 @@ export class OperationsDataComponent {
     //const myData  = Object.assign([], this.operationMonthlyData);  //clone
     this.editMonthlyData = JSON.parse(myData);
 
-    console.log(this.editMonthlyData);
+    //console.log(this.editMonthlyData);
 
     this.editDialogVisible = !this.editDialogVisible;
     
     //TODO need to set the values on save so the values are the same.  think about the flow when 
 
     this.outflowPercetage = 0;
-    this.outflowDirection = "";
+    this.outflowDirection = "Decrease";
 
   }
 
@@ -137,12 +136,12 @@ export class OperationsDataComponent {
 
     let saveIndex = "0";
 
-    console.log(mySaveData);
-    console.log( this.operationMonthlyData);
+    //console.log(mySaveData);
+    //console.log( this.operationMonthlyData);
 
     for (let i = 0; i < mySaveData.length; i++) {
-      console.log(mySaveData[i].manualInflow + " " + mySaveData[i].manualOutflow );
-      console.log(this.operationMonthlyData[i].manualInflow + " " + this.operationMonthlyData[i].manualOutflow );
+      //console.log(mySaveData[i].manualInflow + " " + mySaveData[i].manualOutflow );
+      //console.log(this.operationMonthlyData[i].manualInflow + " " + this.operationMonthlyData[i].manualOutflow );
 
       if (mySaveData[i].manualOutflow) {
         this.operationMonthlyData[i].manualOutflow = mySaveData[i].manualOutflow;
@@ -181,16 +180,19 @@ export class OperationsDataComponent {
   
     let myIndex:number = 0;
 
+    //console.log(myData);
+
     for (let i = 0; i < myData.length; i++) {
-     console.log(myData.month + " " + this.convertMonthStringToNumber(myData[i].month) );
+     //console.log(myData[i].month + " " + this.convertMonthStringToNumber(myData[i].month) );
      if (Number(this.reportMonth) === this.convertMonthStringToNumber(myData[i].month) ) {
       myIndex = i;
-      console.log('-----------------------------------');
+      //console.log('-----------------------------------');
+      break;
      }
 
     }
 
-    console.log('Starting index ' + myIndex);
+    //console.log('Starting index ' + myIndex);
 
     return myIndex;
     
@@ -214,10 +216,10 @@ export class OperationsDataComponent {
   }
   
   onPercentageChange(myData:any) {
-    console.log('--- OperationsDataComponent.onPercentageChange --- ');
-    console.log("outflowPercetage " + this.outflowPercetage);
-    console.log("outflowDirection " + this.outflowDirection);
-    console.log("reportMonth      " + Number(this.reportMonth));
+    //console.log('--- OperationsDataComponent.onPercentageChange --- ');
+    //console.log("outflowPercetage " + this.outflowPercetage);
+    //console.log("outflowDirection " + this.outflowDirection);
+    //console.log("reportMonth      " + Number(this.reportMonth));
 
     let myIndex:number = 0;
 
@@ -229,7 +231,7 @@ export class OperationsDataComponent {
 
     for (let i = myIndex; i < myData.length; i++) {
       if (this.outflowDirection === "Increase") {
-        console.log("myOutflow = "  + myData[i].outflow + " " + (myData[i].outflow + myData[i].outflow * (this.outflowPercetage / 100) ));
+        //console.log("myOutflow = "  + myData[i].outflow + " " + (myData[i].outflow + myData[i].outflow * (this.outflowPercetage / 100) ));
         
         //console.log(myData[i]);
         myData[i].manualOutflow = (myData[i].outflow + myData[i].outflow * (this.outflowPercetage / 100)).toFixed(2);
@@ -242,7 +244,7 @@ export class OperationsDataComponent {
     
       } else if (this.outflowDirection === "Decrease") {
         //console.log(myData[i]);
-        console.log("myOutflow = "  + myData[i].outflow + " " + (myData[i].outflow - myData[i].outflow * (this.outflowPercetage / 100) ));
+        //console.log("myOutflow = "  + myData[i].outflow + " " + (myData[i].outflow - myData[i].outflow * (this.outflowPercetage / 100) ));
         
         myData[i].manualOutflow = (myData[i].outflow - myData[i].outflow * (this.outflowPercetage / 100)).toFixed(2);
           
@@ -257,11 +259,6 @@ export class OperationsDataComponent {
 
     this.recalculateEOM( myData, myIndex.toString());
 
-  }
-
-  editCheckChanged() {
-    console.log('--- OperationsDataComponent.editCheckChanged --- ' + this.editChecked);
-    //this.editChecked = !this.editChecked;
   }
 
   checkNameCharacter(event:any) {
@@ -356,7 +353,7 @@ export class OperationsDataComponent {
     this.errors = [];
 
     this.outflowPercetage = 0;
-    this.outflowDirection = "";
+    this.outflowDirection = "Decrease";
 
   }
 
@@ -469,7 +466,7 @@ export class OperationsDataComponent {
 
       this.clearOperationalData();
 
-      console.log(JSON.parse(fileLines));
+      //console.log(JSON.parse(fileLines));
       
       if (fileLines.length > 0 ) {
         myReadJson = JSON.parse(fileLines);
@@ -583,8 +580,8 @@ export class OperationsDataComponent {
     let myIndex   = 0;
     //this.recaculateYearType = 0.0;
     
-     this. outflowPercetage = 0;
-    this.outflowDirection = "";
+    this. outflowPercetage = 0;
+    this.outflowDirection = "Decrease";
 
     for (
       let i = myIndex;
@@ -996,6 +993,8 @@ export class OperationsDataComponent {
 
     let myMonth:string = myMonthString.toLowerCase();
 
+    //console.log(myMonth);
+
     switch (myMonth) {
       case "january": {
         month  = 1;
@@ -1097,12 +1096,10 @@ export class OperationsDataComponent {
         month  = 0;
       }
     }
-
+    
+    //console.log(month);
     return month;
   }
-
-
-
 
   convertReportDate(reportDate:string): string {
     let myDate = reportDate.replaceAll(',','');
@@ -1193,7 +1190,7 @@ export class OperationsDataComponent {
     let temp: any = this.operationsService.getJson();
     this.errors = this.operationsService.getErrorsJson();
 
-    console.log(temp);
+    //console.log(temp);
 
     if ( (temp.data) && (!this.errors.fatalError) ) {
 
@@ -1203,7 +1200,7 @@ export class OperationsDataComponent {
 
       let forcast:any = temp.forcast.split(" ");
       
-      console.log("forcast length " + forcast.length);
+      //console.log("forcast length " + forcast.length);
       this.forcastDate = forcast[0] + " " + forcast[1] + " " + this.reportYear;
 
       if (forcast.length === 7) {

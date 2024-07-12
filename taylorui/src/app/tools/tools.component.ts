@@ -1,15 +1,13 @@
 import { Component } from '@angular/core';
-// import { InputNumberInputEvent } from 'primeng/inputnumber';
 
 import { ElevationService } from '../elevation.service';
 
 @Component({
-  selector: 'app-elevation',
-  templateUrl: './elevation.component.html',
-  styleUrl: './elevation.component.css'
+  selector: 'app-tools',
+  templateUrl: './tools.component.html',
+  styleUrl: './tools.component.css'
 })
-
-export class ElevationComponent {
+export class ToolsComponent {
 
   constructor( 
     public elevationService: ElevationService) { }
@@ -36,4 +34,5 @@ export class ElevationComponent {
   getAcreFeet(myCubicFeet:number) {
     this.acrefeet3 = this.elevationService.getAcreFeet(myCubicFeet);
   }
+
 }

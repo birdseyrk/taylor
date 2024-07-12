@@ -52,6 +52,7 @@ import { LoggingService } from './logging.service';
 import { OperationsService } from './operations.service';
 import { environment } from '../environments/environment';
 import { AnalyticsComponent } from './analytics/analytics.component';
+import { ToolsComponent } from './tools/tools.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { AnalyticsComponent } from './analytics/analytics.component';
     ElevationComponent,
     //DataReaderComponent,
     OperationsDataComponent,
-    AnalyticsComponent
+    AnalyticsComponent,
+    ToolsComponent
   ],
   imports: [
     BrowserAnimationsModule,

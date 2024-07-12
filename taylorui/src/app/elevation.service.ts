@@ -73,4 +73,30 @@ export class ElevationService {
 
     return this.elevation;
   }
+
+getCubicFeet(acreFeet: number): number {
+  let cubicFeet:number = 0;
+  cubicFeet = acreFeet * 43560;
+  return cubicFeet;
+}
+
+getAcreFeet(cubicFeet: number): number {
+  let acreFeet:number = 0;
+  acreFeet = cubicFeet * .0000229568;
+  return acreFeet;
+}
+
+//https://www.unitconverters.net/volume/acre-foot-to-cubic-foot.htm
+// 1 ac*ft = 43560 ft^3
+// 1 ft^3 = 2.29568E-5 ac*ft
+
+// Example: convert 15 ac*ft to ft^3:
+// 15 ac*ft = 15 × 43560 ft^3 = 653400 ft^3
+
+//https://www.unitconverters.net/volume/cubic-foot-to-acre-foot.htm 
+// 1 ft^3 = 2.29568E-5 ac*ft
+// 1 ac*ft = 43560 ft^3
+
+// Example: convert 15 ft^3 to ac*ft:
+// 15 ft^3 = 15 × 2.29568E-5 ac*ft = 0.0003443526 ac*ft
 }

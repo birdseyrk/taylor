@@ -223,6 +223,27 @@ export class AnalyticsComponent {
 
   }
 
+  flattenReports(report:any) {
+    
+    //does not work
+
+    let flattenedReport:any = [];
+    console.log(report.reportYear + "-" + report.reportMonth + "-" +  report.reportDay);
+    console.log(report.data.length);
+    flattenedReport["reportYear"] = report.reportYear;
+    flattenedReport["reportMonth"] = report.reportYear;
+    flattenedReport["reportDay"] = report.reportYear;
+    console.log(flattenedReport);
+    for (let i = 0; i < report.data.length; i++) {
+      console.log(report.data[i].month + " " + report.data[i].dateRange + " " + report.data[i].inflow + " ac-ft ");
+      
+    flattenedReport["month"] =report.data[i].month;
+    flattenedReport["dateRange"] =  report.data[i].dateRange;
+    flattenedReport["inflow"] = report.data[i].inflow;
+    }
+
+  }
+
   compareFilesDialog() {
     console.log('--- AnalyticsComponent.compareFilesDialog ---');
     console.log(this.reports);
@@ -230,9 +251,12 @@ export class AnalyticsComponent {
      this.compareReports = [];
      for (let i = 0; i < this.reports.length; i++) {
       if ( this.reports[i].checked ) {
+
         this.compareReports.push(this.reports[i]);
       }
      }
+      console.log("length " + this.compareReports.length);
+      console.log("length data  " + this.compareReports[0].data.length);
       console.log(this.compareReports);
 
       this.compareFilesVisible = !this.compareFilesVisible;
