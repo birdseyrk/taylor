@@ -103,12 +103,22 @@ export class OperationsDataComponent {
         this.editDialogVisible
     );
 
+    // console.log('-----------------  operationMonthlyData  ---------------------');
+
+    // console.log(this.operationMonthlyData);
+
     let myData:string = JSON.stringify(this.operationMonthlyData);
+
+    // console.log('-----------------  myData  ---------------------');
+
+    // console.log(myData);
 
     //const myData  = Object.assign([], this.operationMonthlyData);  //clone
     this.editMonthlyData = JSON.parse(myData);
 
-    //console.log(this.editMonthlyData);
+    // console.log('-----------------  editMonthlyData  ---------------------');
+
+    // console.log(this.editMonthlyData);
 
     this.editDialogVisible = !this.editDialogVisible;
     
@@ -506,6 +516,8 @@ export class OperationsDataComponent {
          this.initialAcreFeet   = myReadJson.initialAcreFeet;
   
         this.importFileDialogVisible = !this.importFileDialogVisible
+
+        this.fileName = this.reportYear + "-" + this.reportMonth + "-" + this.reportDay + "-" + this.reportName.replaceAll(' ','-') + "-edited";
 
       }
     };
@@ -1258,5 +1270,16 @@ export class OperationsDataComponent {
     else if (this.errors.fatalError) {
       this.errorInputVisible = true;
     }
+    // console.log('-------------- getOperationData -------------------');
+    // console.log(this.operationMonthlyData);
+
+    // console.log('-------------- getOperationData stringify -------------------');
+    // console.log(JSON.stringify(this.operationMonthlyData));
+
+  }
+
+  openPDF(pdf:any){
+    window.open(pdf);
+    return false;
   }
 }

@@ -45,65 +45,103 @@ export class OperationsService {
       }
   
       operations.push(lineString.trim());
+
+      // console.log('-------- operations ----------------');
+      // console.log(operations);
   
       this.myJson = this.setOperationalData(operations);
   
-      //console.log(this.myJson);
+      // console.log(this.myJson);
+
+      // console.log('-------------- myJson stringify -------------------');
+      // console.log(JSON.stringify(this.myJson));
   
       return operations;
     }
   
     getRowArray(row: any): string {
       let rowData:any = [];
-      //let rowJson:any = {row:[]};
-      let rowJson:any = [];
+      //let rowJson:any = [];
+      let myMonth:string = rowData[0];
+      let rowObject:string = "{";
       
       rowData =  row.split(" ");
   
-      rowJson["month"]        = rowData[0];
-      rowJson["dateRange"]    = rowData[1];
-      rowJson["inflow"]           =  Number(rowData[2].replace(/,/g, '')); 
-      rowJson["OriginalInflow"]       =  Number(rowData[2].replace(/,/g, '')); 
+      //rowJson["month"]        = rowData[0];
+      rowObject = rowObject + '"month":"' +  rowData[0] + '",';
+
+      //rowJson["dateRange"]    = rowData[1];
+      rowObject = rowObject + '"dateRange":"' +  rowData[1] + '",';
+
+      //rowJson["inflow"]           =  Number(rowData[2].replace(/,/g, '')); 
+      rowObject = rowObject + '"inflow":' + Number(rowData[2].replace(/,/g, '')) + ',';
+
+      //rowJson["OriginalInflow"]       =  Number(rowData[2].replace(/,/g, '')); 
+      rowObject = rowObject + '"OriginalInflow":' + Number(rowData[2].replace(/,/g, '')) + ',';
       
-      rowJson["avgInflow"]    =  Number(rowData[3].replace(/,/g, ''));
-      rowJson["outflow"]          =  Number(rowData[4].replace(/,/g, ''));
-      rowJson["originalOutflow"]  =  Number(rowData[4].replace(/,/g, ''));
-      rowJson["avgOutflow"]   =  Number(rowData[5].replace(/,/g, ''));
-      rowJson["eomContent"]   =  Number(rowData[6].replace(/,/g, ''));
-      rowJson["eomElevation"] =  Number(rowData[7].replace(/,/g, ''));
+      //rowJson["avgInflow"]    =  Number(rowData[3].replace(/,/g, ''));
+      rowObject = rowObject + '"avgInflow":' + Number(rowData[3].replace(/,/g, '')) + ',';
+
+      //rowJson["outflow"]          =  Number(rowData[4].replace(/,/g, ''));
+      rowObject = rowObject + '"outflow":' + Number(rowData[4].replace(/,/g, '')) + ',';
+
+      //rowJson["originalOutflow"]  =  Number(rowData[4].replace(/,/g, ''));
+      rowObject = rowObject + '"originalOutflow":' + Number(rowData[4].replace(/,/g, '')) + ',';
+
+      //rowJson["avgOutflow"]   =  Number(rowData[5].replace(/,/g, ''));
+      rowObject = rowObject + '"avgOutflow":' + Number(rowData[5].replace(/,/g, '')) + ',';
+
+      //rowJson["eomContent"]   =  Number(rowData[6].replace(/,/g, ''));
+      rowObject = rowObject + '"eomContent":' + Number(rowData[6].replace(/,/g, '')) + ',';
+
+      //rowJson["eomElevation"] =  Number(rowData[7].replace(/,/g, ''));
+      rowObject = rowObject + '"eomElevation":' + Number(rowData[7].replace(/,/g, '')) + ',';
       
       var mySplit1              =  rowData[1].split("-");
-      rowJson["days"]           = parseInt(mySplit1[1]) - parseInt(mySplit1[0]) + 1;
+      //rowJson["days"]           = parseInt(mySplit1[1]) - parseInt(mySplit1[0]) + 1;
+      rowObject = rowObject + '"days":' +  (parseInt(mySplit1[1]) - parseInt(mySplit1[0]) + 1) + ',';
   
     
-      switch (rowJson["month"]) {
+      switch (myMonth) {
         case "Apr": {
-          rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+          //rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+          rowObject = rowObject + '"inflowSummaryColor":"' + constants.INFLOW_SUMMARY_COLOR + '"';
           break;
         }
         case "May": {
-          rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+          //rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+          rowObject = rowObject + '"inflowSummaryColor":"' + constants.INFLOW_SUMMARY_COLOR + '"';
           break;
         }
         case "Jun": {
-          rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+          //rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+          rowObject = rowObject + '"inflowSummaryColor":"' + constants.INFLOW_SUMMARY_COLOR + '"';
           break;
         }
         case "Jul": {
-          rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+          //rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
+          rowObject = rowObject + '"inflowSummaryColor":"' + constants.INFLOW_SUMMARY_COLOR + '"';
           break;
         }
         default : {
-          rowJson["inflowSummaryColor"] = "";
+          //rowJson["inflowSummaryColor"] = "";
+          rowObject = rowObject + '"inflowSummaryColor":"' + "" + '"';
         }
       }
   
-  
+      rowObject = rowObject + "}";
       //console.log(rowJson);
-      return rowJson;
+      //console.log (JSON.parse(rowObject));
+      return JSON.parse(rowObject);
     }
   
     getJson():string {
+      // console.log('------------------- getJson --------------------');
+      // console.log(this.myJson);
+
+      // console.log('-------------- getJson stringify -------------------');
+      // console.log(JSON.stringify(this.myJson));
+
       return this.myJson;
     }
   

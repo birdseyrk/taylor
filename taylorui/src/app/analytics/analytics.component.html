@@ -50,7 +50,7 @@
 
 <p-toast />
 
-<p-dialog header="Import Saved Report" [(visible)]="fileDialogVisible" [style]="{width: '75vw', height: '45vw'}">
+<p-dialog header="Import Saved Reports" [(visible)]="fileDialogVisible" [style]="{width: '75vw', height: '45vw'}">
     <div class="card">
         <p-fileUpload name="myfile[]" url="https://www.primefaces.org/cdn/api/upload.php" [multiple]="true" accept="text/*" maxFileSize="1000000" (onUpload)="onTemplatedUpload($event)" (onSelect)="onSelectedFiles($event)">
             <ng-template pTemplate="header" let-files let-chooseCallback="chooseCallback" let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">

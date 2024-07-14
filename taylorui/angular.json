@@ -1,5 +1,10 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "cache": {
+      "enabled": false
+    }
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -31,6 +36,7 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
+              "src/assets/help",
               {
                 "glob": "**/*",
                 "input": "public"
@@ -95,6 +101,7 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
+              "src/assets/help",
               {
                 "glob": "**/*",
                 "input": "public"

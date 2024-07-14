@@ -13,7 +13,8 @@
     <p-button id="save"         label="Save"                icon="pi pi-save"                                       [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showSaveDataDialog()"></p-button>
     <p-button id="clear"        label="Clear Data"          icon="pi pi-times-circle"   [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="showClearOperationalDataDialog()"></p-button>
     <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualInputs()"></p-button>
-    <p-button id="help"         label="Help"                icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="operationsHelpSidebarVisible=true"></p-button>
+    <!-- <p-button id="help"         label="Help"                icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="operationsHelpSidebarVisible=true"></p-button> -->
+    <p-button id="help"         label="Help"                icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="openPDF('./assets/help/Load-Data.pdf')"></p-button>
 
 <p-divider></p-divider>
     <span >{{eomContentLabel}}</span>
@@ -43,7 +44,7 @@
                 <tr padding="3px">
                                         
                     <td width="15px" class="text-left p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</td>  
-                    <td width="5px"  class="text-center"  >{{ myData.days}}</td>
+                    <td width="5px"  class="text-center"  >{{myData.days}}</td>
                     <td width="5px"  class="text-center p-inputtext-sm" [ngStyle]="{'background':myData.manualInflowColor}">{{myData.manualInflow}}</td>
                     
                     <td width="5px" class="text-center p-inputtext-sm">{{myData.inflow}}</td>
@@ -110,7 +111,6 @@
         <textarea rows="30" cols="75" pInputTextarea [(ngModel)]="proposedOperations"></textarea>
         <p-divider></p-divider>
         <p-button
-           
             [disabled]="proposedOperations.length === 0 "
             label="Load Proposed Operations"
             (click)="processData($event)"
@@ -164,10 +164,10 @@
                                     </label>
                                 </div>
                                 <!-- <p-checkbox  (onChange)="compareFiles(myData)" [(ngModel)]="overRideChecked" [binary]="true"  inputId="binary" /> -->
-                                <p-checkbox (onChange)="override(editMonthlyData)" [(ngModel)]="overRideChecked" [binary]="true"   label="Over Ride" inputId="binary" />
+                                <p-checkbox (onChange)="override(editMonthlyData)" [(ngModel)]="overRideChecked" [binary]="true"   label="Override" inputId="binary" />
                                 <div class="flex-initial text-left   p-3 m-1 border-round-sm font-bold">
                                     <div class="col">
-                                        <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange(editMonthlyData)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %"> </p-inputNumber>
+                                        <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange(editMonthlyData)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %" suffix=" %"> </p-inputNumber>
                                         <p-slider [(ngModel)]="outflowPercetage" class="mb-3 w-0" (onChange)="onPercentageChange(editMonthlyData)" styleClass="w-30rem" />
                                     </div>
                                 </div>
@@ -276,7 +276,7 @@
 
             <div class="grid">
                 <div class="col ml-3 mt-3 mr-3">
-                    <p-button  [style]="{'float':'left'}" (click)="saveOperationalEditData(editMonthlyData)" label="Save Data"></p-button>
+                    <p-button  [style]="{'float':'left'}" (click)="saveOperationalEditData(editMonthlyData)" label="Incorporate Changes"></p-button>
                     <p-button  [style]="{'float':'right'}" (click)="closeEditDialog()" label="Cancel"></p-button>
                 </div>
             </div>
