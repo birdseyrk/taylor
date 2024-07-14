@@ -29,6 +29,8 @@ export class ElevationService {
     let decIndex = 0;
     let myDecimal = 0.0;
 
+    console.log(acreFeet);
+
     this.elevationData.elevationTable.forEach(function (row: any) {
       
       if (row.low < acreFeet) {
@@ -37,6 +39,8 @@ export class ElevationService {
         return;
       }
     });
+
+    console.log(tabIndex);
 
     this.elevation = this.elevationData.elevationTable[tabIndex - 1].elevation;
     
@@ -76,13 +80,13 @@ export class ElevationService {
 
 getCubicFeet(acreFeet: number): number {
   let cubicFeet:number = 0;
-  cubicFeet = acreFeet * 43560;
+  cubicFeet = acreFeet * 43560.000443512;
   return cubicFeet;
 }
 
 getAcreFeet(cubicFeet: number): number {
   let acreFeet:number = 0;
-  acreFeet = cubicFeet * .0000229568;
+  acreFeet = cubicFeet * .000022956840904921; //.0000229568;  .000022956840904921
   return acreFeet;
 }
 

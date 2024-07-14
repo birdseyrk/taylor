@@ -67,6 +67,10 @@ export const AVG_YEAR_BACKGROUND = 'rgb(52, 214, 41)';    // green #34d629
 //export const WET_YEAR_BACKGROUND = 'rgb(50, 121, 207)'; // blue #3279cf
 export const WET_YEAR_BACKGROUND = 'rgb(0, 191, 255)';    // DeepSkyBlue	#00BFFF	
 
+export const DRY_YEAR_BACKGROUND_ANALYTICS = 'rgb(207, 159, 50, .5)';   // Brownish #cf9f32
+export const AVG_YEAR_BACKGROUND_ANALYTICS = 'rgb(52, 214, 41, .5)';    // green #34d629
+export const WET_YEAR_BACKGROUND_ANALYTICS = 'rgb(0, 191, 255, .5)';    // DeepSkyBlue	#00BFFF	
+
 //conversions
 export const ACTOSQFT  = 43560.0;
 export const SECONDSPERDAY = 86400;

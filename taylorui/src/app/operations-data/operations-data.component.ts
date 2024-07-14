@@ -40,6 +40,7 @@ export class OperationsDataComponent {
   eomContentLabel: string = '';
   yearTypeLabel: string = '';
   yearTypeBackground: string = '';
+  yearTypeBackgroundAnalytics: string = '';
   reportName: string = '';
   reportDate:string = '';
   reportYear:string = '';
@@ -331,6 +332,7 @@ export class OperationsDataComponent {
     this.elevationGridOptions = '';
     this.yearTypeLabel        = '';
     this.yearTypeBackground   = '';
+    this.yearTypeBackgroundAnalytics = '';
     this.proposedOperations   = '';
          
     this.reportName           = '';
@@ -415,16 +417,20 @@ export class OperationsDataComponent {
     );
 
     this.yearTypeBackground = '';
+    this.yearTypeBackgroundAnalytics = '';
 
     if (this.yearTypeInflow < constants.DRY_YEAR.low) {
       this.yearTypeLabel = constants.DRY_YEAR_LABEL;
       this.yearTypeBackground = constants.DRY_YEAR_BACKGROUND;
+      this.yearTypeBackgroundAnalytics = constants.DRY_YEAR_BACKGROUND_ANALYTICS;
     } else if (this.yearTypeInflow < constants.WET_YEAR.low) {
       this.yearTypeLabel = constants.AVG_YEAR_LABEL;
       this.yearTypeBackground = constants.AVG_YEAR_BACKGROUND;
+      this.yearTypeBackgroundAnalytics = constants.AVG_YEAR_BACKGROUND_ANALYTICS;
     } else {
       this.yearTypeLabel = constants.WET_YEAR_LABEL;
       this.yearTypeBackground = constants.WET_YEAR_BACKGROUND;
+      this.yearTypeBackgroundAnalytics = constants.WET_YEAR_BACKGROUND_ANALYTICS;
     }
   }
 
@@ -480,6 +486,8 @@ export class OperationsDataComponent {
          this.elevationGridOptions = myReadJson.elevationGridOptions;
          this.yearTypeLabel        = myReadJson.yearTypeLabel;
          this.yearTypeBackground   = myReadJson.yearTypeBackground;
+         
+         this.yearTypeBackgroundAnalytics = myReadJson.yearTypeBackgroundAnalytics;
          this.proposedOperations   = myReadJson.proposedOperations;
          
          this.reportName   = myReadJson.reportName;
@@ -527,6 +535,7 @@ export class OperationsDataComponent {
     myJson.elevationGridOptions = this.elevationGridOptions;
     myJson.yearTypeLabel        = this.yearTypeLabel;
     myJson.yearTypeBackground   = this.yearTypeBackground;
+    myJson.yearTypeBackgroundAnalytics = this.yearTypeBackgroundAnalytics;
     myJson.proposedOperations   = this.proposedOperations;
 
     myJson.reportName           = this.reportName;

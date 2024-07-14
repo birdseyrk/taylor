@@ -2,9 +2,8 @@
 
 <p-panel header="Operations">
        
-    <p-button id="file"         label="File Import"         icon="pi pi-file-o"                                                                                    [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showImportFileDialog()"></p-button>
-    
     <p-button id="manual-load"  label="Load Data"           icon="pi pi-external-link"                                                                             [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showDataDialog()"></p-button>
+    <p-button id="file"         label="File Import"         icon="pi pi-file-o"                                                                                    [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showImportFileDialog()"></p-button>
     <p-button id="edit"         label="edit"                icon="pi pi-user-edit"                                  [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showEditDialog()"></p-button>
     <p-button id="chart"        label="Elevation Graph"     icon="pi pi-chart-line"                                 [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showElevationDialog()"></p-button>
     <p-button id="calendar"     label="Calendar"            icon="pi pi-calendar"                                                                                  [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showCalendarDialog()"></p-button>
