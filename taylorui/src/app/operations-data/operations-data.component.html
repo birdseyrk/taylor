@@ -1,6 +1,6 @@
 
 
-<p-panel header="Operations">
+<p-panel header="{{myReportHeader}} - Operations Data">
        
     <p-button id="manual-load"  label="Load Data"           icon="pi pi-external-link"                                                                             [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showDataDialog()"></p-button>
     <p-button id="file"         label="File Import"         icon="pi pi-file-o"                                                                                    [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showImportFileDialog()"></p-button>
@@ -15,6 +15,7 @@
     <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualInputs()"></p-button>
     <!-- <p-button id="help"         label="Help"                icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="operationsHelpSidebarVisible=true"></p-button> -->
     <p-button id="help"         label="Help"                icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="openPDF('./assets/help/Load-Data.pdf')"></p-button>
+    <p-button id="stipulation"  label="Amended Stipulation" icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="success"   [outlined]="true" (click)="openPDF('./assets/help/Amended-Stipulation.pdf')"></p-button>
 
 <p-divider></p-divider>
     <span >{{eomContentLabel}}</span>
@@ -45,7 +46,7 @@
                                         
                     <td width="15px" class="text-left p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</td>  
                     <td width="5px"  class="text-center"  >{{myData.days}}</td>
-                    <td width="5px"  class="text-center p-inputtext-sm" [ngStyle]="{'background':myData.manualInflowColor}">{{myData.manualInflow}}</td>
+                    <td width="5px"  class="text-center p-inputtext-sm" [ngStyle]="{'background':myData.manualInFlowColor}">{{myData.manualInflow}}</td>
                     
                     <td width="5px" class="text-center p-inputtext-sm">{{myData.inflow}}</td>
                     <td width="5px" class="text-center p-inputtext-sm">{{myData.inflowCF}}</td>
@@ -126,13 +127,13 @@
 
     </p-dialog>
 
-    <p-dialog header="Taylor Park Reservior Water Elevation" [(visible)]="elevationVisible" [style]="{width: '80vw', height: '40vw'}">
+    <p-dialog header="{{myReportHeader}}" [(visible)]="elevationVisible" [style]="{width: '80vw', height: '40vw'}">
 
         <p-chart type="line" [data]="elevationGridData" [options]="elevationGridOptions" height="100%" width="100%"></p-chart>
 
     </p-dialog>
 
-    <p-dialog header="Edit Inputs / outputs Data" [(visible)]="editDialogVisible" [style]="{width: '90vw', height: '95vw'}"  [modal]="true" [draggable]="true" [resizable]="true">
+    <p-dialog header="{{myReportHeader}} - Edit Inputs / outputs Data" [(visible)]="editDialogVisible" [style]="{width: '90vw', height: '95vw'}"  [modal]="true" [draggable]="true" [resizable]="true">
         <div class="card gap-2">
             <!-- <div class="card gap-2 border-500 border-1 border-round  col"> -->
 

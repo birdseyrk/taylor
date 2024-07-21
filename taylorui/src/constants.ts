@@ -4,6 +4,10 @@ export const ELEVATIONGRIDTITLE  = 'Taylor Park Reservior Level';
 export const ELEVATIONGRIDYLABEL = 'Water Elevation (ft)'
 export const ELEVATIONGRIDXLABEL = 'Months'
 
+//Water Level Constants
+export const WARNING_ELEVATION_LEVEL   = 9327;
+export const MAX_ELEVATION_LEVEL       = 9329;
+
 //graph-colors
 //https://htmlcolorcodes.com/color-names/
 //The fourth value denotes alpha and needs to be between 0.0 (absolute transparency) and 1.0 (absolute opacity). For example, 0.5 would be 50% opacity and 50% transparency.
@@ -40,6 +44,10 @@ export const WARNING_LABEL            = 'Warning Water Elevation';
 export const MAX_GRID_LINECOLOR       = 'rgb(255, 0, 0)';          //Red
 export const MAX_GRID_BACKGROUND      = 'rgb(250, 128, 114)';      //Salmon
 
+export const DATE_LABEL               = 'Date Line';                    //#2F4F4F
+export const DATE_GRID_LINECOLOR      = 'rgb(47, 79, 79)';         //DarkSlateGray rgb(47, 79, 79)
+export const DATE_GRID_BACKGROUND     = 'rgb(47, 79, 79)';         //DarkSlateGray
+
 export const EOM_WARNING_LEVEL        = 'rgb(255, 255, 0)';        //yellow
 export const EOM_MAX_LEVEL            = 'rgb(240, 128, 128)';      //LightCoral
 
@@ -48,10 +56,6 @@ export const GRID_SCALES_LABEL        = 'rgb(235, 237, 239)';      //light grey
 
 export const CELL_CHANGE_COLOR        = 'rgb(147, 112, 219, .4)';  //MediumPurple
 export const INFLOW_SUMMARY_COLOR     = 'rgb(152, 251, 152)';  //PaleGreen
-
-//Water Level Constants
-export const WARNING_ELEVATION_LEVEL   = 9327;
-export const MAX_ELEVATION_LEVEL       = 9329;
 
 //Type of year
 export const DRY_YEAR = {"low":0.00,     "high": 74999.999};

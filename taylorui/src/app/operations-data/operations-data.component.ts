@@ -72,6 +72,10 @@ export class OperationsDataComponent {
   elevationGridData: any = '';
   elevationGridOptions: any = '';
 
+  reportNameTitle:string = "";
+  reportDateTitle:string = "";
+  myReportHeader:string = "";
+
   overRideChecked:boolean = false;
 
   calendarVisible               = false;
@@ -80,6 +84,7 @@ export class OperationsDataComponent {
   elevationVisible              = false;
   errorInputVisible             = false;
   editDialogVisible             = false;
+  monthlyDialogVisible          = false;
   linksVisible                  = false;
   saveDialogVisible             = false;
   importFileDialogVisible       = false;
@@ -127,6 +132,16 @@ export class OperationsDataComponent {
     this.outflowPercetage = 0;
     this.outflowDirection = "Decrease";
 
+  }
+
+  showMonthlyDialog() {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.showMOnthlyDialog -------- ' +
+        this.monthlyDialogVisible
+    );
+
+    this.monthlyDialogVisible = !this.monthlyDialogVisible;
   }
 
   closeEditDialog() {
@@ -187,7 +202,7 @@ export class OperationsDataComponent {
   getStartingmonthlyIndex(myData:any):number {
     this.myLog.log(
       'INFO',
-      '-------- OperationsDataComponent.getStartingmonthlyIndex -------- ');
+      '-------- OperationsDataComponent.getMaxWaterLevelIndex -------- ');
   
     let myIndex:number = 0;
 
@@ -204,6 +219,50 @@ export class OperationsDataComponent {
     }
 
     //console.log('Starting index ' + myIndex);
+
+    return myIndex;
+    
+  }
+
+  getMaxWaterLevelIndex(myData:any):number {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.getMaxWaterLevelIndex -------- ');
+  
+    let myIndex:number = 0;
+    let myEOMElevation = 0;
+
+    for (let i = 0; i < myData.length; i++) {
+     //console.log(myData[i].month + " " + this.convertMonthStringToNumber(myData[i].month) );
+     if (Number(myData[i].eomElevation) > myEOMElevation ) {
+      myIndex = i;
+      myEOMElevation = Number(myData[i].eomElevation);
+      //console.log('-----------------------------------');
+     }
+
+    }
+
+    return myIndex;
+    
+  }
+
+  getMinWaterLevelIndex(myData:any):number {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.getMinWaterLevelIndex -------- ');
+  
+    let myIndex:number = 0;
+    let myEOMElevation = 11000;
+
+    for (let i = 0; i < myData.length; i++) {
+     //console.log(myData[i].month + " " + this.convertMonthStringToNumber(myData[i].month) );
+     if (Number(myData[i].eomElevation) < myEOMElevation ) {
+      myIndex = i;
+      myEOMElevation = Number(myData[i].eomElevation);
+      //console.log('-----------------------------------');
+     }
+
+    }
 
     return myIndex;
     
@@ -344,6 +403,10 @@ export class OperationsDataComponent {
     this.yearTypeBackground   = '';
     this.yearTypeBackgroundAnalytics = '';
     this.proposedOperations   = '';
+    
+    this.reportNameTitle      = '';
+    this.reportDateTitle      = '';
+    this.myReportHeader       = '';
          
     this.reportName           = '';
     this.reportYear           = '';
@@ -486,6 +549,8 @@ export class OperationsDataComponent {
       
       if (fileLines.length > 0 ) {
         myReadJson = JSON.parse(fileLines);
+
+        console.log(myReadJson);
   
          this.operationMonthlyData = myReadJson.data;
          
@@ -500,6 +565,10 @@ export class OperationsDataComponent {
          this.yearTypeBackgroundAnalytics = myReadJson.yearTypeBackgroundAnalytics;
          this.proposedOperations   = myReadJson.proposedOperations;
          
+        this.reportNameTitle       = myReadJson.reportNameTitle;
+        this.reportDateTitle       = myReadJson.reportDateTitle;
+        this.myReportHeader        = myReadJson.reportNameTitle + " - " + myReadJson.reportDateTitle
+
          this.reportName   = myReadJson.reportName;
          this.reportYear   = myReadJson.reportYear;
          this.reportDay   = myReadJson.reportDay;
@@ -549,6 +618,9 @@ export class OperationsDataComponent {
     myJson.yearTypeBackground   = this.yearTypeBackground;
     myJson.yearTypeBackgroundAnalytics = this.yearTypeBackgroundAnalytics;
     myJson.proposedOperations   = this.proposedOperations;
+         
+    myJson.reportNameTitle      = this.reportNameTitle;
+    myJson.reportDateTitle      = this.reportDateTitle;
 
     myJson.reportName           = this.reportName;
     myJson.reportYear           = this.reportYear;
@@ -712,7 +784,7 @@ export class OperationsDataComponent {
 
     elevationAdjustedData.data = myModifiedData;
 
-    this.elevationGridData.datasets[3] = elevationAdjustedData;
+    this.elevationGridData.datasets[4] = elevationAdjustedData;
   }
 
   getElevationGridData() {
@@ -720,6 +792,12 @@ export class OperationsDataComponent {
       'INFO',
       '-------- OperationsDataComponent.getElevationGridData --------'
     );
+
+    let myTempMaxLabel     = constants.MAX_LABEL     + " (" + constants.MAX_ELEVATION_LEVEL + ")";
+    let myTempWarningLabel = constants.WARNING_LABEL + " (" + constants.WARNING_ELEVATION_LEVEL + ")";
+
+    // console.log(myTempMaxLabel);
+    // console.log(myTempWarningLabel);
 
     let myJSONstring = '{"datasets":[],"labels":[]}';
     let myProposedLevel =
@@ -748,7 +826,7 @@ export class OperationsDataComponent {
       '","borderDash": [5, 5],"fill":false,"borderColor":"' +
       constants.WARNING_GRID_LINECOLOR +
       '","tension":".4","label":"' +
-      constants.WARNING_LABEL +
+      myTempWarningLabel +
       '"}';
     let myMaxLevel =
       '{"data":[],"backgroundColor":"' +
@@ -756,12 +834,21 @@ export class OperationsDataComponent {
       '","borderDash": [5, 5],"fill":false,"borderColor":"' +
       constants.MAX_GRID_LINECOLOR +
       '","tension":".4","label":"' +
-      constants.MAX_LABEL +
+      myTempMaxLabel +
       '"}';
+      let myDateLine =
+        '{"data":[],"backgroundColor":"' +
+        constants.DATE_GRID_BACKGROUND +
+        '","fill":false,"borderColor":"' +
+        constants.DATE_GRID_LINECOLOR +
+        '","tension":".4","label":"' +
+        constants.DATE_LABEL +
+        '"}';
 
     let myProposedData: any = [];
     let myInflowData: any = [];
     let myOutflowData: any = [];
+    let myDateLineData: any = [];
     let myLabels: any = [];
     let myWarning: any = [];
     let myMax: any = [];
@@ -772,11 +859,27 @@ export class OperationsDataComponent {
     let inFlowData = JSON.parse(myInFlowLevel);
     let elevationWarningData = JSON.parse(myWarningLevel);
     let elevationMaxData = JSON.parse(myMaxLevel);
+    let elevationDateData = JSON.parse(myDateLine);
+
+    //console.log(this.operationMonthlyData);
+
+    let dayIndex:number = this.getStartingmonthlyIndex(this.operationMonthlyData);
+    let maxIndex:number = this.getMaxWaterLevelIndex(this.operationMonthlyData);
+    let minIndex:number = this.getMinWaterLevelIndex(this.operationMonthlyData);
+
+    //console.log("Day Index: " + dayIndex + " " +  this.operationMonthlyData[dayIndex].month + " " +  this.operationMonthlyData[dayIndex].dateRange);
+    //console.log("Min Index: " + minIndex + " " +  this.operationMonthlyData[minIndex].eomElevation);
+    //console.log("Max Index: " + maxIndex + " " +  this.operationMonthlyData[maxIndex].eomElevation);
+
+    myDateLineData[dayIndex] =  (this.operationMonthlyData[minIndex].eomElevation - 3);
+
+    //console.log(myDateLineData);
 
     for (let i = 0; i < this.operationMonthlyData.length; i++) {
       myProposedData[i] = this.operationMonthlyData[i].eomElevation;
       myInflowData[i] = Number(this.operationMonthlyData[i].inflow);
       myOutflowData[i] = Number(this.operationMonthlyData[i].outflow);
+      
       myLabels[i] =
         this.operationMonthlyData[i].month +
         ' ' +
@@ -785,17 +888,20 @@ export class OperationsDataComponent {
       myMax[i] = constants.MAX_ELEVATION_LEVEL;
     }
 
+    //this.elevationGridGeader = this.elevationGridGeader + ;
+
     elevationProposedData.data = myProposedData;
     inFlowData.data = myInflowData;
     outFlowData.data = myOutflowData;
     elevationWarningData.data = myWarning;
     elevationMaxData.data = myMax;
+    elevationDateData.data = myDateLineData;
 
     this.elevationGridData.datasets[0] = elevationWarningData;
     this.elevationGridData.datasets[1] = elevationMaxData;
     this.elevationGridData.datasets[2] = elevationProposedData;
+    this.elevationGridData.datasets[3] = elevationDateData;
     this.elevationGridData.labels = myLabels;
-
 
     this.elevationGridOptions = {
       plugins: {
@@ -827,6 +933,11 @@ export class OperationsDataComponent {
       );
 
       //console.log(this.operations);
+
+      this.myReportHeader = this.operations[1] + " - " + this.operations[3];
+
+      //console.log(this.myReportHeader);
+
 
     } else {
       this.myLog.log('INFO', 'proposedOperations data is empty');
@@ -1211,17 +1322,20 @@ export class OperationsDataComponent {
     let temp: any = this.operationsService.getJson();
     this.errors = this.operationsService.getErrorsJson();
 
-    //console.log(temp);
+    this.myReportHeader   = temp.reportNameTitle + " - " + temp.reportDateTitle
+
+    this.reportNameTitle = temp.name;
+    this.reportDateTitle = temp.date;
 
     if ( (temp.data) && (!this.errors.fatalError) ) {
 
       this.reportName = temp.name.replaceAll(' ','-');
       this.reportDate = temp.date;
+
       this.reportDate = this.convertReportDate(this.reportDate);
 
       let forcast:any = temp.forcast.split(" ");
       
-      //console.log("forcast length " + forcast.length);
       this.forcastDate = forcast[0] + " " + forcast[1] + " " + this.reportYear;
 
       if (forcast.length === 7) {
@@ -1275,6 +1389,8 @@ export class OperationsDataComponent {
 
     // console.log('-------------- getOperationData stringify -------------------');
     // console.log(JSON.stringify(this.operationMonthlyData));
+
+    this.myReportHeader = this.reportNameTitle + " - " + this.reportDateTitle;
 
   }
 

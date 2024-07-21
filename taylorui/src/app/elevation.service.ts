@@ -25,11 +25,12 @@ export class ElevationService {
   }
 
   getElevation(acreFeet: number): number {
+    //console.log("--------------- getElevation ---------------");
     let tabIndex = 0;
     let decIndex = 0;
     let myDecimal = 0.0;
 
-    console.log(acreFeet);
+    //console.log("acreFeet " + acreFeet);
 
     this.elevationData.elevationTable.forEach(function (row: any) {
       
@@ -40,7 +41,7 @@ export class ElevationService {
       }
     });
 
-    console.log(tabIndex);
+    //console.log("tabIndex " + tabIndex);
 
     this.elevation = this.elevationData.elevationTable[tabIndex - 1].elevation;
     
