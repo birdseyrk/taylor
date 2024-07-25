@@ -82,12 +82,32 @@ export class ElevationService {
 getCubicFeet(acreFeet: number): number {
   let cubicFeet:number = 0;
   cubicFeet = acreFeet * 43560.000443512;
+
   return cubicFeet;
+}
+
+getAvgCubicFeetPerSecond(acreFeet: number, days: number): number {
+  let avgCubicFeet:number = 0;
+  let seconds = 60;
+  let minutes = 60;
+  let hours   = 24;
+  avgCubicFeet = (acreFeet * 43560.000443512) / (seconds * minutes * hours * days);
+
+  return avgCubicFeet;
 }
 
 getAcreFeet(cubicFeet: number): number {
   let acreFeet:number = 0;
   acreFeet = cubicFeet * .000022956840904921; //.0000229568;  .000022956840904921
+  return acreFeet;
+}
+
+getAcreFeetFromCFS(cfs: number): number {
+  console.log('--- getAcreFeetFromCFS ---');
+  console.log('cfs  ' + cfs);
+  let acreFeet:number = 0;
+  acreFeet = cfs * 1.982113483915127;
+  console.log(acreFeet);
   return acreFeet;
 }
 

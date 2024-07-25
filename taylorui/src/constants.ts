@@ -78,3 +78,18 @@ export const WET_YEAR_BACKGROUND_ANALYTICS = 'rgb(0, 191, 255, .5)';    // DeepS
 //conversions
 export const ACTOSQFT  = 43560.0;
 export const SECONDSPERDAY = 86400;
+
+export const MONTHS = [
+    {"month":"January", "abrev":"Jan"}, 
+    {"month":"February", "abrev":"Feb"}, 
+    {"month":"March", "abrev":"Mar"}, 
+    {"month":"April", "abrev":"Apr"}, 
+    {"month":"May", "abrev":"May"}, 
+    {"month":"June", "abrev":"Jun"}, 
+    {"month":"July", "abrev":"Jul"}, 
+    {"month":"August", "abrev":"Aug"}, 
+    {"month":"September", "abrev":"Sep"}, 
+    {"month":"October", "abrev":"Oct"}, 
+    {"month":"November", "abrev":"Nov"}, 
+    {"month":"December", "abrev":"Dec"}
+]

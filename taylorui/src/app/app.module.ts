@@ -23,6 +23,7 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { DragDropModule } from 'primeng/dragdrop';
+import {DropdownModule} from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
 import { FileUploadModule } from 'primeng/fileupload';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -82,6 +83,7 @@ import { ToolsComponent } from './tools/tools.component';
     DialogModule,
     DividerModule,
     DragDropModule,
+    DropdownModule,
     FileUploadModule,
     FieldsetModule,
     FloatLabelModule,

@@ -6,7 +6,7 @@
     <p-button id="file"         label="File Import"         icon="pi pi-file-o"                                                                                    [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showImportFileDialog()"></p-button>
     <p-button id="edit"         label="edit"                icon="pi pi-user-edit"                                  [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showEditDialog()"></p-button>
     <p-button id="chart"        label="Elevation Graph"     icon="pi pi-chart-line"                                 [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showElevationDialog()"></p-button>
-    <p-button id="month"        label="Monthly"             icon="pi pi-calendar-plus"                              [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showMonthlyDialog()"></p-button>
+    <!-- <p-button id="month"        label="Monthly"             icon="pi pi-calendar-plus"                              [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showDailyDialog()"></p-button> -->
     <p-button id="calendar"     label="Calendar"            icon="pi pi-calendar"                                                                                  [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showCalendarDialog()"></p-button>
     
     <p-button id="links"         label="Links"              icon="pi pi-link"                                                                                      [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="linksVisible = true"></p-button>
@@ -47,14 +47,14 @@
                                         
                     <td width="15px" class="text-left p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</td>  
                     <td width="5px"  class="text-center"  >{{myData.days}}</td>
-                    <td width="5px"  class="text-center p-inputtext-sm" [ngStyle]="{'background':myData.manualInFlowColor}">{{myData.manualInflow}}</td>
+                    <td width="5px"  class="text-center p-inputtext-sm" [ngStyle]="{'background':myData.manualInFlowColor}">{{convertStringToNumber(myData.manualInflow).toFixed(2)}}</td>
                     
-                    <td width="5px" class="text-center p-inputtext-sm">{{myData.inflow}}</td>
-                    <td width="5px" class="text-center p-inputtext-sm">{{myData.inflowCF}}</td>
-                    <td width="5px" class="text-center p-inputtext-sm" [ngStyle]="{'background':myData.manualOutFlowColor}">{{myData.manualOutflow}}</td>
+                    <td width="5px" class="text-center p-inputtext-sm">{{myData.inflow.toFixed(2)}}</td>
+                    <td width="5px" class="text-center p-inputtext-sm">{{myData.inflowCF.toFixed(2)}}</td>
+                    <td width="5px" class="text-center p-inputtext-sm" [ngStyle]="{'background':myData.manualOutFlowColor}">{{convertStringToNumber(myData.manualOutflow).toFixed(2)}}</td>
                     
-                    <td width="5px" class="text-center p-inputtext-sm">{{myData.outflow}}</td>
-                    <td width="5px" class="text-center p-inputtext-sm">{{myData.outflowCF}}</td>
+                    <td width="5px" class="text-center p-inputtext-sm">{{myData.outflow.toFixed(2)}}</td>
+                    <td width="5px" class="text-center p-inputtext-sm">{{myData.outflowCF.toFixed(2)}}</td>
                     <td width="5px" class="text-center p-inputtext-sm">{{myData.avgInflowCFS.toFixed(2)}}</td>
                     <td width="5px" class="text-center p-inputtext-sm">{{myData.avgOutflowCFS.toFixed(2)}}</td>
                     <td width="5px" class="text-center p-inputtext-sm">{{myData.eomContent.toFixed(2)}}</td>
@@ -137,6 +137,8 @@
     <p-dialog header="{{myReportHeader}} - Edit Inputs / outputs Data" [(visible)]="editDialogVisible" [style]="{width: '90vw', height: '95vw'}"  [modal]="true" [draggable]="true" [resizable]="true">
         <div class="card gap-2">
             <!-- <div class="card gap-2 border-500 border-1 border-round  col"> -->
+                <p-button id="month"        label="Monthly"             icon="pi pi-calendar-plus"                              [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showDailyDialog()"></p-button>
+    
 
                 <p-fieldset legend="Manual Outflow (Change the remaining months)">
                     <div class="grid flex-shrink-0">
@@ -186,63 +188,6 @@
                         </div>
                     </div>
                 </p-fieldset>
-            
-                <!-- <p-divider></p-divider>
-
-                <div class="grid">
-                    <div class="col-1">
-                        <div class="flex align-items-center ml-3 mt-3 font-bold">
-                            <label>Manual Outflow</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid">
-                    <div class="col-1 ml-1 mt-3">
-                        <p-radioButton 
-                            class="text-xs "
-                            name="outflowPercent" 
-                            value="Decrease" 
-                            [(ngModel)]="outflowDirection" 
-                            inputId="outflowPercent1"
-                            (onClick)="onPercentageChange(editMonthlyData)"/>
-                        <label for="outflowPercent1" class="ml-1 font-bold">
-                            Decrease %
-                        </label>
-                    </div>
-                    
-                    <div class="col-1  ml-1 mt-3">
-                        <p-radioButton 
-                            class="text-xs"
-                            name="outflowPercent" 
-                            value="Increase" 
-                            [(ngModel)]="outflowDirection" 
-                            inputId="outflowPercent2"
-                            (onClick)="onPercentageChange(editMonthlyData)"/>
-                        <label for="outflowPercent2" class="ml-1 font-bold">
-                            Increase %
-                        </label>
-                    </div>
-                    
-                    <div class="col-3 ml-1 mt-5">
-                        <div class="flex align-items-center">
-                            <p-slider [(ngModel)]="outflowPercetage" class="mb-3 w-0" (onChange)="onPercentageChange(editMonthlyData)" styleClass="w-30rem" />
-                        </div>
-                    </div>
-                    
-                    <div class="col-1 ml-1 mt-3">
-                        <div class="flex align-items-center">
-                            <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange($event)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %"> </p-inputNumber>
-                    
-                        </div>
-                    </div>
-                    
-                    <div class="col ml-5 mr-5">
-                        <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualEditInputs(editMonthlyData)"></p-button>
-                        <p-button id="help"         label="Help"               icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="editHelpSidebarVisible=true"></p-button>
-                    </div>
-                </div> -->
-            <!-- </div> -->
 
             <p-divider></p-divider>
 
@@ -267,9 +212,9 @@
                             <td width="15px" class="p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</td>  
                             <td width="5px"  class="text-center"  >{{ myData.days}}</td>
                             <td width="8px"  class="text-center p-inputtext-sm"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(editMonthlyData,myData.index)"               inputId="manualInflow_{{myData.index}}"         mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualInflow"     placeholder="Inflow (AF)" [inputStyle]="{background:myData.manualInflowColor,'text-align': 'right'}"> </p-inputNumber></td>
-                            <td width="5px" class="text-center p-inputtext-sm">{{myData.inflow}}</td>
+                            <td width="5px" class="text-center p-inputtext-sm">{{myData.inflow.toFixed(2)}}</td>
                             <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(editMonthlyData,myData.index)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Outflow (AF)" [inputStyle]="{background:myData.manualOutFlowColor,'text-align': 'right'}"> </p-inputNumber></td>
-                            <td width="5px" class="text-center p-inputtext-sm">{{myData.outflow}}</td>
+                            <td width="5px" class="text-center p-inputtext-sm">{{myData.outflow.toFixed(2)}}</td>
                             <td width="5px" class="text-center p-inputtext-sm">{{myData.eomContent.toFixed(2)}}</td>
                             <td width="5px" class="text-center p-inputtext-sm"  [ngStyle]="{'background':myData.elevationWarning}" >{{myData.eomElevation.toFixed(2)}}</td>
                         </tr>
@@ -383,6 +328,173 @@
 
     </p-dialog>
 </p-panel>  
+
+
+
+
+
+<p-dialog header="{{myReportHeader}} - Edit Inputs / outputs Data" [(visible)]="dailyDialogVisible" [style]="{width: '90vw', height: '95vw'}"  [modal]="true" [draggable]="true" [resizable]="true">
+    <div class="card gap-2">
+
+        <p-dropdown [options]="myMonths" [(ngModel)]="selectedMonth" optionLabel="month" (onChange)="changeDailyMonth(selectedMonth)"></p-dropdown>
+
+        <p-table [scrollable]="true" scrollHeight="600px" [styleClass]="selectedSize" [value]="reportMonths" [tableStyle]="{ 'min-width': '100rem' }" [autoLayout]="true">
+            <ng-template pTemplate="header">
+                <tr padding="3px">
+                    <th width="15px" class="text-center">Month</th>
+                    <th width="5px"  class="text-center">Days</th>
+                    <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF)</th>
+                    <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF per Day)</th>
+                    <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF per hour)</th>
+                    <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF per second)</th>
+                    <th width="5px"  class="text-center">Outflow<br>(AF)</th>
+                    <th width="5px"  class="text-center">Outflow<br>(AF per Day)</th>
+                    <th width="5px"  class="text-center">Outflow<br>(AF per hour)</th>
+                    <th width="5px"  class="text-center">Outflow<br>(AF per second)</th>
+                    <th width="5px"  class="text-center">EOM<br>Content<br>(AF)</th>
+                    <th width="5px"  class="text-center">EOM<br>Elevation<br>(FT)</th>
+                    
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-myMonth >  
+                   
+                    <tr padding="3px">   
+                        <td width="15px" class="text-center p-inputtext-sm">{{ myMonth.month + ' ' +  myMonth.dateRange }}</td>  
+                        <td width="5px"  class="text-center p-inputtext-sm"  >{{ myMonth.days}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{myMonth.inflow}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.inflow/myMonth.days).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.inflow/myMonth.days/24).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.inflow/myMonth.days/24/60/60).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{myMonth.outflow}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.outflow/myMonth.days).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.outflow/myMonth.days/24).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.outflow/myMonth.days/24/60/60).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{myMonth.eomContent.toFixed(2)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm"  [ngStyle]="{'background':myMonth.elevationWarning}" >{{myMonth.eomElevation.toFixed(2)}}</td>
+                    </tr>
+                </ng-template>
+        </p-table>
+
+        <p-table [scrollable]="true" scrollHeight="850px" [styleClass]="selectedSize" [value]="editDailyData" [tableStyle]="{ 'min-width': '100rem', 'max-width': '300rem' }" [autoLayout]="true">
+            <ng-template pTemplate="header">
+                <tr padding="3px">
+                    <th width="15px" class="text-center">Day</th>
+                    <th width="5px"  class="text-center">Avg Inflow (CFS)</th>
+                    <th width="5px"  class="text-center">Avg Outflow (CFS)</th>
+                    <th width="5px"  class="text-center">Manual Outflow (CFS)</th>
+                    
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-myDay >  
+                   
+                    <tr padding="3px">   
+                        <td width="15px" class="text-center p-inputtext-sm">{{ myDay.day }}</td>  
+                        <td width="5px"  class="text-center p-inputtext-sm"  >{{ myDay.avgInflowCFS.toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{myDay.avgOutflowCFS.toFixed(5)}}</td>
+                        <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" 
+                            (onBlur)="recalculateDaily(editDailyData,myDay.index)"  [disabled]="myDay.disabled"               inputId="manualOutflow_{{myDay.index}}"   
+                             mode="decimal" [size]="6" [min]="0" [max]="2000"                         [(ngModel)]="myDay.manualOutflowCFS"   
+                              placeholder="Outflow (CSF)" [inputStyle]="{background:myDay.manualOutFlowColor,'text-align': 'right'}"> </p-inputNumber></td>
+
+                    </tr>
+                </ng-template>
+        </p-table>
+        <p-table [scrollable]="true" scrollHeight="600px" [styleClass]="selectedSize" [value]="modifiedReportMonths" [tableStyle]="{ 'min-width': '100rem' }" [autoLayout]="true">
+            <ng-template pTemplate="header">
+                <tr padding="3px">
+                    <th width="15px" class="text-center">Month</th>
+                    <th width="5px"  class="text-center">Days</th>
+                    <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF)</th>
+                    <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF per Day)</th>
+                    <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF per hour)</th>
+                    <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF per second)</th>
+                    <th width="5px"  class="text-center">Outflow<br>(AF)</th>
+                    <th width="5px"  class="text-center">Outflow<br>(AF per Day)</th>
+                    <th width="5px"  class="text-center">Outflow<br>(AF per hour)</th>
+                    <th width="5px"  class="text-center">Outflow<br>(AF per second)</th>
+                    <th width="5px"  class="text-center">EOM<br>Content<br>(AF)</th>
+                    <th width="5px"  class="text-center">EOM<br>Elevation<br>(FT)</th>
+                    
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-myMonth >  
+                   
+                    <tr padding="3px">   
+                        <td width="15px" class="text-center p-inputtext-sm">{{ myMonth.month + ' ' +  myMonth.dateRange }}</td>  
+                        <td width="5px"  class="text-center p-inputtext-sm"  >{{ myMonth.days}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{myMonth.inflow.toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.inflow/myMonth.days).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.inflow/myMonth.days/24).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.inflow/myMonth.days/24/60/60).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{myMonth.outflow.toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.outflow/myMonth.days).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.outflow/myMonth.days/24).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{(myMonth.outflow/myMonth.days/24/60/60).toFixed(5)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm">{{myMonth.eomContent.toFixed(2)}}</td>
+                        <td width="5px"  class="text-center p-inputtext-sm"  [ngStyle]="{'background':myMonth.elevationWarning}" >{{myMonth.eomElevation.toFixed(2)}}</td>
+                    </tr>
+                </ng-template>
+        </p-table>
+
+        <!-- <div class="flex flex-shrink-0 col gap-1 pl-4">
+            <span [ngStyle]="">Days - {{month1.days}}</span>
+        </div>
+        <div class="flex flex-shrink-0 col gap-1 pl-4">
+            <span [ngStyle]="">Outflow - {{getNumber(month1.outflow) | number:'1.0':'en-US'}} acre feet</span>
+        </div>
+        <div class="flex flex-shrink-0 col gap-1 pl-4">
+            <span [ngStyle]="">Outflow - {{getNumber(month1.outflowCF) | number:'1.0':'en-US'}} CFS</span>
+        </div>
+        <div class="flex flex-shrink-0 col gap-1 pl-4">
+            <span [ngStyle]="">Avg Outflow - {{getNumber(month1.avgOutflow) | number:'1.0':'en-US'}} CFS</span>
+        </div>
+        <div class="flex flex-shrink-0 col gap-1 pl-4">
+            <span [ngStyle]="">EOM Content - {{getNumber(month1.eomContent) | number:'1.0':'en-US'}} acre feet</span>
+        </div>
+        <div class="flex flex-shrink-0 col gap-1 pl-4">
+            <span [ngStyle]="">EOM Elevation - {{getNumber(month1.eomElevation) | number:'1.0':'en-US'}} Feet</span>
+        </div> -->
+
+        <!-- <p-table [scrollable]="true" scrollHeight="600px" [styleClass]="selectedSize" [value]="editMonthlyData" [tableStyle]="{ 'min-width': '100rem' }" [autoLayout]="true">
+            <ng-template pTemplate="header">
+                <tr padding="3px">
+                    <th width="15px" class="text-center">Month</th>
+                    <th width="5px"  class="text-center">Days</th>
+                    <th width="10px"  class="text-center">Manual<br>Inflow<br>(AF)</th>
+                    <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF)</th>
+                    <th width="5px"  class="text-center">Manual<br>Outflow<br>(AF)</th>
+                    <th width="5px"  class="text-center">Outflow<br>(AF)</th>
+                    <th width="5px"  class="text-center">EOM<br>Content<br>(AF)</th>
+                    <th width="5px"  class="text-center">EOM<br>Elevation<br>(FT)</th>
+                    
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-myData >  
+                   
+                    <tr padding="3px">
+                                            
+                        <td width="15px" class="p-inputtext-sm">{{ myData.month + ' ' +  myData.dateRange }}</td>  
+                        <td width="5px"  class="text-center"  >{{ myData.days}}</td>
+                        <td width="8px"  class="text-center p-inputtext-sm"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(editMonthlyData,myData.index)"               inputId="manualInflow_{{myData.index}}"         mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualInflow"     placeholder="Inflow (AF)" [inputStyle]="{background:myData.manualInflowColor,'text-align': 'right'}"> </p-inputNumber></td>
+                        <td width="5px" class="text-center p-inputtext-sm">{{myData.inflow}}</td>
+                        <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="recalculateEOM(editMonthlyData,myData.index)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [size]="6" [min]="0" [max]="106200"                         [(ngModel)]="myData.manualOutflow"    placeholder="Outflow (AF)" [inputStyle]="{background:myData.manualOutFlowColor,'text-align': 'right'}"> </p-inputNumber></td>
+                        <td width="5px" class="text-center p-inputtext-sm">{{myData.outflow}}</td>
+                        <td width="5px" class="text-center p-inputtext-sm">{{myData.eomContent.toFixed(2)}}</td>
+                        <td width="5px" class="text-center p-inputtext-sm"  [ngStyle]="{'background':myData.elevationWarning}" >{{myData.eomElevation.toFixed(2)}}</td>
+                    </tr>
+                </ng-template>
+        </p-table>
+
+        <div class="grid">
+            <div class="col ml-3 mt-3 mr-3">
+                <p-button  [style]="{'float':'left'}" (click)="saveOperationalEditData(editMonthlyData)" label="Incorporate Changes"></p-button>
+                <p-button  [style]="{'float':'right'}" (click)="closeEditDialog()" label="Cancel"></p-button>
+            </div>
+        </div> -->
+    </div>
+</p-dialog>
+
+
 
 <p-toast position="top-center" key="message"></p-toast>
 
