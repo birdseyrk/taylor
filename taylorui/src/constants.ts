@@ -93,3 +93,5 @@ export const MONTHS = [
     {"month":"November", "abrev":"Nov"}, 
     {"month":"December", "abrev":"Dec"}
 ]
+
+export const maxOutletVolume = 1500; //CFS

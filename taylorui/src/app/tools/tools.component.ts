@@ -21,6 +21,9 @@ export class ToolsComponent {
   acrefeet3   = 0.0;
   cubicfeet3  = 0.0;
 
+  acrefeet4   = 0.0;
+  cubicfeet4  = 0.0;
+
   test:any = new Array(70000,80000,90000,100000);
 
   getElevation(myAcrefeet:any) {
@@ -33,6 +36,11 @@ export class ToolsComponent {
 
   getAcreFeet(myCubicFeet:number) {
     this.acrefeet3 = this.elevationService.getAcreFeet(myCubicFeet);
+  }
+
+  getAcreFeetFromCubicFeetPerSecond(cfs:number) {
+    console.log("getAcreFeetFromCubicFeetPerSecond " + cfs);
+    this.acrefeet4 = this.elevationService.getAcreFeetFromCFS(cfs);
   }
 
 }

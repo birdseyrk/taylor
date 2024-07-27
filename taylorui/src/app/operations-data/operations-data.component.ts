@@ -103,9 +103,16 @@ export class OperationsDataComponent {
   myMonths = constants.MONTHS;
   selectedMonth:any = this.myMonths[0];
   dayIndex:number = 0;
+  startingDailyEOMContent: number = 0.0;
 
   myLinks = [
-    {"name" : "USGS - Water Data", "link" : "https://waterdata.usgs.gov/nwis/inventory?agency_code=USGS&site_no=09108500"}
+    {"name" : "USGS - Water Data", "link" : "https://waterdata.usgs.gov/nwis/inventory?agency_code=USGS&site_no=09108500"},
+    {"name" : "Bureau of Reclamation", "link" : "https://www.usbr.gov/projects/index.php?id=236"},
+    {"name" : "Gunnison River Basin", "link" : "https://gunnisonriverbasin.org/water-management/taylor-park-reservoir-operations/"},
+    {"name" : "snoflo Report", "link" : "https://snoflo.org/report/flow/colorado/taylor-river-below-taylor-park-reservoir/"},
+    {"name" : "USGS Water Data", "link" : "https://waterdata.usgs.gov/monitoring-location/09110000"},
+    {"name" : "State of Colorado", "link" : "https://dwr.state.co.us/Tools/Stations/TAYBERCO?params=DISCHRG&gridObservations-sort=meas_value-asc&gridAnalysisSummaryCY-sort=amt_aug-asc&gridPeakStreamFlow-sort=peak_q_date-asc&gridAnalysisSummaryIY-sort=amt_jan-asc&gridAnalysisSummaryWY-sort=amt_may-asce"},
+    {"name" : "Taylor Park Dam - wikipedia", "link" : "https://en.wikipedia.org/wiki/Taylor_Park_Dam"}
   ]
 
   showEditDialog() {
@@ -156,9 +163,28 @@ export class OperationsDataComponent {
     }
 
     this.dayIndex = this.getStartingMonthlyIndex(this.editMonthlyData);
+    
+    console.log("index " + this.dayIndex);
+    console.log(this.editMonthlyData[this.dayIndex]);
+    console.log(this.editMonthlyData[this.dayIndex].eomContent);
 
-    this.reportMonths[0] = this.editMonthlyData[this.dayIndex];
-    this.reportMonths[1] = this.editMonthlyData[(this.dayIndex+1)];
+    console.log('Months EOM Content ' + this.editMonthlyData[this.dayIndex].eomContent);
+    console.log('Next Months EOM Content ' + this.editMonthlyData[this.dayIndex+1].eomContent);
+
+    if (this.dayIndex == 0) {
+      this.startingDailyEOMContent = this.startingEOMContent
+    } else {
+      
+      this.startingDailyEOMContent =  this.editMonthlyData[this.dayIndex-1].eomContent;
+    }
+    console.log('startingDailyEOMContent '  + this.startingDailyEOMContent);
+
+    myData = JSON.stringify(this.editMonthlyData[this.dayIndex]);
+    this.reportMonths[0] =  JSON.parse(myData);//this.editMonthlyData[this.dayIndex];
+    
+
+    myData = JSON.stringify(this.editMonthlyData[this.dayIndex+1]);
+    this.reportMonths[1] = JSON.parse(myData);//this.editMonthlyData[(this.dayIndex+1)];
 
     let reportString:string =  JSON.stringify(this.editMonthlyData[(this.dayIndex+1)]);
     this.reportMonths[2] = JSON.parse(reportString);
@@ -174,8 +200,8 @@ export class OperationsDataComponent {
     // console.log( this.reportMonths[1].inflow);
     // console.log( this.reportMonths[2].inflow);
 
-    this.modifiedReportMonths[0] = this.reportMonths[0];
-    this.modifiedReportMonths[1] = this.reportMonths[1];
+    this.modifiedReportMonths[0] = this.editMonthlyData[this.dayIndex];
+    this.modifiedReportMonths[1] = this.editMonthlyData[(this.dayIndex+1)];
     this.modifiedReportMonths[2] = this.reportMonths[2];
     
     this.modifiedReportMonths[3] = JSON.parse(reportString);
@@ -203,6 +229,21 @@ export class OperationsDataComponent {
     let myMonth:string =  "" + this.convertMonthStringToNumber(month.month);
 
     this.dayIndex = this.getMonthIndex(this.editMonthlyData, myMonth);
+
+    console.log(this.editMonthlyData);
+    
+    console.log("index " + this.dayIndex);
+    //console.log(this.editMonthlyData[this.dayIndex]);
+    console.log('Months EOM Content ' + this.editMonthlyData[this.dayIndex].eomContent);
+    console.log('Next Months EOM Content ' + this.editMonthlyData[this.dayIndex+1].eomContent);
+
+    if (this.dayIndex == 0) {
+      this.startingDailyEOMContent = this.startingEOMContent
+    } else {
+      
+      this.startingDailyEOMContent =  this.editMonthlyData[this.dayIndex-1].eomContent;
+    }
+    console.log('startingDailyEOMContent '  + this.startingDailyEOMContent);
 
     this.reportMonths[0] = this.editMonthlyData[this.dayIndex];
     this.reportMonths[1] = this.editMonthlyData[(this.dayIndex+1)];
@@ -258,15 +299,21 @@ export class OperationsDataComponent {
     let totalOutflow:number = 0;
     let totalManualOutflow:number = 0;
     let totalDays:number = 0;
-
+    let totalEomContent:number = this.startingDailyEOMContent;
 
     for (let i = 0; i < myData1.days; i++) {
-      let myData = {"day":"", "avgInflowCFS":0, "avgOutflowCFS":0, "orgOutflowCFS":0, "manualOutflowCFS":0, "index":0, "manualOutFlowColor":"", "disabled":false};
+      let myData = {"day":"", "avgInflowCFS":0, "avgOutflowCFS":0, "lastOutflowCFS":0, "manualOutflowCFS":0, "orgEomContent":0, "startEomContent":0, "eomContent":0, "eomElevation":0, "index":0, "manualOutFlowColor":"", "elevationWarning":"", "disabled":false};
       myData.day = myData1.month + "-" + (i+1);
       myData.avgInflowCFS = myData1.avgInflowCFS;
       myData.avgOutflowCFS = myData1.avgOutflowCFS;
-      myData.orgOutflowCFS = myData1.avgOutflowCFS;
+      myData.lastOutflowCFS = myData1.avgOutflowCFS;
       myData.manualOutflowCFS = myData1.avgOutflowCFS.toFixed(5);
+      totalEomContent = totalEomContent + this.elevationService.getAcreFeetFromCFS(myData.avgInflowCFS) - this.elevationService.getAcreFeetFromCFS(myData.manualOutflowCFS);
+      myData.eomContent = totalEomContent;
+      myData.orgEomContent = totalEomContent;
+      myData.eomElevation = this.elevationService.getElevation(myData.eomContent);
+      console.log("myData.eomElevation " + myData.eomElevation);
+      myData.elevationWarning = this.getElevationWarning(myData.eomElevation);
       myData.index = (i+1);
       myData.manualOutFlowColor = "";
       totalInflow        = totalInflow + myData1.avgInflowCFS;
@@ -277,12 +324,18 @@ export class OperationsDataComponent {
     }
 
     for (let i = myData1.days; i < (myData1.days + myData2.days ); i++) {
-      let myData = {"day":"", "avgInflowCFS":0, "avgOutflowCFS":0, "orgOutflowCFS":0, "manualOutflowCFS":0, "index":0, "manualOutFlowColor":"", "disabled":false};
+      let myData = {"day":"", "avgInflowCFS":0, "avgOutflowCFS":0, "lastOutflowCFS":0, "manualOutflowCFS":0, "orgEomContent":0, "startEomContent":0, "eomContent":0, "eomElevation":0, "index":0, "manualOutFlowColor":"", "elevationWarning":"", "disabled":false};
       myData.day = myData2.month + "-" + (i+1);
       myData.avgInflowCFS = myData2.avgInflowCFS;
       myData.avgOutflowCFS = myData2.avgOutflowCFS;
-      myData.orgOutflowCFS = myData2.avgOutflowCFS;
+      myData.lastOutflowCFS = myData2.avgOutflowCFS;
       myData.manualOutflowCFS = myData2.avgOutflowCFS.toFixed(5);
+      totalEomContent = totalEomContent + this.elevationService.getAcreFeetFromCFS(myData.avgInflowCFS) - this.elevationService.getAcreFeetFromCFS(myData.manualOutflowCFS);
+      myData.eomContent = totalEomContent;
+      myData.orgEomContent = totalEomContent;
+      myData.eomElevation = this.elevationService.getElevation(myData.eomContent);
+      console.log("myData.eomElevation " + myData.eomElevation);
+      myData.elevationWarning = this.getElevationWarning(myData.eomElevation);
       myData.index = (i+1);
       myData.manualOutFlowColor = "";
       totalInflow        = totalInflow + myData2.avgInflowCFS;
@@ -292,11 +345,11 @@ export class OperationsDataComponent {
 
       this.editDailyData.push(myData);
     }      
-    let myData = {"day":totalDays, "avgInflowCFS":totalInflow, "avgOutflowCFS":totalOutflow, "orgOutflowCFS":totalOutflow, "manualOutflowCFS":totalManualOutflow, "index":totalDays, "manualOutFlowColor":"", "disabled":true};
+    let myData = {"day":"Totals", "avgInflowCFS":totalInflow, "avgOutflowCFS":totalOutflow, "lastOutflowCFS":totalOutflow, "manualOutflowCFS":totalManualOutflow, "orgEomContent":0, "startEomContent":0, "eomContent":totalEomContent, "eomElevation":0, "index":totalDays, "manualOutFlowColor":"", "elevationWarning":"", "disabled":true};
     
     this.editDailyData.push(myData);
 
-    //console.log(this.editDailyData);
+    console.log(this.editDailyData);
 
   }
 
@@ -1193,12 +1246,13 @@ export class OperationsDataComponent {
     );
 
     let warning = '';
+
     if (elevation > constants.MAX_ELEVATION_LEVEL) {
       warning = constants.EOM_MAX_LEVEL;
     } else if (elevation > constants.WARNING_ELEVATION_LEVEL) {
       warning = constants.EOM_WARNING_LEVEL;
     }
-
+    console.log("return warning elevation " + elevation + " warning [" + warning + "]");
     return warning;
   }
 
@@ -1210,8 +1264,13 @@ export class OperationsDataComponent {
       myIndex
     );
 
+    console.log(myDailyData);
+    console.log('myIndex ' + myIndex);
     let index = Number(myIndex) - 1;
-    let cfsDifference = Number(myDailyData[index].manualOutflowCFS) -  Number(myDailyData[index].avgOutflowCFS);
+    console.log('index ' + index);
+    let cfsDifference = Number(myDailyData[index].manualOutflowCFS) -  Number(myDailyData[index].lastOutflowCFS);
+    let eomDifference = this.elevationService.getAcreFeetFromCFS(cfsDifference);
+    console.log("eomDifference " + eomDifference );
     
     // console.log('index ' + index);
     // console.log(myDailyData[index]);
@@ -1221,6 +1280,16 @@ export class OperationsDataComponent {
 
 
     let totalManualOutflow:number = 0;
+
+    for (let i = index; i < (myDailyData.length-1); i++) {
+      console.log("before " + myDailyData[i].eomContent + " " + myDailyData[i].eomElevation + " [" + myDailyData.elevationWarning + "]");
+      myDailyData[i].eomContent =  myDailyData[i].eomContent - eomDifference;
+      myDailyData[i].eomElevation = this.elevationService.getElevation( myDailyData[i].eomContent);
+      //console.log("myData.eomElevation " + myDailyData.eomElevation);
+      myDailyData[i].elevationWarning = this.getElevationWarning(myDailyData[i].eomElevation);
+      console.log("recalculated " + myDailyData[i].eomContent + " " + myDailyData[i].eomElevation  + " [" + myDailyData.elevationWarning + "]");
+      // add in elevation here
+    }
 
     for (let i = 0; i < (myDailyData.length-1); i++) {
       //console.log(myDailyData[i]);
@@ -1256,6 +1325,8 @@ export class OperationsDataComponent {
     this.modifiedReportMonths[3].outflow = this.modifiedReportMonths[3].outflow + this.elevationService.getAcreFeetFromCFS(cfsDifference);
 
     console.log(this.modifiedReportMonths);
+
+    myDailyData[index].lastOutflowCFS = myDailyData[index].manualOutflowCFS;
 
     this.recalculateEOM(this.editMonthlyData, ("" + this.dayIndex));
 
@@ -1396,7 +1467,7 @@ export class OperationsDataComponent {
 
     let myMonth:string = "";
 
-    console.log("convertMonthStringToNumber " + myMonthString);
+    //console.log("convertMonthStringToNumber " + myMonthString);
 
     if (myMonthString) {
 

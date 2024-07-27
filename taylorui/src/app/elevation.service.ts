@@ -8,8 +8,8 @@ import * as elevation from '../assets/taylorelevationtable.json';
 export class ElevationService {
   elevationData: any = elevation;
   elevations: any = new Array();
-  elevation = 0.0;
-  acrefeet = 70000.0;
+  elevation:number = 0.0;
+  acrefeet:number = 70000.0;
 
   constructor() {}
 
@@ -25,7 +25,7 @@ export class ElevationService {
   }
 
   getElevation(acreFeet: number): number {
-    //console.log("--------------- getElevation ---------------");
+    console.log("--------------- getElevation ---------------");
     let tabIndex = 0;
     let decIndex = 0;
     let myDecimal = 0.0;
@@ -76,6 +76,7 @@ export class ElevationService {
       (decIndex - 1) * 0.1 +
       Number(myDecimal.toFixed(2));
 
+    console.log("caclulated acreFeet " + acreFeet + " elevation " + this.elevation);
     return this.elevation;
   }
 
@@ -103,11 +104,8 @@ getAcreFeet(cubicFeet: number): number {
 }
 
 getAcreFeetFromCFS(cfs: number): number {
-  console.log('--- getAcreFeetFromCFS ---');
-  console.log('cfs  ' + cfs);
   let acreFeet:number = 0;
   acreFeet = cfs * 1.982113483915127;
-  console.log(acreFeet);
   return acreFeet;
 }
 
