@@ -2,3 +2,20 @@
 td.changed{ 
     background-color:rgb(147, 112, 219, .5); 
 } 
+
+.outflowdecrease {
+    color: blue;
+}
+
+.outflowincrease {
+    color: red;
+}
+
+.neutral {
+    color: black;
+}
+
+/* See constants.ts file for CELL_CHANGE_COLOR*/
+.valuechanged {
+    color: rgb(112, 59, 217);
+}

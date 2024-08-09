@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as elevation from '../assets/taylorelevationtable.json';
 
+import * as constants from '../constants';
+import { LoggingService } from './logging.service';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -11,7 +14,8 @@ export class ElevationService {
   elevation:number = 0.0;
   acrefeet:number = 70000.0;
 
-  constructor() {}
+  constructor(
+    private myLog: LoggingService) {}
 
   getElevations(acreFeet: number[]): number[] {
     this.elevations = new Array(acreFeet.length);
@@ -25,12 +29,12 @@ export class ElevationService {
   }
 
   getElevation(acreFeet: number): number {
-    console.log("--------------- getElevation ---------------");
+    //console.log("--------------- getElevation ---------------");
     let tabIndex = 0;
     let decIndex = 0;
     let myDecimal = 0.0;
 
-    //console.log("acreFeet " + acreFeet);
+   // console.log("acreFeet " + acreFeet);
 
     this.elevationData.elevationTable.forEach(function (row: any) {
       
@@ -76,8 +80,26 @@ export class ElevationService {
       (decIndex - 1) * 0.1 +
       Number(myDecimal.toFixed(2));
 
-    console.log("caclulated acreFeet " + acreFeet + " elevation " + this.elevation);
+    //console.log("caclulated acreFeet " + acreFeet + " elevation " + this.elevation);
     return this.elevation;
+  }
+
+  getElevationWarning(elevation: number): any {
+    this.myLog.log(
+      'INFO',
+      '-------- OperationsDataComponent.getElevationWarning --------'
+    );
+
+    let warning = '';
+
+    if (elevation > constants.MAX_ELEVATION_LEVEL) {
+      warning = constants.EOM_MAX_LEVEL;
+    } else if (elevation > constants.WARNING_ELEVATION_LEVEL) {
+      warning = constants.EOM_WARNING_LEVEL;
+    }
+
+    //console.log("return warning elevation " + elevation + " warning [" + warning + "]");
+    return warning;
   }
 
 getCubicFeet(acreFeet: number): number {

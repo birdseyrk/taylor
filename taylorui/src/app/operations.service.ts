@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+
 import * as constants from '../constants';
+import { ElevationService } from './elevation.service';
 import { LoggingService } from './logging.service';
 import { InputError } from './InputError';
 
@@ -9,10 +12,17 @@ import { InputError } from './InputError';
 export class OperationsService {
 
   constructor( 
-    private myLog:LoggingService) { }
+    private myLog:LoggingService,
+    public elevationService: ElevationService) { 
+      
+    }
   
     myJson:string = '{}';
     errorJson:any = {"errors":[],"fatalError":false};
+
+
+    startingEOM:number = 0;
+    months:number = 12;
   
     getOperations(proposedOperations: any): string[] {
       this.myLog.log('INFO', '-------- OperationsService.getOperations --------');
@@ -45,12 +55,13 @@ export class OperationsService {
       }
   
       operations.push(lineString.trim());
+  
+      this.myJson = this.setOperationalData(operations);
 
       // console.log('-------- operations ----------------');
       // console.log(operations);
   
-      this.myJson = this.setOperationalData(operations);
-  
+      // console.log('-------- myJson ----------------');
       // console.log(this.myJson);
 
       // console.log('-------------- myJson stringify -------------------');
@@ -61,70 +72,56 @@ export class OperationsService {
   
     getRowArray(row: any): string {
       let rowData:any = [];
-      //let rowJson:any = [];
       let myMonth:string = rowData[0];
       let rowObject:string = "{";
       
       rowData =  row.split(" ");
   
-      //rowJson["month"]        = rowData[0];
       rowObject = rowObject + '"month":"' +  rowData[0] + '",';
 
-      //rowJson["dateRange"]    = rowData[1];
       rowObject = rowObject + '"dateRange":"' +  rowData[1] + '",';
 
-      //rowJson["inflow"]           =  Number(rowData[2].replace(/,/g, '')); 
       rowObject = rowObject + '"inflow":' + Number(rowData[2].replace(/,/g, '')) + ',';
-
-      //rowJson["OriginalInflow"]       =  Number(rowData[2].replace(/,/g, '')); 
-      rowObject = rowObject + '"OriginalInflow":' + Number(rowData[2].replace(/,/g, '')) + ',';
+ 
+      rowObject = rowObject + '"originalInflow":' + Number(rowData[2].replace(/,/g, '')) + ',';
       
-      //rowJson["avgInflow"]    =  Number(rowData[3].replace(/,/g, ''));
       rowObject = rowObject + '"avgInflow":' + Number(rowData[3].replace(/,/g, '')) + ',';
 
-      //rowJson["outflow"]          =  Number(rowData[4].replace(/,/g, ''));
       rowObject = rowObject + '"outflow":' + Number(rowData[4].replace(/,/g, '')) + ',';
 
-      //rowJson["originalOutflow"]  =  Number(rowData[4].replace(/,/g, ''));
       rowObject = rowObject + '"originalOutflow":' + Number(rowData[4].replace(/,/g, '')) + ',';
 
-      //rowJson["avgOutflow"]   =  Number(rowData[5].replace(/,/g, ''));
       rowObject = rowObject + '"avgOutflow":' + Number(rowData[5].replace(/,/g, '')) + ',';
 
-      //rowJson["eomContent"]   =  Number(rowData[6].replace(/,/g, ''));
       rowObject = rowObject + '"eomContent":' + Number(rowData[6].replace(/,/g, '')) + ',';
 
-      //rowJson["eomElevation"] =  Number(rowData[7].replace(/,/g, ''));
+      rowObject = rowObject + '"originalEomContent":' + Number(rowData[6].replace(/,/g, '')) + ',';
+
       rowObject = rowObject + '"eomElevation":' + Number(rowData[7].replace(/,/g, '')) + ',';
       
       var mySplit1              =  rowData[1].split("-");
-      //rowJson["days"]           = parseInt(mySplit1[1]) - parseInt(mySplit1[0]) + 1;
+      
       rowObject = rowObject + '"days":' +  (parseInt(mySplit1[1]) - parseInt(mySplit1[0]) + 1) + ',';
   
     
       switch (myMonth) {
         case "Apr": {
-          //rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
           rowObject = rowObject + '"inflowSummaryColor":"' + constants.INFLOW_SUMMARY_COLOR + '"';
           break;
         }
         case "May": {
-          //rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
           rowObject = rowObject + '"inflowSummaryColor":"' + constants.INFLOW_SUMMARY_COLOR + '"';
           break;
         }
         case "Jun": {
-          //rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
           rowObject = rowObject + '"inflowSummaryColor":"' + constants.INFLOW_SUMMARY_COLOR + '"';
           break;
         }
         case "Jul": {
-          //rowJson["inflowSummaryColor"] = constants.INFLOW_SUMMARY_COLOR;
           rowObject = rowObject + '"inflowSummaryColor":"' + constants.INFLOW_SUMMARY_COLOR + '"';
           break;
         }
         default : {
-          //rowJson["inflowSummaryColor"] = "";
           rowObject = rowObject + '"inflowSummaryColor":"' + "" + '"';
         }
       }
@@ -154,8 +151,8 @@ export class OperationsService {
       this.myJson = '{}';
     }
   
-    calculateValues(operations:any):any {
-      this.myLog.log('INFO', '-------- OperationsService.calculateValues -------- ');
+    convertFlowUnitValues(operations:any):any {
+      this.myLog.log('INFO', '-------- OperationsService.convertFlowUnitValues -------- ');
   
       const newArray = operations.data.map((element: any,  array: any[]) => {
 
@@ -178,6 +175,128 @@ export class OperationsService {
       
       return operations;
   
+    }
+
+    getDailyData = (operations: any): any => {
+      this.myLog.log('INFO', '-------- OperationsService.getDailyData --------');
+
+      operations.daily = [];
+
+      // console.log('--- getDailyData ---');
+      // console.log(operations);
+
+      
+      let allDailyData :any = [];
+      let index = 0;
+      let nextIndex = index + 1;
+
+      for (let i = 0; i < this.months; i++) {
+        if (i == 0) {
+          this.startingEOM = this.startingEOM
+          index = 0;
+          nextIndex = index + 1;
+          // console.log("i " + i + " index " + index + " nextIndex " + nextIndex);
+        } else {
+          
+          index = i * 2;
+          nextIndex = index + 1;
+          // console.log("i " + i + " index -1 " + (index-1) + " nextIndex " + nextIndex);
+          this.startingEOM =  operations[index-1].eomContent;
+        }
+
+        // console.log('index ' + index + ' startingEOM '  + this.startingEOM);
+
+        let month1Str:string = '';
+        let month2Str:string = '';
+  
+        let dailyData:any = [];
+        let month1:any    = [];
+        let month2:any    = [];
+  
+        let totalInflow:number = 0;
+        let totalOutflow:number = 0;
+        let totalManualOutflow:number = 0;
+        let totalDays:number = 0;
+        let totalEomContent:number = this.startingEOM;
+
+        month1Str =  JSON.stringify(operations[index]);
+        month2Str =  JSON.stringify(operations[nextIndex]);
+
+        // console.log('index ' + index + ' nextIndex ' + nextIndex);
+
+        // console.log(month1Str);
+        // console.log(month2Str);
+
+        month1 = JSON.parse(month1Str);
+        month2 = JSON.parse(month2Str);
+
+        // console.log(month1);
+        // console.log(month2);
+
+        for (let i = 0; i < month1.days; i++) {
+          let myData = {"day":"", "avgInflowCFS":0, "lastInflowCFS":0, "manualInflowCFS":0, "avgOutflowCFS":0, "lastOutflowCFS":0, "manualOutflowCFS":0, "orgEomContent":0, "eomContent":0, "eomElevation":0, "index":0, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":false};
+          myData.day = month1.month + "-" + (i+1);
+          myData.avgInflowCFS = month1.avgInflowCFS;
+          myData.lastInflowCFS = month1.avgInflowCFS;
+          myData.manualInflowCFS = month1.avgInflowCFS;
+          myData.avgOutflowCFS = month1.avgOutflowCFS;
+          myData.lastOutflowCFS = month1.avgOutflowCFS;
+          myData.manualOutflowCFS = month1.avgOutflowCFS.toFixed(5);
+          //console.log(myData);
+          totalEomContent = totalEomContent + this.elevationService.getAcreFeetFromCFS(myData.avgInflowCFS) - this.elevationService.getAcreFeetFromCFS(myData.manualOutflowCFS);
+          //console.log('totalEomContent ' + totalEomContent);
+          myData.eomContent = totalEomContent;
+          myData.orgEomContent = totalEomContent;
+          myData.eomElevation = this.elevationService.getElevation(myData.eomContent);
+          //console.log("myData.eomElevation " + myData.eomElevation);
+          myData.elevationWarning = this.elevationService.getElevationWarning(myData.eomElevation);
+          myData.index = (i+1);
+          myData.manualOutFlowColor = "";
+          totalInflow        = totalInflow + month1.avgInflowCFS;
+          totalOutflow       = totalOutflow + month1.avgOutflowCFS;
+          totalManualOutflow = totalManualOutflow + month1.avgOutflowCFS;
+          totalDays = totalDays + 1;
+          dailyData.push(myData);
+        }
+    
+        for (let i = month1.days; i < (month1.days + month2.days ); i++) {
+          let myData = {"day":"", "avgInflowCFS":0, "lastInflowCFS":0, "manualInflowCFS":0, "avgOutflowCFS":0, "lastOutflowCFS":0, "manualOutflowCFS":0, "orgEomContent":0, "eomContent":0, "eomElevation":0, "index":0, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":false};
+          myData.day = month2.month + "-" + (i+1);
+          myData.avgInflowCFS = month2.avgInflowCFS;
+          myData.lastInflowCFS = month2.avgInflowCFS;
+          myData.manualInflowCFS = month2.avgInflowCFS;
+          myData.avgOutflowCFS = month2.avgOutflowCFS;
+          myData.lastOutflowCFS = month2.avgOutflowCFS;
+          myData.manualOutflowCFS = month2.avgOutflowCFS.toFixed(5);
+          totalEomContent = totalEomContent + this.elevationService.getAcreFeetFromCFS(myData.avgInflowCFS) - this.elevationService.getAcreFeetFromCFS(myData.manualOutflowCFS);
+          myData.eomContent = totalEomContent;
+          myData.orgEomContent = totalEomContent;
+          myData.eomElevation = this.elevationService.getElevation(myData.eomContent);
+          //console.log("myData.eomElevation " + myData.eomElevation);
+          myData.elevationWarning = this.elevationService.getElevationWarning(myData.eomElevation);
+          myData.index = (i+1);
+          myData.manualOutFlowColor = "";
+          totalInflow        = totalInflow + month2.avgInflowCFS;
+          totalOutflow       = totalOutflow + month2.avgOutflowCFS;
+          totalManualOutflow = totalManualOutflow + month2.avgOutflowCFS;
+          totalDays = totalDays + 1;
+    
+          dailyData.push(myData);
+        }      
+        let myData = {"day":"Totals", "avgInflowCFS":totalInflow, "lastInflowCFS":totalInflow, "manualInflowCFS":totalInflow, "avgOutflowCFS":totalOutflow, "lastOutflowCFS":totalOutflow, "manualOutflowCFS":totalManualOutflow, "orgEomContent":0, "eomContent":totalEomContent, "eomElevation":0, "index":totalDays, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":true};
+        
+        dailyData.push(myData);
+    
+        //console.log(dailyData);
+        
+        //this.allDailyData.push(dailyData);
+
+        allDailyData[i] = dailyData;
+      
+      }
+      //console.log(allDailyData);
+      return allDailyData;
+
     }
   
     checkOperationalData = (operations: any[]): string  => {
@@ -738,7 +857,6 @@ export class OperationsService {
     
       return this.errorJson;
     }
-  
     
     setOperationalData = (operations: any[]): any  => {
       this.myLog.log('INFO', '-------- OperationsService.setOperationalData --------');
@@ -749,69 +867,36 @@ export class OperationsService {
   
       if ( !(myObject).fatalError ) {
   
-        jsonObject['title']           =  operations[0];
-        jsonObject['name']            =  operations[1];
-        jsonObject['forcast']         =  operations[2];
-        jsonObject['date']            =  operations[3];
-        jsonObject['label1']          =  operations[4];
-        jsonObject['label2']          =  operations[5];
-        jsonObject['label3']          =  operations[6];
-        jsonObject['initialAcreFeet'] =  operations[7];
-        jsonObject['inflowSummary']   =  operations[32];
-        jsonObject['normal']          =  operations[33];
-        jsonObject['maxContent']      =  operations[34];
+        jsonObject['title']             =  operations[0];
+        jsonObject['name']              =  operations[1];
+        jsonObject['forcast']           =  operations[2];
+        jsonObject['date']              =  operations[3];
+        jsonObject['label1']            =  operations[4];
+        jsonObject['label2']            =  operations[5];
+        jsonObject['label3']            =  operations[6];
+        jsonObject['initialEOMContent'] =  operations[7];
+        jsonObject['inflowSummary']     =  operations[32];
+        jsonObject['normal']            =  operations[33];
+        jsonObject['maxContent']        =  operations[34];
+        
+        this.startingEOM = Number(parseFloat(jsonObject['initialEOMContent'].replace(/,/g, '')));
+
+        let baseNumber:number = 8;
+        let dataNumber:number = 24;
   
-        jsonObject.data[0] =   this.getRowArray(operations[8]);
-        jsonObject.data[1] =   this.getRowArray(operations[9]);
-        jsonObject.data[2] =   this.getRowArray(operations[10]);
-        jsonObject.data[3] =   this.getRowArray(operations[11]);
-        jsonObject.data[4] =   this.getRowArray(operations[12]);
-        jsonObject.data[5] =   this.getRowArray(operations[13]);
-        jsonObject.data[6] =   this.getRowArray(operations[14]);
-        jsonObject.data[7] =   this.getRowArray(operations[15]);
-        jsonObject.data[8] =   this.getRowArray(operations[16]);
-        jsonObject.data[9] =   this.getRowArray(operations[17]);
-        jsonObject.data[10] =  this.getRowArray(operations[18]);
-        jsonObject.data[11] =  this.getRowArray(operations[19]);
-        jsonObject.data[12] =  this.getRowArray(operations[20]);
-        jsonObject.data[13] =  this.getRowArray(operations[21]);
-        jsonObject.data[14] =  this.getRowArray(operations[22]);
-        jsonObject.data[15] =  this.getRowArray(operations[23]);
-        jsonObject.data[16] =  this.getRowArray(operations[24]);
-        jsonObject.data[17] =  this.getRowArray(operations[25]);
-        jsonObject.data[18] =  this.getRowArray(operations[26]);
-        jsonObject.data[19] =  this.getRowArray(operations[27]);
-        jsonObject.data[20] =  this.getRowArray(operations[28]);
-        jsonObject.data[21] =  this.getRowArray(operations[29]);
-        jsonObject.data[22] =  this.getRowArray(operations[30]);
-        jsonObject.data[23] =  this.getRowArray(operations[31]);
-  
-        jsonObject.data[0].index = 0;
-        jsonObject.data[1].index = 1;
-        jsonObject.data[2].index = 2;
-        jsonObject.data[3].index = 3;
-        jsonObject.data[4].index = 4;
-        jsonObject.data[5].index = 5;
-        jsonObject.data[6].index = 6;
-        jsonObject.data[7].index = 7;
-        jsonObject.data[8].index = 8;
-        jsonObject.data[9].index = 9;
-        jsonObject.data[10].index = 10;
-        jsonObject.data[11].index = 11;
-        jsonObject.data[12].index = 12;
-        jsonObject.data[13].index = 13;
-        jsonObject.data[14].index = 14;
-        jsonObject.data[15].index = 15;
-        jsonObject.data[16].index = 16;
-        jsonObject.data[17].index = 17;
-        jsonObject.data[18].index = 18;
-        jsonObject.data[19].index = 19;
-        jsonObject.data[20].index = 20;
-        jsonObject.data[21].index = 21;
-        jsonObject.data[22].index = 22;
-        jsonObject.data[23].index = 23;
+        for (let i = 0; i < dataNumber; i++) {
+          jsonObject.data[i] =   this.getRowArray(operations[(baseNumber + i)]);
+          jsonObject.data[i].index = i;
+        }
+
+        // console.log('--- jsonObject ---');
+        // console.log( jsonObject );
+        // console.log( this.convertFlowUnitValues(jsonObject) );
     
-        return this.calculateValues(jsonObject); 
+        this.convertFlowUnitValues(jsonObject); 
+        //this.getDailyData(jsonObject); 
+        //console.log(jsonObject);
+        return jsonObject;
       
     } else {
   

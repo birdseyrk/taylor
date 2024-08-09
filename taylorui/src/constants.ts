@@ -9,7 +9,7 @@ export const WARNING_ELEVATION_LEVEL   = 9327;
 export const MAX_ELEVATION_LEVEL       = 9329;
 
 //graph-colors
-//https://htmlcolorcodes.com/color-names/
+//https://htmlcolorcodes.com/color-names/ https://htmlcolorcodes.com/color-names/
 //The fourth value denotes alpha and needs to be between 0.0 (absolute transparency) and 1.0 (absolute opacity). For example, 0.5 would be 50% opacity and 50% transparency.
 //Yellow	        #FFFF00	rgb(255, 255, 0)
 //LightYellow	    #FFFFE0	rgb(255, 255, 224)
@@ -44,7 +44,7 @@ export const WARNING_LABEL            = 'Warning Water Elevation';
 export const MAX_GRID_LINECOLOR       = 'rgb(255, 0, 0)';          //Red
 export const MAX_GRID_BACKGROUND      = 'rgb(250, 128, 114)';      //Salmon
 
-export const DATE_LABEL               = 'Date Line';                    //#2F4F4F
+export const DATE_LABEL               = 'Date Line';               //#2F4F4F
 export const DATE_GRID_LINECOLOR      = 'rgb(47, 79, 79)';         //DarkSlateGray rgb(47, 79, 79)
 export const DATE_GRID_BACKGROUND     = 'rgb(47, 79, 79)';         //DarkSlateGray
 
@@ -54,6 +54,7 @@ export const EOM_MAX_LEVEL            = 'rgb(240, 128, 128)';      //LightCoral
 export const GRID_LEGEND_LABEL        = 'rgb(73, 80, 87)';         //grey
 export const GRID_SCALES_LABEL        = 'rgb(235, 237, 239)';      //light grey
 
+//see operations-data-component.css for changecolor
 export const CELL_CHANGE_COLOR        = 'rgb(147, 112, 219, .4)';  //MediumPurple
 export const INFLOW_SUMMARY_COLOR     = 'rgb(152, 251, 152)';  //PaleGreen
 
@@ -67,12 +68,17 @@ export const AVG_YEAR_LABEL = " Avg Year";
 export const WET_YEAR_LABEL = " Wet Year";
 
 export const DRY_YEAR_BACKGROUND = 'rgb(207, 159, 50)';   // Brownish #cf9f32
-export const AVG_YEAR_BACKGROUND = 'rgb(52, 214, 41)';    // green #34d629
+//export const AVG_YEAR_BACKGROUND = 'rgb(52, 214, 41)';    // green #34d629
+//export const AVG_YEAR_BACKGROUND = 'rgb(173, 255, 47)';    // greenyellow #ADFF2F 
+//export const AVG_YEAR_BACKGROUND = 'rgb(124, 252, 0)';    // lawngreen #7CFC00 
+export const AVG_YEAR_BACKGROUND = 'rgb(203, 255, 112)';    // lawngreen #CBFF70 
 //export const WET_YEAR_BACKGROUND = 'rgb(50, 121, 207)'; // blue #3279cf
 export const WET_YEAR_BACKGROUND = 'rgb(0, 191, 255)';    // DeepSkyBlue	#00BFFF	
 
 export const DRY_YEAR_BACKGROUND_ANALYTICS = 'rgb(207, 159, 50, .5)';   // Brownish #cf9f32
-export const AVG_YEAR_BACKGROUND_ANALYTICS = 'rgb(52, 214, 41, .5)';    // green #34d629
+//export const AVG_YEAR_BACKGROUND_ANALYTICS = 'rgb(52, 214, 41, .5)';    // green #34d629
+//export const AVG_YEAR_BACKGROUND_ANALYTICS = 'rgb(173, 255, 47, .5)';   // greenyellow #ADFF2F
+export const AVG_YEAR_BACKGROUND_ANALYTICS = 'rgb(124, 252, 0, .5)';    // lawngreen #7CFC00
 export const WET_YEAR_BACKGROUND_ANALYTICS = 'rgb(0, 191, 255, .5)';    // DeepSkyBlue	#00BFFF	
 
 //conversions
@@ -80,6 +86,8 @@ export const ACTOSQFT  = 43560.0;
 export const SECONDSPERDAY = 86400;
 
 export const MONTHS = [
+    {"month":"November", "abrev":"Nov"}, 
+    {"month":"December", "abrev":"Dec"},
     {"month":"January", "abrev":"Jan"}, 
     {"month":"February", "abrev":"Feb"}, 
     {"month":"March", "abrev":"Mar"}, 
@@ -89,9 +97,7 @@ export const MONTHS = [
     {"month":"July", "abrev":"Jul"}, 
     {"month":"August", "abrev":"Aug"}, 
     {"month":"September", "abrev":"Sep"}, 
-    {"month":"October", "abrev":"Oct"}, 
-    {"month":"November", "abrev":"Nov"}, 
-    {"month":"December", "abrev":"Dec"}
+    {"month":"October", "abrev":"Oct"}
 ]
 
 export const maxOutletVolume = 1500; //CFS
