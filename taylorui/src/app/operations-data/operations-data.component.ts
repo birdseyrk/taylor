@@ -77,6 +77,8 @@ export class OperationsDataComponent {
   reportDateTitle:string = "";
   myReportHeader:string = "";
 
+  myTabIndex:number = 0;
+
   monthlyStats:any = {
     "maxInflow":0,
     "maxInflowDate":"",
@@ -170,6 +172,80 @@ export class OperationsDataComponent {
 
   }
 
+  getTabMonthIndex(myMonth:any):any {
+
+    console.log(myMonth);
+    let myTabMonthIndex:string =  myMonth.month.toLowerCase();
+    let myTab = 0;
+    
+    switch (myTabMonthIndex) {
+      case "november": {
+        myTab  = 0;
+        break;
+      }
+      case "december": {
+        myTab  = 1;
+        break;
+      }
+      case "january": {
+        myTab = 2;
+        break;
+      }
+      case "february": {
+        myTab  = 3;
+        break;
+      }
+      case "march": {
+        myTab  = 4;
+        break;
+      }
+      case "april": {
+        myTab  = 5;
+        break;
+      }
+      case "may": {
+        myTab  = 6;
+        break;
+      }
+      case "june": {
+        myTab  = 7;
+        break;
+      }
+      case "july": {
+        myTab  = 8;
+        break;
+      }
+      case "august": {
+        myTab  = 9;
+        break;
+      }
+      case "september": {
+        myTab  = 10;
+        break;
+      }
+      case "october": {
+        myTab  = 11;
+        break;
+      }
+      default : {
+        myTab  = 0;
+      }
+    }
+
+    return myTab;
+  }
+
+ changeTabMonth(event:any) {
+  console.log("--- changeTabMonth ---");
+  console.log(event.index);
+
+  // let myMonth:any = this.getTabMonthIndex(event.index);
+  // console.log("--- myMonth ---");
+  // console.log(myMonth);
+
+  this.changeDailyMonth(this.myMonths[event.index]);
+ }
+
   showDailyDialog() {
     this.myLog.log(
       'INFO',
@@ -186,9 +262,11 @@ export class OperationsDataComponent {
 
     this.dayIndex = this.getStartingMonthlyIndex(this.editMonthlyData);
 
-    this. selectedMonth = this.getMonth(this.editMonthlyData[this.dayIndex].month); 
+    this.selectedMonth = this.getMonth(this.editMonthlyData[this.dayIndex].month); 
 
     let myMonthIndex:number = this.getDailyIndex(this.dailyData, this.selectedMonth.abrev);
+
+    this.myTabIndex = this.getTabMonthIndex(this.selectedMonth);
 
     this.editDailyData = this.dailyData[Number(myMonthIndex)];
 
@@ -884,8 +962,11 @@ export class OperationsDataComponent {
     this.reportMonths         = [];
     this.modifiedReportMonths = [];
     this.selectedMonth = this.myMonths[0];
+    this.myTabIndex = 0;
     this.dayIndex = 0;
     this.clearOperationDataVisible = false;
+    this.editDialogVisible         = false;
+    this.dailyDialogVisible        = false;
     this.errors = [];
 
     this.outflowPercetage = 0;
