@@ -117,6 +117,7 @@ export class OperationsDataComponent {
   loadDataHelpSidebarVisible    = false
   fileImportHelpSidebarVisible  = false;
   saveDataHelpSidebarVisible    = false;
+  unDockMonths                  = false;
 
   yearTypeInflow = 0.0;
   recaculateYearType = 0.0;
