@@ -14,8 +14,8 @@
                 <th width="5px" class="text-center" pSortableColumn="reportId">Report Date  <p-sortIcon field="reportId" /></th>
                 <th width="5px" class="text-center" pSortableColumn="yearTypeLabel">Year Type <p-sortIcon field="yearTypeLabel" /></th>
                 <th width="5px" class="text-center" pSortableColumn="startingEOMContent">Starting EOM <p-sortIcon field="startingEOMContent" /></th>
-                <th width="5px" class="text-center" pSortableColumn="forcastPercent">Forcast % <p-sortIcon field="forcastPercent" /></th>
-                <th width="5px" class="text-center" pSortableColumn="forcastAcreFeet">Forcast AC-FT <p-sortIcon field="forcastAcreFeet" /></th>
+                <th width="5px" class="text-center" pSortableColumn="forecastPercent">forecast % <p-sortIcon field="forecastPercent" /></th>
+                <th width="5px" class="text-center" pSortableColumn="forecastAcreFeet">forecast AC-FT <p-sortIcon field="forecastAcreFeet" /></th>
                 <th width="5px" class="text-center" pSortableColumn="inflowSummary">April-July Inflow <p-sortIcon field="inflowSummary" /></th>
                 <th width="5px" class="text-center" pSortableColumn="normal">of Normal <p-sortIcon field="normal" /></th>
                 <th width="5px" class="text-center" pSortableColumn="maxContent">Max Content <p-sortIcon field="maxContent" /></th>
@@ -28,8 +28,8 @@
                 <td class="text-center">{{myData.reportYear}}-{{myData.reportMonth}}-{{myData.reportDay}}</td>
                 <td class="text-center">{{myData.yearTypeLabel}}</td>
                 <td class="text-center">{{myData.startingEOMContent}}</td>
-                <td class="text-center">{{myData.forcastPercent}}%</td>
-                <td class="text-center">{{myData.forcastAcreFeet}}</td>
+                <td class="text-center">{{myData.forecastPercent}}%</td>
+                <td class="text-center">{{myData.forecastAcreFeet}}</td>
                 <td class="text-center">{{myData.inflowSummary}}</td>
                 <td class="text-center">{{myData.normal}}</td>
                 <td class="text-center">{{myData.maxContent}}</td>
@@ -155,7 +155,7 @@
                                 <span [ngStyle]=""><b>Date - {{compareReport.reportYear}}-{{compareReport.reportMonth}}-{{compareReport.reportDay}}</b></span>
                             </div>
                             <div class="flex flex-shrink-0 col gap-1 pl-4">
-                                <span [ngStyle]="">Forecast - {{compareReport.forcastPercent}}% - {{compareReport.forcastAcreFeet}} af</span>
+                                <span [ngStyle]="">Forecast - {{compareReport.forecastPercent}}% - {{compareReport.forecastAcreFeet}} af</span>
                             </div>
                             <div class="flex flex-shrink-0 col gap-1 pl-4">
                                 <span [ngStyle]="{background:compareReport.yearTypeBackgroundAnalytics}">{{compareReport.inflowSummary}} - April-July Inflow</span>

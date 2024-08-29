@@ -869,7 +869,7 @@ export class OperationsService {
   
         jsonObject['title']             =  operations[0];
         jsonObject['name']              =  operations[1];
-        jsonObject['forcast']           =  operations[2];
+        jsonObject['forecast']           =  operations[2];
         jsonObject['date']              =  operations[3];
         jsonObject['label1']            =  operations[4];
         jsonObject['label2']            =  operations[5];

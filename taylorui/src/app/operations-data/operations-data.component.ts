@@ -47,9 +47,9 @@ export class OperationsDataComponent {
   reportYear:string = '';
   reportDay:string = '';
   reportMonth:string = '';
-  forcastDate:string    = '';
-  forcastPercent:string  = '';
-  forcastAcreFeet:string = '';
+  forecastDate:string    = '';
+  forecastPercent:string  = '';
+  forecastAcreFeet:string = '';
   maxContent:string = '';
   normal:string = '';
   inflowSummary:string = '';
@@ -175,7 +175,6 @@ export class OperationsDataComponent {
 
   getTabMonthIndex(myMonth:any):any {
 
-    console.log(myMonth);
     let myTabMonthIndex:string =  myMonth.month.toLowerCase();
     let myTab = 0;
     
@@ -808,7 +807,7 @@ export class OperationsDataComponent {
   }
   
   onPercentageChange(myData:any) {
-    console.log('--- Operations-Data-Component.onPercentageChange --- ');
+    //console.log('--- Operations-Data-Component.onPercentageChange --- ');
     //console.log("outflowPercetage " + this.outflowPercetage);
     //console.log("outflowDirection " + this.outflowDirection);
     //console.log("reportMonth      " + Number(this.reportMonth));
@@ -849,7 +848,7 @@ export class OperationsDataComponent {
             
           myData[i].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
         }
-       // console.log( myData[i] );
+        // console.log( myData[i] );
 
         //  console.log('--- calling changeDailyFromMonthly ---');
         //  console.log( myData[i] );
@@ -946,9 +945,9 @@ export class OperationsDataComponent {
     this.reportDay            = '';
     this.reportMonth          = '';
     
-    this.forcastDate          = '';
-    this.forcastPercent       = '';
-    this.forcastAcreFeet      = '';
+    this.forecastDate          = '';
+    this.forecastPercent       = '';
+    this.forecastAcreFeet      = '';
     
     this.normal               = '';
     this.maxContent           = '';
@@ -1263,9 +1262,9 @@ export class OperationsDataComponent {
          this.reportDay   = myReadJson.reportDay;
          this.reportMonth   = myReadJson.reportMonth;
          
-         this.forcastDate   = myReadJson.forcastDate;
-         this.forcastPercent   = myReadJson.forcastPercent;
-         this.forcastAcreFeet   = myReadJson.forcastAcreFeet;
+         this.forecastDate   = myReadJson.forecastDate;
+         this.forecastPercent   = myReadJson.forecastPercent;
+         this.forecastAcreFeet   = myReadJson.forecastAcreFeet;
          
          
          this.normal               = myReadJson.normal;
@@ -1340,9 +1339,9 @@ export class OperationsDataComponent {
     myJson.reportDay            = this.reportDay;
     myJson.reportMonth          = this.reportMonth;
     
-    myJson.forcastDate          = this.forcastDate;
-    myJson.forcastPercent       = this.forcastPercent;
-    myJson.forcastAcreFeet      = this.forcastAcreFeet;
+    myJson.forecastDate          = this.forecastDate;
+    myJson.forecastPercent       = this.forecastPercent;
+    myJson.forecastAcreFeet      = this.forecastAcreFeet;
     
     myJson.normal               = this.normal;
     myJson.maxContent           = this.maxContent;
@@ -1498,6 +1497,7 @@ export class OperationsDataComponent {
     elevationAdjustedData.data = myModifiedData;
 
     this.elevationGridData.datasets[4] = elevationAdjustedData;
+
   }
 
   getElevationGridData() {
@@ -1505,6 +1505,8 @@ export class OperationsDataComponent {
       'INFO',
       '-------- Operations-Data-Component.getElevationGridData --------'
     );
+
+    //console.log("--- getElevationGridData ---");
 
     let myTempMaxLabel     = constants.MAX_LABEL     + " (" + constants.MAX_ELEVATION_LEVEL + ")";
     let myTempWarningLabel = constants.WARNING_LABEL + " (" + constants.WARNING_ELEVATION_LEVEL + ")";
@@ -1586,8 +1588,6 @@ export class OperationsDataComponent {
 
     myDateLineData[dayIndex] =  (this.operationMonthlyData[minIndex].eomElevation - 3);
 
-    //console.log(myDateLineData);
-
     for (let i = 0; i < this.operationMonthlyData.length; i++) {
       myProposedData[i] = this.operationMonthlyData[i].eomElevation;
       myInflowData[i] = Number(this.operationMonthlyData[i].inflow);
@@ -1615,6 +1615,8 @@ export class OperationsDataComponent {
     this.elevationGridData.datasets[2] = elevationProposedData;
     this.elevationGridData.datasets[3] = elevationDateData;
     this.elevationGridData.labels = myLabels;
+
+    console.log(this.elevationGridData);
 
     this.elevationGridOptions = {
       plugins: {
@@ -1717,24 +1719,12 @@ export class OperationsDataComponent {
       myIndex
     );
 
-    console.log(myDailyData);
-    console.log('myIndex ' + myIndex);
     let index = Number(myIndex) - 1;
-    console.log('index ' + index);
     let cfsDifference = Number(myDailyData[index].manualOutflowCFS) -  Number(myDailyData[index].lastOutflowCFS);
-    console.log('cfsDifference ' + cfsDifference);
     if ( Math.abs(cfsDifference) <  0.001) {
       return;
     }
     let eomDifference = this.elevationService.getAcreFeetFromCFS(cfsDifference);
-    //console.log("eomDifference " + eomDifference );
-    
-    // console.log('index ' + index);
-    // console.log(myDailyData[index]);
-    // console.log('man ' + myDailyData[index].avgOutflowCFS);
-    // console.log('avg ' + myDailyData[index].manualOutflowCFS);
-    // console.log('dif ' + cfsDifference);
-
 
     let totalManualOutflow:number = 0;
 
@@ -1757,22 +1747,18 @@ export class OperationsDataComponent {
     // console.log(myDailyData[(myDailyData.length-1)]);
     myDailyData[(myDailyData.length-1)].manualOutflowCFS = totalManualOutflow;
     myDailyData[index].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
-    
-
-    // console.log(this.elevationService.getAcreFeetFromCFS(totalManualOutflow)); 
-    // console.log(this.elevationService.getAcreFeetFromCFS(cfsDifference));
 
     //todo change the summary
 
     if (index < 16) {
-      console.log(this.modifiedReportMonths[0]);
+      //console.log(this.modifiedReportMonths[0]);
       this.modifiedReportMonths[0].outflow =   this.modifiedReportMonths[0].outflow + this.elevationService.getAcreFeetFromCFS(cfsDifference);
       this.editMonthlyData[this.dayIndex].manualOutflow = this.modifiedReportMonths[0].outflow;
       this.editMonthlyData[this.dayIndex].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
 
     } else {
       
-      console.log(this.modifiedReportMonths[1]);
+      //console.log(this.modifiedReportMonths[1]);
       this.modifiedReportMonths[1].outflow =   this.modifiedReportMonths[1].outflow + this.elevationService.getAcreFeetFromCFS(cfsDifference);
       this.editMonthlyData[(this.dayIndex+1)].manualOutflow = this.modifiedReportMonths[1].outflow;
       this.editMonthlyData[(this.dayIndex+1)].manualOutFlowColor = constants.CELL_CHANGE_COLOR;
@@ -1781,7 +1767,7 @@ export class OperationsDataComponent {
     this.modifiedReportMonths[2].outflow = this.modifiedReportMonths[2].outflow + this.elevationService.getAcreFeetFromCFS(cfsDifference);
     this.modifiedReportMonths[3].outflow = this.modifiedReportMonths[3].outflow + this.elevationService.getAcreFeetFromCFS(cfsDifference);
 
-    console.log(this.modifiedReportMonths);
+    //console.log(this.modifiedReportMonths);
 
     myDailyData[index].lastOutflowCFS = myDailyData[index].manualOutflowCFS;
 
@@ -1856,7 +1842,7 @@ export class OperationsDataComponent {
         this.elevationService.getElevation(
           myRecalcData[i].eomContent
         );
-
+      
       myRecalcData[i].elevationWarning = this.getElevationWarning(
         myRecalcData[i].eomElevation
       );
@@ -1867,8 +1853,12 @@ export class OperationsDataComponent {
 
       //this.changeDailyFromMonthly( myRecalcData[i]);
     }
+  }
 
-    //this.addToGridElevation();  //TODO add when saving the data.
+  adjustManualInput(myData:any, myIndex:string) {
+    //console.log("adjustManualInput");
+    this.recalculateEOM(myData,myIndex); 
+    this.changeDailyFromMonthly(this.editMonthlyData[Number(myIndex)]);
   }
 
   getEOMContentList(data: any): number[] {
@@ -2147,19 +2137,19 @@ export class OperationsDataComponent {
 
       this.reportDate = this.convertReportDate(this.reportDate);
 
-      let forcast:any = temp.forcast.split(" ");
+      let forecast:any = temp.forecast.split(" ");
       
-      this.forcastDate = forcast[0] + " " + forcast[1] + " " + this.reportYear;
+      this.forecastDate = forecast[0] + " " + forecast[1] + " " + this.reportYear;
 
-      if (forcast.length === 7) {
-        this.forcastDate     = forcast[0] + " " + forcast[1] + " " + this.reportYear;
-        this.forcastPercent  = forcast[4].replaceAll('%','');
-        this.forcastAcreFeet = forcast[5].replaceAll('(','').replaceAll(')','').replaceAll(',','');
+      if (forecast.length === 7) {
+        this.forecastDate     = forecast[0] + " " + forecast[1] + " " + this.reportYear;
+        this.forecastPercent  = forecast[4].replaceAll('%','');
+        this.forecastAcreFeet = forecast[5].replaceAll('(','').replaceAll(')','').replaceAll(',','');
 
       } else {
-        this.forcastDate     = forcast[0] + " " + this.reportYear;
-        this.forcastPercent  = forcast[3].replaceAll('%','');
-        this.forcastAcreFeet = forcast[4].replaceAll('(','').replaceAll(')','').replaceAll(',','');
+        this.forecastDate     = forecast[0] + " " + this.reportYear;
+        this.forecastPercent  = forecast[3].replaceAll('%','');
+        this.forecastAcreFeet = forecast[4].replaceAll('(','').replaceAll(')','').replaceAll(',','');
       }
 
       this.initialEOMContent = temp.initialEOMContent.replaceAll(',','');
