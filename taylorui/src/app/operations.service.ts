@@ -20,7 +20,6 @@ export class OperationsService {
     myJson:string = '{}';
     errorJson:any = {"errors":[],"fatalError":false};
 
-
     startingEOM:number = 0;
     months:number = 12;
   
@@ -184,7 +183,6 @@ export class OperationsService {
 
       // console.log('--- getDailyData ---');
       // console.log(operations);
-
       
       let allDailyData :any = [];
       let index = 0;
@@ -244,14 +242,10 @@ export class OperationsService {
           myData.manualOutflow = this.elevationService.getAcreFeetFromCFS(Number(myData.avgOutflowCFS));
           myData.lastOutflowCFS = month1.avgOutflowCFS;
           myData.manualOutflowCFS = month1.avgOutflowCFS.toFixed(5);
-          //console.log(myData);
           totalEomContent = totalEomContent + myData.manualInflow - myData.manualOutflow;
-          //totalEomContent = totalEomContent + this.elevationService.getAcreFeetFromCFS(myData.avgInflowCFS) - this.elevationService.getAcreFeetFromCFS(myData.manualOutflowCFS);
-          //console.log('totalEomContent ' + totalEomContent);
           myData.eomContent = totalEomContent;
           myData.orgEomContent = totalEomContent;
           myData.eomElevation = this.elevationService.getElevation(myData.eomContent);
-          //console.log("myData.eomElevation " + myData.eomElevation);
           myData.elevationWarning = this.elevationService.getElevationWarning(myData.eomElevation);
           myData.index = (i+1);
           myData.manualOutFlowColor = "";
@@ -274,11 +268,9 @@ export class OperationsService {
           myData.manualOutflow = this.elevationService.getAcreFeetFromCFS(Number(myData.avgOutflowCFS));
           myData.manualOutflowCFS = month2.avgOutflowCFS.toFixed(5);
           totalEomContent = totalEomContent + myData.manualInflow - myData.manualOutflow;
-          //totalEomContent = totalEomContent + this.elevationService.getAcreFeetFromCFS(myData.avgInflowCFS) - this.elevationService.getAcreFeetFromCFS(myData.manualOutflowCFS);
           myData.eomContent = totalEomContent;
           myData.orgEomContent = totalEomContent;
           myData.eomElevation = this.elevationService.getElevation(myData.eomContent);
-          //console.log("myData.eomElevation " + myData.eomElevation);
           myData.elevationWarning = this.elevationService.getElevationWarning(myData.eomElevation);
           myData.index = (i+1);
           myData.manualOutFlowColor = "";
@@ -294,8 +286,6 @@ export class OperationsService {
         dailyData.push(myData);
     
         //console.log(dailyData);
-        
-        //this.allDailyData.push(dailyData);
 
         allDailyData[i] = dailyData;
       
@@ -900,7 +890,6 @@ export class OperationsService {
         // console.log( this.convertFlowUnitValues(jsonObject) );
     
         this.convertFlowUnitValues(jsonObject); 
-        //this.getDailyData(jsonObject); 
         //console.log(jsonObject);
         return jsonObject;
       

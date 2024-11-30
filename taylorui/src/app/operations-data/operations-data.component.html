@@ -6,7 +6,6 @@
     <p-button id="file"         label="File Import"         icon="pi pi-file-o"                                                                                    [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showImportFileDialog()"></p-button>
     <p-button id="edit"         label="edit"                icon="pi pi-user-edit"                                  [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showEditDialog()"></p-button>
     <p-button id="chart"        label="Elevation Graph"     icon="pi pi-chart-line"                                 [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showElevationDialog()"></p-button>
-    <!-- <p-button id="month"        label="Monthly"             icon="pi pi-calendar-plus"                              [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showDailyDialog()"></p-button> -->
     <p-button id="calendar"     label="Calendar"            icon="pi pi-calendar"                                                                                  [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showCalendarDialog()"></p-button>
     
     <p-button id="links"         label="Links"              icon="pi pi-link"                                                                                      [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="linksVisible = true"></p-button>
@@ -14,8 +13,6 @@
     <p-button id="save"         label="Save"                icon="pi pi-save"                                       [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showSaveDataDialog()"></p-button>
     
     <p-button id="clear"        label="Clear Data"          icon="pi pi-times-circle"   [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="showClearOperationalDataDialog()"></p-button>
-    <!-- <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualInputs()"></p-button> -->
-    <!-- <p-button id="help"         label="Help"                icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="operationsHelpSidebarVisible=true"></p-button> -->
     <p-button id="help"         label="Help"                icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="openPDF('./assets/help/Load-Data.pdf')"></p-button>
     <p-button id="stipulation"  label="Amended Stipulation" icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="success"   [outlined]="true" (click)="openPDF('./assets/help/Amended-Stipulation.pdf')"></p-button>
 
@@ -69,56 +66,6 @@
 
     
         <div class="" *ngIf="editDialogVisible && !dailyDialogVisible">
-            <!-- <p-button id="month"        label="Monthly"             icon="pi pi-calendar-plus"                              [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="showDailyDialog()"></p-button> -->
-
-
-            <!-- <p-fieldset legend="Manual Outflow (Change the remaining months)">
-                <div class="grid flex-shrink-0">
-                    <div class="flex flex-shrink-0 ">
-                        <div class="flex  flex-shrink-0 text-left col-12 border-200 border-1 p-1 border-round font-bold">
-                            <div class="flex-initial  flex-shrink-0 vertical-align-middle  p-4 border-round-sm font-bold">
-                                <p-radioButton 
-                                    class="text-center"
-                                    name="outflowPercent" 
-                                    value="Decrease" 
-                                    [(ngModel)]="outflowDirection" 
-                                    inputId="outflowPercent1"
-                                    (onClick)="onPercentageChange(editMonthlyData)"/>
-                                <label for="outflowPercent1" class="font-bold ml-2">
-                                    Decrease %
-                                </label>
-                                
-                                <p-radioButton 
-                                class=""
-                                    name="outflowPercent" 
-                                    value="Increase" 
-                                    [(ngModel)]="outflowDirection" 
-                                    inputId="outflowPercent2"
-                                    (onClick)="onPercentageChange(editMonthlyData)"/>
-                                <label for="outflowPercent2" class="font-bold ml-2">
-                                    Increase %
-                                </label>
-                            </div>
-                            <p-checkbox (onChange)="override(editMonthlyData)" [(ngModel)]="overRideChecked" [binary]="true"   label="Override" inputId="binary" />
-                            <div class="flex-initial text-left   p-3 m-1 border-round-sm font-bold">
-                                <div class="col">
-                                    <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange(editMonthlyData)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %" suffix=" %"> </p-inputNumber>
-                                    <p-slider [(ngModel)]="outflowPercetage" class="mb-3 w-0" (onChange)="onPercentageChange(editMonthlyData)" styleClass="w-30rem" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        
-                        <div class="flex justify-content-end  p-1 border-round-sm ">
-                            <div class="flex justify-content-end  p-5 border-round-sm ">
-                                <p-button id="refresh"      label="Clear Manual Inputs" icon="pi pi-refresh"     [style]="{'float':'right'}" [disabled]="operationMonthlyData.length === 0" [text]="true" [rounded]="true" severity="danger" [outlined]="true" (click)="clearManualEditInputs(editMonthlyData)"></p-button>
-                                <p-button id="help"         label="Help"               icon="pi pi-briefcase"      [style]="{'float':'right'}"                                   [text]="true" [rounded]="true" severity="info"   [outlined]="true" (click)="editHelpSidebarVisible=true"></p-button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </p-fieldset> -->
 
             <div class="flex flex-shrink-0 ">
             <div class="card flex col-5 justify-content-left border-200 border-1 p-1 border-round">
@@ -149,11 +96,10 @@
                         
                         <p-checkbox (onChange)="override(editMonthlyData)" [(ngModel)]="overRideChecked" [binary]="true"   label="Override" inputId="binary" />
                         <div class="flex-initial text-left   p-3 m-1 border-round-sm font-bold">
-                            <!-- <div class="col"> -->
                                 
                                 <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageChange(editMonthlyData)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercetage" placeholder="Outflow %" suffix=" %"> </p-inputNumber>
                                 <p-slider [(ngModel)]="outflowPercetage" class="mb-3 w-0" (onChange)="onPercentageChange(editMonthlyData)" styleClass="w-30rem" />
-                            <!-- </div> -->
+                       
                         </div>
                     </div>
             </div>
@@ -209,7 +155,6 @@
                 </div>
             </div>
         </div>
-    <!-- </p-dialog> -->
 
     <div class="card flex justify-content-center">
         <p-sidebar [(visible)]="operationsHelpSidebarVisible">
@@ -284,10 +229,8 @@
 
 
     <p-dialog header="Clear Operational Data" [(visible)]="clearOperationDataVisible" [style]="{width: '20vw', height: '10vw'}"  [modal]="true" [draggable]="false" [resizable]="false">
-        <!-- <div class="card flex justify-content-center gap-2"> -->
+       
         <div class="card gap-2">
-            <!-- <p-toast></p-toast>
-            <p-confirmPopup></p-confirmPopup> -->
             <p-button  [style]="{'float':'left'}" (click)="clearOperationalData()" label="Clear Data"></p-button>
             <p-button  [style]="{'float':'right'}" (click)="closeClearOperationalDataDialog()" label="Cancel"></p-button>
         </div>
@@ -303,7 +246,6 @@
     <p-dialog header="Links" [(visible)]="linksVisible" [style]="{width: '100vw', height: '23vw'}">
 
         <p-table [scrollable]="true" scrollHeight="800px" [value]="myLinks" [tableStyle]="{ 'min-width': '60rem' }" [autoLayout]="true">
-            <!-- {{errors.fataError}} -->
             <ng-template pTemplate="header">
                 <tr padding="3px">
                     <th width="15px" class="text-left">Link</th>
