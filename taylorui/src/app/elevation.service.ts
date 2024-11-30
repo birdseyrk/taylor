@@ -29,12 +29,11 @@ export class ElevationService {
   }
 
   getElevation(acreFeet: number): number {
-    //console.log("--------------- getElevation ---------------");
+    // console.log("--------------- getElevation ---------------");
+    // console.log("acreFeet " + acreFeet);
     let tabIndex = 0;
     let decIndex = 0;
     let myDecimal = 0.0;
-
-   // console.log("acreFeet " + acreFeet);
 
     this.elevationData.elevationTable.forEach(function (row: any) {
       
@@ -45,9 +44,16 @@ export class ElevationService {
       }
     });
 
-    //console.log("tabIndex " + tabIndex);
+    // console.log("tabIndex " + tabIndex);
+
+    if (tabIndex === 0) {
+      this.elevation = this.elevationData.elevationTable[tabIndex].elevation
+      return this.elevation;
+    }
 
     this.elevation = this.elevationData.elevationTable[tabIndex - 1].elevation;
+
+    // console.log(this.elevation);
     
     if (acreFeet > this.elevationData.elevationTable[tabIndex - 1].max) {
       decIndex = 9;
@@ -80,7 +86,7 @@ export class ElevationService {
       (decIndex - 1) * 0.1 +
       Number(myDecimal.toFixed(2));
 
-    //console.log("caclulated acreFeet " + acreFeet + " elevation " + this.elevation);
+    // console.log("calculated acreFeet " + acreFeet + " elevation " + this.elevation);
     return this.elevation;
   }
 

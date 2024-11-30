@@ -234,16 +234,19 @@ export class OperationsService {
         // console.log(month2);
 
         for (let i = 0; i < month1.days; i++) {
-          let myData = {"day":"", "avgInflowCFS":0, "lastInflowCFS":0, "manualInflowCFS":0, "avgOutflowCFS":0, "lastOutflowCFS":0, "manualOutflowCFS":0, "orgEomContent":0, "eomContent":0, "eomElevation":0, "index":0, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":false};
+          let myData = {"day":"", "avgInflowCFS":0, "lastInflowCFS":0, "manualInflow":0, "manualInflowCFS":0, "avgOutflowCFS":0, "lastOutflowCFS":0, "manualOutflow":0, "manualOutflowCFS":0, "orgEomContent":0, "eomContent":0, "eomElevation":0, "index":0, "mIndex":1, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":false};
           myData.day = month1.month + "-" + (i+1);
           myData.avgInflowCFS = month1.avgInflowCFS;
           myData.lastInflowCFS = month1.avgInflowCFS;
+          myData.manualInflow = this.elevationService.getAcreFeetFromCFS(Number(myData.avgInflowCFS));
           myData.manualInflowCFS = month1.avgInflowCFS;
           myData.avgOutflowCFS = month1.avgOutflowCFS;
+          myData.manualOutflow = this.elevationService.getAcreFeetFromCFS(Number(myData.avgOutflowCFS));
           myData.lastOutflowCFS = month1.avgOutflowCFS;
           myData.manualOutflowCFS = month1.avgOutflowCFS.toFixed(5);
           //console.log(myData);
-          totalEomContent = totalEomContent + this.elevationService.getAcreFeetFromCFS(myData.avgInflowCFS) - this.elevationService.getAcreFeetFromCFS(myData.manualOutflowCFS);
+          totalEomContent = totalEomContent + myData.manualInflow - myData.manualOutflow;
+          //totalEomContent = totalEomContent + this.elevationService.getAcreFeetFromCFS(myData.avgInflowCFS) - this.elevationService.getAcreFeetFromCFS(myData.manualOutflowCFS);
           //console.log('totalEomContent ' + totalEomContent);
           myData.eomContent = totalEomContent;
           myData.orgEomContent = totalEomContent;
@@ -260,15 +263,18 @@ export class OperationsService {
         }
     
         for (let i = month1.days; i < (month1.days + month2.days ); i++) {
-          let myData = {"day":"", "avgInflowCFS":0, "lastInflowCFS":0, "manualInflowCFS":0, "avgOutflowCFS":0, "lastOutflowCFS":0, "manualOutflowCFS":0, "orgEomContent":0, "eomContent":0, "eomElevation":0, "index":0, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":false};
+          let myData = {"day":"", "avgInflowCFS":0, "lastInflowCFS":0, "manualInflow":0, "manualInflowCFS":0, "avgOutflowCFS":0, "lastOutflowCFS":0, "manualOutflow":0, "manualOutflowCFS":0, "orgEomContent":0, "eomContent":0, "eomElevation":0, "index":0, "mIndex":2, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":false};
           myData.day = month2.month + "-" + (i+1);
           myData.avgInflowCFS = month2.avgInflowCFS;
           myData.lastInflowCFS = month2.avgInflowCFS;
           myData.manualInflowCFS = month2.avgInflowCFS;
+          myData.manualInflow = this.elevationService.getAcreFeetFromCFS(Number(myData.avgInflowCFS));
           myData.avgOutflowCFS = month2.avgOutflowCFS;
           myData.lastOutflowCFS = month2.avgOutflowCFS;
+          myData.manualOutflow = this.elevationService.getAcreFeetFromCFS(Number(myData.avgOutflowCFS));
           myData.manualOutflowCFS = month2.avgOutflowCFS.toFixed(5);
-          totalEomContent = totalEomContent + this.elevationService.getAcreFeetFromCFS(myData.avgInflowCFS) - this.elevationService.getAcreFeetFromCFS(myData.manualOutflowCFS);
+          totalEomContent = totalEomContent + myData.manualInflow - myData.manualOutflow;
+          //totalEomContent = totalEomContent + this.elevationService.getAcreFeetFromCFS(myData.avgInflowCFS) - this.elevationService.getAcreFeetFromCFS(myData.manualOutflowCFS);
           myData.eomContent = totalEomContent;
           myData.orgEomContent = totalEomContent;
           myData.eomElevation = this.elevationService.getElevation(myData.eomContent);
@@ -283,7 +289,7 @@ export class OperationsService {
     
           dailyData.push(myData);
         }      
-        let myData = {"day":"Totals", "avgInflowCFS":totalInflow, "lastInflowCFS":totalInflow, "manualInflowCFS":totalInflow, "avgOutflowCFS":totalOutflow, "lastOutflowCFS":totalOutflow, "manualOutflowCFS":totalManualOutflow, "orgEomContent":0, "eomContent":totalEomContent, "eomElevation":0, "index":totalDays, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":true};
+        let myData = {"day":"Totals", "avgInflowCFS":totalInflow, "lastInflowCFS":totalInflow, "manualInflowCFS":totalInflow, "avgOutflowCFS":totalOutflow, "lastOutflowCFS":totalOutflow, "manualOutflowCFS":totalManualOutflow, "orgEomContent":0, "eomContent":totalEomContent, "eomElevation":0, "index":totalDays, "mIndex":0, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":true};
         
         dailyData.push(myData);
     
