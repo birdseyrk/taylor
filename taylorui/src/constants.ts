@@ -55,6 +55,7 @@ export const GRID_LEGEND_LABEL        = 'rgb(73, 80, 87)';         //grey
 export const GRID_SCALES_LABEL        = 'rgb(235, 237, 239)';      //light grey
 
 //see operations-data-component.css for changecolor
+export const CELL_CHANGE_COLOR_TEXT   = 'rgb(138, 43, 226)';       //BlueViolet
 export const CELL_CHANGE_COLOR        = 'rgb(147, 112, 219, .4)';  //MediumPurple
 export const INFLOW_SUMMARY_COLOR     = 'rgb(152, 251, 152)';  //PaleGreen
 

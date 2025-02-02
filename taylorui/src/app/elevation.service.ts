@@ -115,6 +115,19 @@ getCubicFeet(acreFeet: number): number {
   return cubicFeet;
 }
 
+getCFSfromAFPerDay(acreFeet: number): number {
+  let cubicFeet:number = 0;
+  let seconds = 60;
+  let minutes = 60;
+  let hours   = 24;
+
+  acreFeet = acreFeet / (seconds * minutes * hours);
+  
+  cubicFeet = this.getCubicFeet(acreFeet) ;
+
+  return cubicFeet;
+}
+
 getAvgCubicFeetPerSecond(acreFeet: number, days: number): number {
   let avgCubicFeet:number = 0;
   let seconds = 60;
@@ -133,7 +146,7 @@ getAcreFeet(cubicFeet: number): number {
 
 getAcreFeetFromCFS(cfs: number): number {
   let acreFeet:number = 0;
-  acreFeet = cfs * 1.982113483915127;
+  acreFeet = cfs * 1.9834710990151;
   return acreFeet;
 }
 
@@ -150,4 +163,6 @@ getAcreFeetFromCFS(cfs: number): number {
 
 // Example: convert 15 ft^3 to ac*ft:
 // 15 ft^3 = 15 × 2.29568E-5 ac*ft = 0.0003443526 ac*ft
+
+//1 cfs = 1.9834710990151 acre-feet per day
 }

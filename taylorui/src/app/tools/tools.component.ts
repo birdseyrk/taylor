@@ -12,17 +12,21 @@ export class ToolsComponent {
   constructor( 
     public elevationService: ElevationService) { }
 
-  acrefeet   = 0.0;
-  elevation = 0.0;
+  days        = 1;
+  acrefeet    = 0.0;
+  elevation   = 0.0;
 
   acrefeet2   = 0.0;
-  cubicfeet2 = 0.0;
+  cubicfeet2  = 0.0;
 
   acrefeet3   = 0.0;
   cubicfeet3  = 0.0;
 
   acrefeet4   = 0.0;
   cubicfeet4  = 0.0;
+
+  acrefeet5   = 0.0;
+  cubicfeet5  = 0.0;
 
   test:any = new Array(70000,80000,90000,100000);
 
@@ -41,6 +45,11 @@ export class ToolsComponent {
   getAcreFeetFromCubicFeetPerSecond(cfs:number) {
     console.log("getAcreFeetFromCubicFeetPerSecond " + cfs);
     this.acrefeet4 = this.elevationService.getAcreFeetFromCFS(cfs);
+  }
+
+  getCFSfromAFPerDay(myAcrefeet:number, days:number) {  
+    console.log("getCFSfromAFPerDay " + myAcrefeet + " days " + days);
+    this.cubicfeet5 = this.elevationService.getCFSfromAFPerDay(( myAcrefeet/days) );
   }
 
 }

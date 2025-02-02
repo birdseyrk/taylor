@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
+import { Report } from '../modules/report.module';
+import { Monthly } from '../modules/report.module';
+import { Daily } from '../modules/report.module';
+
 import * as constants from '../constants';
 import { ElevationService } from './elevation.service';
 import { LoggingService } from './logging.service';
 import { InputError } from './InputError';
+
+import {parse, stringify, toJSON, fromJSON} from 'flatted';
 
 @Injectable({
   providedIn: 'root'
@@ -16,36 +22,37 @@ export class OperationsService {
     public elevationService: ElevationService) { 
       
     }
+
+    myReport:Report = new Report();
+
+    editMonthlyData:Monthly[] = [];
   
     myJson:string = '{}';
     errorJson:any = {"errors":[],"fatalError":false};
 
     startingEOM:number = 0;
     months:number = 12;
+    
+    reportYear:string = '';
+    reportDay:string = '';
+    reportMonth:string = '';
+    
+    myMonths = constants.MONTHS;
   
-    getOperations(proposedOperations: any): string[] {
-      this.myLog.log('INFO', '-------- OperationsService.getOperations --------');
+    getOperationsReport(proposedOperations: any): string[] {
+      this.myLog.log('INFO', '-------- OperationsService.getOperationsReport --------');
   
-      let operations: any = new Array();
+      let operationsReport: any = new Array();
       let operIndex = 0;
       let newLineChar = 10;
       let lineString = '';
   
       for (let i = 0; i < proposedOperations.length; i++) {
-        // console.log(
-        //   'i = ' +
-        //     i +
-        //     ' char [' +
-        //     proposedOperations[i] +
-        //     '] str.charAt(0) is: [' +
-        //     proposedOperations.charCodeAt(i) +
-        //     ']'
-        // );
   
         if (proposedOperations.charCodeAt(i) === newLineChar) {
           
-          this.myLog.log('INFO', '-------- OperationsService.getOperations --------');
-          operations.push(lineString.trim());
+          this.myLog.log('INFO', '-------- OperationsService.getOperationsReport --------');
+          operationsReport.push(lineString.trim());
           operIndex++;
           lineString = '';
         } else {
@@ -53,28 +60,25 @@ export class OperationsService {
         }
       }
   
-      operations.push(lineString.trim());
+      operationsReport.push(lineString.trim());
   
-      this.myJson = this.setOperationalData(operations);
-
-      // console.log('-------- operations ----------------');
-      // console.log(operations);
+      this.myJson = this.setOperationalData(operationsReport);
   
-      // console.log('-------- myJson ----------------');
-      // console.log(this.myJson);
-
-      // console.log('-------------- myJson stringify -------------------');
-      // console.log(JSON.stringify(this.myJson));
-  
-      return operations;
+      return operationsReport;
     }
   
-    getRowArray(row: any): string {
+    getRowArray(row: any, index:number): string {
+      // console.log("--- getRowArray ---");
+
       let rowData:any = [];
-      let myMonth:string = rowData[0];
+      
+      let myMonthly:Monthly = new Monthly();
+
       let rowObject:string = "{";
       
       rowData =  row.split(" ");
+
+      let myMonth:string = rowData[0];
   
       rowObject = rowObject + '"month":"' +  rowData[0] + '",';
 
@@ -101,7 +105,6 @@ export class OperationsService {
       var mySplit1              =  rowData[1].split("-");
       
       rowObject = rowObject + '"days":' +  (parseInt(mySplit1[1]) - parseInt(mySplit1[0]) + 1) + ',';
-  
     
       switch (myMonth) {
         case "Apr": {
@@ -126,19 +129,75 @@ export class OperationsService {
       }
   
       rowObject = rowObject + "}";
-      //console.log(rowJson);
-      //console.log (JSON.parse(rowObject));
-      return JSON.parse(rowObject);
+      
+      let myObject:any = JSON.parse(rowObject);
+      
+      myMonthly.month              =  myObject.month;
+      myMonthly.dateRange          =  myObject.dateRange;
+      myMonthly.days               =  myObject.days;
+      myMonthly.inflow             =  myObject.inflow;
+      myMonthly.inflowCF           =  myObject.inflow * constants.ACTOSQFT;
+      myMonthly.originalInflow     =  myObject.inflow;
+      myMonthly.avgInflowCFS       =  Number(myMonthly.inflowCF / ( myMonthly.days * constants.SECONDSPERDAY));
+      myMonthly.outflow            =  myObject.outflow;
+      myMonthly.outflowCF          =  myObject.outflow * constants.ACTOSQFT;
+      myMonthly.originalOutflow    =  myObject.outflow;
+      myMonthly.avgOutflowCFS      =  Number(myMonthly.outflowCF / ( myMonthly.days * constants.SECONDSPERDAY));
+      myMonthly.eomContent         =  myObject.eomContent;
+      myMonthly.originalEomContent = myObject.eomContent;
+      myMonthly.eomElevation       =  myObject.eomElevation;
+      myMonthly.inflowSummaryColor =  myObject.inflowSummaryColor;
+      myMonthly.elevationWarning   = this.elevationService.getElevationWarning(myMonthly.eomElevation);
+      myMonthly.index              = index;
+
+      this.myReport.monthly.push(myMonthly);
+      
+      return myObject;
     }
   
-    getJson():string {
+    getJson():string {  //TODO get rid of this.
       // console.log('------------------- getJson --------------------');
-      // console.log(this.myJson);
-
-      // console.log('-------------- getJson stringify -------------------');
-      // console.log(JSON.stringify(this.myJson));
-
       return this.myJson;
+    }
+  
+    getReport():any {
+      // console.log('------------------- getReport --------------------');
+      // console.log(this.myReport);
+
+      // console.log('-------------- myReport stringify -------------------');
+      // console.log(JSON.stringify(this.myReport));
+
+      return this.myReport;
+    }
+
+    resetMonthlyData():Monthly[] {
+      //console.log('--- resetMonthlyData ---');
+
+      this.editMonthlyData = this.deepClone(this.myReport.monthly);
+      return this.editMonthlyData;
+
+    }
+  
+    getEditMonthlyData():any {
+      // console.log('------------------- getEditMonthlyData --------------------');
+      // console.log(this.editMonthlyData);
+
+      // console.log('-------------- myReport stringify -------------------');
+      // console.log(JSON.stringify(this.editMonthlyData));
+
+      return this.editMonthlyData;
+
+    }
+  
+    getMonthlyData():any {
+      // console.log('------------------- getMonthlyData --------------------');
+      // console.log(this.myReport.monthly);
+
+      // console.log('-------------- myReport stringify -------------------');
+      // console.log(JSON.stringify(this.myReport.monthly));
+
+      return this.myReport.monthly;
+
     }
   
     getErrorsJson():string {
@@ -146,16 +205,21 @@ export class OperationsService {
     }
   
     clearOperationalData() {
+      // console.log('--- clearOperationalData ---');
       this.myLog.log('INFO', '-------- OperationsService.clearJson --------');
       this.myJson = '{}';
+      this.myReport.daily  = [];
+      this.myReport.monthly = [];
+      this.editMonthlyData = [];
+      this.myReport = new Report();
+      // console.log('--- this.myReport ---');
+      // console.log(this.myReport);
     }
   
     convertFlowUnitValues(operations:any):any {
       this.myLog.log('INFO', '-------- OperationsService.convertFlowUnitValues -------- ');
   
       const newArray = operations.data.map((element: any,  array: any[]) => {
-
-        //console.log(element["inflow"] + ' * ' + constants.ACTOSQFT + ' = ' + element["inflow"]    * constants.ACTOSQFT);
   
         element["inflowCF"]       =  element["inflow"]    * constants.ACTOSQFT;
         element["outflowCF"]      =  element["outflow"]   * constants.ACTOSQFT;
@@ -176,122 +240,153 @@ export class OperationsService {
   
     }
 
-    getDailyData = (operations: any): any => {
-      this.myLog.log('INFO', '-------- OperationsService.getDailyData --------');
-
-      operations.daily = [];
-
-      // console.log('--- getDailyData ---');
-      // console.log(operations);
+    getDailyData():any {
+      // console.log('--- operations service getDailyData ---');
       
-      let allDailyData :any = [];
+        return this.deepClone(this.myReport.daily);
+    }
+
+    setDailyData = (operations: any): Daily[] => { 
+      // console.log("--- setDailyData ---");
+      this.myLog.log('INFO', '-------- OperationsService.setDailyData --------');
+
       let index = 0;
       let nextIndex = index + 1;
 
-      for (let i = 0; i < this.months; i++) {
-        if (i == 0) {
+      let myEOMContent = 0;
+      let totalEomContent:number = 0;
+
+      for (let monthLink = 0; monthLink < this.months; monthLink++) {
+        if (monthLink == 0) {
           this.startingEOM = this.startingEOM
           index = 0;
           nextIndex = index + 1;
-          // console.log("i " + i + " index " + index + " nextIndex " + nextIndex);
+          
         } else {
           
-          index = i * 2;
+          index = monthLink * 2;
           nextIndex = index + 1;
-          // console.log("i " + i + " index -1 " + (index-1) + " nextIndex " + nextIndex);
+          
           this.startingEOM =  operations[index-1].eomContent;
         }
-
-        // console.log('index ' + index + ' startingEOM '  + this.startingEOM);
 
         let month1Str:string = '';
         let month2Str:string = '';
   
-        let dailyData:any = [];
-        let month1:any    = [];
-        let month2:any    = [];
+        let reportDailyData:Daily[]   = [];
+        let month1:Monthly            = new Monthly();
+        let month2:Monthly            = new Monthly();
   
-        let totalInflow:number = 0;
-        let totalOutflow:number = 0;
+        let totalInflow:number        = 0;
+        let totalManualInflow:number  = 0;
+        let totalOutflow:number       = 0;
         let totalManualOutflow:number = 0;
-        let totalDays:number = 0;
-        let totalEomContent:number = this.startingEOM;
+        let totalDays:number          = 0;
 
-        month1Str =  JSON.stringify(operations[index]);
-        month2Str =  JSON.stringify(operations[nextIndex]);
-
-        // console.log('index ' + index + ' nextIndex ' + nextIndex);
-
-        // console.log(month1Str);
-        // console.log(month2Str);
-
-        month1 = JSON.parse(month1Str);
-        month2 = JSON.parse(month2Str);
-
-        // console.log(month1);
-        // console.log(month2);
+        month1 = operations[index];
+        month2 = operations[nextIndex];
+        
+        myEOMContent    = month1.startingEOMContent;
+        totalEomContent = myEOMContent;
 
         for (let i = 0; i < month1.days; i++) {
-          let myData = {"day":"", "avgInflowCFS":0, "lastInflowCFS":0, "manualInflow":0, "manualInflowCFS":0, "avgOutflowCFS":0, "lastOutflowCFS":0, "manualOutflow":0, "manualOutflowCFS":0, "orgEomContent":0, "eomContent":0, "eomElevation":0, "index":0, "mIndex":1, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":false};
-          myData.day = month1.month + "-" + (i+1);
-          myData.avgInflowCFS = month1.avgInflowCFS;
-          myData.lastInflowCFS = month1.avgInflowCFS;
-          myData.manualInflow = this.elevationService.getAcreFeetFromCFS(Number(myData.avgInflowCFS));
-          myData.manualInflowCFS = month1.avgInflowCFS;
-          myData.avgOutflowCFS = month1.avgOutflowCFS;
-          myData.manualOutflow = this.elevationService.getAcreFeetFromCFS(Number(myData.avgOutflowCFS));
-          myData.lastOutflowCFS = month1.avgOutflowCFS;
-          myData.manualOutflowCFS = month1.avgOutflowCFS.toFixed(5);
-          totalEomContent = totalEomContent + myData.manualInflow - myData.manualOutflow;
-          myData.eomContent = totalEomContent;
-          myData.orgEomContent = totalEomContent;
-          myData.eomElevation = this.elevationService.getElevation(myData.eomContent);
-          myData.elevationWarning = this.elevationService.getElevationWarning(myData.eomElevation);
-          myData.index = (i+1);
-          myData.manualOutFlowColor = "";
-          totalInflow        = totalInflow + month1.avgInflowCFS;
-          totalOutflow       = totalOutflow + month1.avgOutflowCFS;
-          totalManualOutflow = totalManualOutflow + month1.avgOutflowCFS;
+          
+          let myDailyData:Daily = new Daily();
+          
+          totalEomContent   = totalEomContent + this.elevationService.getAcreFeetFromCFS(Number(month1.avgInflowCFS)) - this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS));
+          
+          totalInflow        = totalInflow + Number(month1.avgInflowCFS);
+          totalManualInflow  = totalManualInflow + Number(month1.avgInflowCFS);
+          totalOutflow       = totalOutflow + Number(month1.avgOutflowCFS);
+          totalManualOutflow = totalManualOutflow + Number(month1.avgOutflowCFS);
           totalDays = totalDays + 1;
-          dailyData.push(myData);
+
+          myDailyData.day                 = month1.month + "-" + (i+1);
+          myDailyData.avgInflowCFS        = Number(month1.avgInflowCFS);
+          myDailyData.manualInflowCFS     = Number(month1.avgInflowCFS);
+          myDailyData.index               = i;
+          myDailyData.inflow              = Number(this.elevationService.getAcreFeetFromCFS(Number(month1.avgInflowCFS)));
+          myDailyData.avgOutflowCFS       = Number(month1.avgOutflowCFS);
+          myDailyData.lastOutflowCFS      = Number(month1.avgOutflowCFS);
+          myDailyData.lastRolledUpCFS     = Number(month1.avgOutflowCFS);
+          myDailyData.outflow             = Number(this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS)));
+          myDailyData.manualOutflowCFS    = Number(month1.avgOutflowCFS);
+          myDailyData.manualOutflow       = this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS));
+          myDailyData.dailyChangePerDayAF = myDailyData.outflow - myDailyData.manualOutflow;
+          myDailyData.eomContent          = myEOMContent + Number(this.elevationService.getAcreFeetFromCFS(Number(month1.avgInflowCFS))) - Number(this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS)));
+          myDailyData.orgEomContent       = myEOMContent + Number(this.elevationService.getAcreFeetFromCFS(Number(month1.avgInflowCFS))) - Number(this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS)));
+          myDailyData.eomElevation        = Number(this.elevationService.getElevation(myDailyData.eomContent));
+          myDailyData.elevationWarning    = this.elevationService.getElevationWarning(myDailyData.eomElevation);
+          myDailyData.startingEomContent  = myEOMContent;
+          myDailyData.monthIndex          = month1.index;
+
+          myEOMContent = myDailyData.eomContent;
+
+          reportDailyData.push(myDailyData);
+
         }
     
         for (let i = month1.days; i < (month1.days + month2.days ); i++) {
-          let myData = {"day":"", "avgInflowCFS":0, "lastInflowCFS":0, "manualInflow":0, "manualInflowCFS":0, "avgOutflowCFS":0, "lastOutflowCFS":0, "manualOutflow":0, "manualOutflowCFS":0, "orgEomContent":0, "eomContent":0, "eomElevation":0, "index":0, "mIndex":2, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":false};
-          myData.day = month2.month + "-" + (i+1);
-          myData.avgInflowCFS = month2.avgInflowCFS;
-          myData.lastInflowCFS = month2.avgInflowCFS;
-          myData.manualInflowCFS = month2.avgInflowCFS;
-          myData.manualInflow = this.elevationService.getAcreFeetFromCFS(Number(myData.avgInflowCFS));
-          myData.avgOutflowCFS = month2.avgOutflowCFS;
-          myData.lastOutflowCFS = month2.avgOutflowCFS;
-          myData.manualOutflow = this.elevationService.getAcreFeetFromCFS(Number(myData.avgOutflowCFS));
-          myData.manualOutflowCFS = month2.avgOutflowCFS.toFixed(5);
-          totalEomContent = totalEomContent + myData.manualInflow - myData.manualOutflow;
-          myData.eomContent = totalEomContent;
-          myData.orgEomContent = totalEomContent;
-          myData.eomElevation = this.elevationService.getElevation(myData.eomContent);
-          myData.elevationWarning = this.elevationService.getElevationWarning(myData.eomElevation);
-          myData.index = (i+1);
-          myData.manualOutFlowColor = "";
-          totalInflow        = totalInflow + month2.avgInflowCFS;
-          totalOutflow       = totalOutflow + month2.avgOutflowCFS;
-          totalManualOutflow = totalManualOutflow + month2.avgOutflowCFS;
-          totalDays = totalDays + 1;
-    
-          dailyData.push(myData);
-        }      
-        let myData = {"day":"Totals", "avgInflowCFS":totalInflow, "lastInflowCFS":totalInflow, "manualInflowCFS":totalInflow, "avgOutflowCFS":totalOutflow, "lastOutflowCFS":totalOutflow, "manualOutflowCFS":totalManualOutflow, "orgEomContent":0, "eomContent":totalEomContent, "eomElevation":0, "index":totalDays, "mIndex":0, "manualOutFlowColor":"", "manualInFlowColor":"", "elevationWarning":"", "disabled":true};
-        
-        dailyData.push(myData);
-    
-        //console.log(dailyData);
+           
+          let myDailyData:Daily = new Daily();
 
-        allDailyData[i] = dailyData;
+          totalEomContent = totalEomContent + Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgInflowCFS))) - Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgOutflowCFS)));
+          totalInflow        = totalInflow + Number(month2.avgInflowCFS);
+          totalManualInflow  = totalManualInflow + Number(month2.avgInflowCFS);
+          totalOutflow       = totalOutflow + Number(month2.avgOutflowCFS);
+          totalManualOutflow = totalManualOutflow + Number(month2.avgOutflowCFS);
+          totalDays = totalDays + 1;
+
+          myDailyData.day                 = month2.month + "-" + (i+1);
+          myDailyData.avgInflowCFS        = Number(month2.avgInflowCFS);
+          myDailyData.manualInflowCFS     = Number(month2.avgInflowCFS);
+          myDailyData.index               = i;
+          myDailyData.inflow              = Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgInflowCFS)));
+          myDailyData.avgOutflowCFS       = Number(month2.avgOutflowCFS);
+          myDailyData.outflow             = Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgOutflowCFS)));
+          myDailyData.manualOutflowCFS    = Number(month2.avgOutflowCFS);
+          myDailyData.manualOutflow       = Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgOutflowCFS)));
+          myDailyData.lastOutflowCFS      = Number(month2.avgOutflowCFS);
+          myDailyData.lastRolledUpCFS     = Number(month2.avgOutflowCFS);
+          myDailyData.dailyChangePerDayAF = myDailyData.outflow - myDailyData.manualOutflow;
+          myDailyData.eomContent          = myEOMContent + Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgInflowCFS))) - Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgOutflowCFS)));
+          myDailyData.orgEomContent       = myEOMContent + Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgInflowCFS))) - Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgOutflowCFS)));
+          myDailyData.eomElevation        = this.elevationService.getElevation(myDailyData.eomContent);
+          myDailyData.elevationWarning    = this.elevationService.getElevationWarning(myDailyData.eomElevation);
+          myDailyData.startingEomContent  = myEOMContent;
+          myDailyData.monthIndex          = month2.index;
+
+          myEOMContent = myDailyData.eomContent;
+
+          reportDailyData.push(myDailyData);
+          
+        }  
+
+        let myDailyTotal:Daily = new Daily();
+        myDailyTotal.day                = "Totals";
+        myDailyTotal.avgInflowCFS       = totalInflow;
+        
+        myDailyTotal.manualInflowCFS    = totalManualInflow;
+        myDailyTotal.manualInflow       = totalInflow;
+        myDailyTotal.manualInflowCFS    = totalInflow;
+        myDailyTotal.avgOutflowCFS      = totalOutflow;
+        myDailyTotal.lastOutflowCFS     = totalOutflow;
+        myDailyTotal.lastRolledUpCFS    = totalOutflow;
+        myDailyTotal.manualOutflowCFS   = totalManualOutflow;
+        myDailyTotal.manualOutflow      = totalOutflow;
+        myDailyTotal.eomContent         = totalEomContent;
+        myDailyTotal.orgEomContent      = 0;
+        myDailyTotal.eomElevation       = 0;
+        myDailyTotal.index              = totalDays
+        myDailyTotal.elevationWarning   = "";
+
+        reportDailyData.push(myDailyTotal);
+
+        this.myReport.daily.push(reportDailyData);
       
       }
-      //console.log(allDailyData);
-      return allDailyData;
+      
+      return this.myReport.daily; 
 
     }
   
@@ -853,44 +948,73 @@ export class OperationsService {
     
       return this.errorJson;
     }
+
+    setMyReport(report:Report) {
+      // console.log('--- operations.service setMyReport --- ');
+      // console.log(report)
+      this.myReport = this.deepClone(report);
+      
+      this.resetMonthlyData();
+      this.setDailyData(this.myReport.monthly);
+    }
     
-    setOperationalData = (operations: any[]): any  => {
+    setOperationalData = (operationsReport: any[]): any  => {
       this.myLog.log('INFO', '-------- OperationsService.setOperationalData --------');
   
       let jsonObject:any = {"data":[]};
   
-      let myObject:any = this.checkOperationalData(operations);
+      let myObject:any = this.checkOperationalData(operationsReport);
   
       if ( !(myObject).fatalError ) {
   
-        jsonObject['title']             =  operations[0];
-        jsonObject['name']              =  operations[1];
-        jsonObject['forecast']           =  operations[2];
-        jsonObject['date']              =  operations[3];
-        jsonObject['label1']            =  operations[4];
-        jsonObject['label2']            =  operations[5];
-        jsonObject['label3']            =  operations[6];
-        jsonObject['initialEOMContent'] =  operations[7];
-        jsonObject['inflowSummary']     =  operations[32];
-        jsonObject['normal']            =  operations[33];
-        jsonObject['maxContent']        =  operations[34];
+        jsonObject['title']              =  operationsReport[0];
+        jsonObject['name']               =  operationsReport[1];
+        jsonObject['forecast']           =  operationsReport[2];
+        jsonObject['date']               =  operationsReport[3];
+        jsonObject['label1']             =  operationsReport[4];
+        jsonObject['label2']             =  operationsReport[5];
+        jsonObject['label3']             =  operationsReport[6];
+        jsonObject['startingEOMContent'] =  operationsReport[7];
+        jsonObject['inflowSummary']      =  operationsReport[32];
+        jsonObject['normal']             =  operationsReport[33];
+        jsonObject['maxContent']         =  operationsReport[34];
+
+        this.myReport.title              =  operationsReport[0];
+        this.myReport.name               =  operationsReport[1];
+        this.myReport.forecast           =  operationsReport[2];
+        this.myReport.reportDate         =  operationsReport[3];
+        this.myReport.label1             =  operationsReport[4];
+        this.myReport.label2             =  operationsReport[5];
+        this.myReport.label3             =  operationsReport[6];
+        this.myReport.startingEOMContent =  Number(parseFloat(operationsReport[7].replace(/,/g, '')));
+        this.myReport.inflowSummary      =  operationsReport[32];
+        this.myReport.normal             =  operationsReport[33];
+        this.myReport.maxContent         =  operationsReport[34];
         
-        this.startingEOM = Number(parseFloat(jsonObject['initialEOMContent'].replace(/,/g, '')));
+        this.startingEOM = Number(parseFloat(jsonObject['startingEOMContent'].replace(/,/g, '')));
 
         let baseNumber:number = 8;
         let dataNumber:number = 24;
   
         for (let i = 0; i < dataNumber; i++) {
-          jsonObject.data[i] =   this.getRowArray(operations[(baseNumber + i)]);
+          jsonObject.data[i] =   this.getRowArray(operationsReport[(baseNumber + i)], i);
           jsonObject.data[i].index = i;
+          if (i === 0) {
+            jsonObject.data[i].startingEOMContent = this.startingEOM;
+            this.myReport.monthly[i].startingEOMContent = Number(this.myReport.startingEOMContent);
+          } else {
+            jsonObject.data[i].startingEOMContent = jsonObject.data[(i-1)].originalEomContent;
+            this.myReport.monthly[i].startingEOMContent = Number(this.myReport.monthly[(i-1)].eomContent);
+          }
+          
         }
 
-        // console.log('--- jsonObject ---');
-        // console.log( jsonObject );
-        // console.log( this.convertFlowUnitValues(jsonObject) );
+        this.setDailyData(this.myReport.monthly);
+
+        this.editMonthlyData = this.deepClone(this.myReport.monthly);
     
         this.convertFlowUnitValues(jsonObject); 
-        //console.log(jsonObject);
+        
         return jsonObject;
       
     } else {
@@ -900,4 +1024,283 @@ export class OperationsService {
       return [];
     }
   }
+
+  getStartingMonthlyIndex(myData:any):number {
+    this.myLog.log(
+      'INFO',
+      '-------- Operations-Data-Component.getMaxWaterLevelIndex -------- ');
+  
+    let myIndex:number = 0;
+
+    for (let i = 0; i < myData.length; i++) {
+      
+     if (Number(this.reportMonth) === this.convertMonthStringToNumber(myData[i].month) ) {
+      myIndex = i;
+      // console.log('-----------------------------------');
+      break;
+     }
+
+    }
+
+  return myIndex;
+  
+}
+
+  convertMonthStringToNumber(myMonthString:string): number {
+
+    let month:number = 0;
+
+    let myMonth:string = "";
+
+    if (myMonthString) {
+
+      myMonth = myMonthString.toLowerCase();
+
+    }
+
+    switch (myMonth) {
+      case "january": {
+        month  = 1;
+        break;
+      }
+      case "february": {
+        month  = 2;
+        break;
+      }
+      case "march": {
+        month  = 3;
+        break;
+      }
+      case "april": {
+        month  = 4;
+        break;
+      }
+      case "may": {
+        month  = 5;
+        break;
+      }
+      case "june": {
+        month  = 6;
+        break;
+      }
+      case "july": {
+        month  = 7;
+        break;
+      }
+      case "august": {
+        month  = 8;
+        break;
+      }
+      case "september": {
+        month  = 9;
+        break;
+      }
+      case "october": {
+        month  = 10;
+        break;
+      }
+      case "november": {
+        month  = 11;
+        break;
+      }
+      case "december": {
+        month  = 12;
+        break;
+      }
+      case "jan": {
+        month  = 1;
+        break;
+      }
+      case "feb": {
+        month  = 2;
+        break;
+      }
+      case "mar": {
+        month  = 3;
+        break;
+      }
+      case "apr": {
+        month  = 4;
+        break;
+      }
+      // case "may": {   -- above --
+      //   month  = 5;
+      //   break;
+      // }
+      case "jun": {
+        month  = 6;
+        break;
+      }
+      case "jul": {
+        month  = 7;
+        break;
+      }
+      case "aug": {
+        month  = 8;
+        break;
+      }
+      case "sep": {
+        month  = 9;
+        break;
+      }
+      case "oct": {
+        month  = 10;
+        break;
+      }
+      case "nov": {
+        month  = 11;
+        break;
+      }
+      case "dec": {
+        month  = 12;
+        break;
+      }
+      default : {
+        month  = 0;
+      }
+    }
+    
+    return month;
+  }
+
+  getMonthIndex(myData:any, myMonth:string):number {
+    this.myLog.log(
+      'INFO',
+      '-------- Operations-Data-Component.getMonthIndex -------- ');
+  
+    let myIndex:number = 0;
+
+    for (let i = 0; i < myData.length; i++) {
+      
+     if (Number(myMonth) === this.convertMonthStringToNumber(myData[i].month) ) {
+      myIndex = i;
+      // console.log('-----------------------------------');
+      break;
+     }
+
+    }
+
+    return myIndex;
+
+  }
+  
+  getMonth(myMonth:string):any {  //TODO Do I need this
+    // console.log('getMonth ' + myMonth);
+    for (let i = 0; i < this.myMonths.length; i++) {
+      if (myMonth === this.myMonths[i].abrev) {
+        return this.myMonths[i];
+      }
+    }
+    return this.myMonths[0];
+  }
+
+  convertReportDate(reportDate:string): string {
+    let myDate = reportDate.replaceAll(',','');
+    
+    let dateArray:any = myDate.split(" ");
+
+    let myMonth:string = dateArray[0];
+    
+    this.reportYear = dateArray[2];
+    this.reportDay =  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+    
+    switch (myMonth) {
+      case "January": {
+        myDate = dateArray[2] + "-01-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '01';
+        break;
+      }
+      case "February": {
+        myDate = dateArray[2] + "-02-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '02';
+        break;
+      }
+      case "March": {
+        myDate = dateArray[2] + "-03-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '03';
+        break;
+      }
+      case "April": {
+        myDate = dateArray[2] + "-04-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '04';
+        break;
+      }
+      case "May": {
+        myDate = dateArray[2] + "-05-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '05';
+        break;
+      }
+      case "June": {
+        myDate = dateArray[2] + "-06-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '06';
+        break;
+      }
+      case "July": {
+        myDate = dateArray[2] + "-07-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '07';
+        break;
+      }
+      case "August": {
+        myDate = dateArray[2] + "-08-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '08';
+        break;
+      }
+      case "September": {
+        myDate = dateArray[2] + "-09-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '09';
+        break;
+      }
+      case "October": {
+        myDate = dateArray[2] + "-10-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '10';
+        break;
+      }
+      case "November": {
+        myDate = dateArray[2] + "-11-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '11';
+        break;
+      }
+      case "December": {
+        myDate = dateArray[2] + "-12-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        this.reportMonth  = '12';
+        break;
+      }
+      default : {
+        myDate = dateArray[2] + "-" + dateArray[0] + "-" +  Number(dateArray[1]).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+      }
+    }
+
+    return myDate;
+  }
+
+  deepClone<T>(value: T): T {
+
+    if (typeof value !== 'object' || value === null) {
+      return value;
+    }
+    
+    if (Array.isArray(value)) {
+      return this.deepArray(value);
+    }
+
+    return this.deepObject(value);
+  }
+
+  deepObject<T extends {} > (source: T) {
+    const result = {} as T;
+    Object.keys(source).forEach((key) => {
+      const value = source[key as keyof T];
+      result[key as keyof T] = this.deepClone(value);
+    }, {})
+    
+    return result as T;
+  }
+
+  deepArray<T extends any[]>(collection: T):any {
+    return collection.map((value) => {
+      
+      return this.deepClone(value);
+    })
+  }
+
 }

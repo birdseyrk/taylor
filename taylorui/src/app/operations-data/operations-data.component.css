@@ -19,3 +19,8 @@ td.changed{
 .valuechanged {
     color: rgb(112, 59, 217);
 }
+
+/* See constants.ts file for CELL_CHANGE_COLOR_TEST*/
+.valuetextchanged {
+    color: rgb(138, 43, 226);
+}
