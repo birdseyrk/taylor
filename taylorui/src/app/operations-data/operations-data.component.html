@@ -671,6 +671,7 @@
                     <button
                         pButton
                         type="button"
+                        [disabled]="!rollupChange"
                         class="p-button-text text-sm color: var(--blue-300);"
                         (click)="resetDaily(editDailyData)"
                     >
@@ -683,6 +684,7 @@
                     <button
                         pButton
                         type="button"
+                        [disabled]="!rollupChange"
                         class="p-button-text text-sm color: var(--blue-300);"
                         (click)="rollupDaily(editDailyData)"
                     >

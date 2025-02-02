@@ -87,6 +87,8 @@ export class OperationsDataComponent {
   saveDataHelpSidebarVisible         = false;
   unDockMonths                       = false;
 
+  rollupChange:boolean               = false;
+
   recaculateYearType                 = 0.0;
 
   myMonths = constants.MONTHS;
@@ -886,6 +888,8 @@ export class OperationsDataComponent {
     this.dailyDialogVisible        = false;
     this.errors = [];
 
+    this.rollupChange = false;
+
     this.outflowPercentage = 0;
     this.outflowDirection = "Decrease";
     
@@ -1555,6 +1559,8 @@ export class OperationsDataComponent {
 
     this.dailyDialogVisible = false;
 
+    this.rollupChange = false;
+
   }
 
   resetDaily(myResetDailyData: any) {
@@ -1625,6 +1631,8 @@ export class OperationsDataComponent {
     this.changeDailyFromMonthly(this.editMonthlyData[resetMonth2]);
 
     this.recalculateEOM(this.editMonthlyData, 0 );
+    
+    this.rollupChange = false;
   }
 
   recalculateDaily(myRecalcDailyData: any, myDayIndex:number) {
@@ -1693,6 +1701,8 @@ export class OperationsDataComponent {
 
     this.modifiedReportTotals[2].outflow = this.modifiedReportTotals[2].outflow + this.elevationService.getAcreFeetFromCFS(cfsDifference);
     // TODO  this needs to be recalculated  this.modifiedReportTotals[3].outflow = this.modifiedReportTotals[3].outflow + this.elevationService.getAcreFeetFromCFS(cfsDifference);
+
+    this.rollupChange = true;
 
   }
 
