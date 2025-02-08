@@ -726,11 +726,12 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Bi-Monthly" [(visible)]="biMonthlyCFS" [style]="{width: '80vw', height: '40vw'}">
+<div class="flex flex-shrink-0 ">
+<p-dialog class="flex flex-shrink-0 "  header="Bi-Monthly - {{selectedMonth.month}}" [(visible)]="biMonthlyCFS" [style]="{width: '675px', height: '500px'}">  <!-- [style]="{width: '37vw', height: '27vw'}" -->
 
     <!-- add bi monthly inputs here -->
     <div class="flex flex-shrink-0 ">
-        <div class="card flex col-5 justify-content-left border-200 border-1 p-1 border-round">
+        <div class="card flex justify-content-center border-200 border-1 p-1 border-round">
             <!-- <div class="flex flex-wrap gap-3"> -->
 
                 <div class="flex-initial text-left   p-3 m-1 border-round-sm font-bold">
@@ -743,7 +744,7 @@
                             inputId="outflowDailyCFS1"
                             (onClick)="onPercentageLiveChangeCFS(editDailyData)"/>
                         <label for="outflowPercent1" class="font-bold ml-1">
-                            Both
+                            {{selectedMonth.month}}
                         </label>
                         
                         <p-radioButton 
@@ -754,7 +755,7 @@
                             inputId="outflowDailyCFS2"
                             (onClick)="onPercentageLiveChangeCFS(editDailyData)"/>
                         <label for="outflowPercent1" class="font-bold ml-1">
-                        1st Half of Month
+                            {{liveChange[0].half }}
                         </label>
                         
                         <p-radioButton 
@@ -765,7 +766,7 @@
                             inputId="outflowDailyCFS3"
                             (onClick)="onPercentageLiveChangeCFS(editDailyData)"/>
                         <label for="outflowPercent2" class="font-bold ml-1">
-                            2nd Half of Month
+                            {{liveChange[1].half}}
                         </label>
                     </div>
                 </div>
@@ -781,7 +782,7 @@
                             inputId="outflowPercent1"
                             (onClick)="onPercentageLiveChangeCFS(editDailyData)"/>
                         <label for="outflowPercent1" class="font-bold ml-1">
-                            Decrease %
+                            Decrease outflow
                         </label>
                         
                         <p-radioButton 
@@ -792,7 +793,7 @@
                             inputId="outflowPercent2"
                             (onClick)="onPercentageLiveChangeCFS(editDailyData)"/>
                         <label for="outflowPercent2" class="font-bold ml-1">
-                            Increase %
+                            Increase outflow
                         </label>
                     </div>
                 </div>
@@ -818,19 +819,39 @@
                     
                 </div>
                 
-                <div class="flex-initial text-left   p-3 m-1 border-round-sm font-bold">
+                <!-- <div class="flex-initial text-left   p-3 m-1 border-round-sm font-bold">
                     
                     <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageLiveChangeCFS(editDailyData)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercentageCFS" placeholder="Outflow %" suffix=" %"> </p-inputNumber>
                     <p-slider [(ngModel)]="outflowPercentageCFS" class="mb-3 w-0" (onChange)="onPercentageLiveChangeCFS(editDailyData)" styleClass="w-30rem" />
                 
+                </div> -->
+
+                <div class="grid">
+                    <div class="col-fixed" style="width:100px">
+                        <div class="text-center p-3 border-round-sm">
+                            <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageLiveChangeCFS(editDailyData)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercentageCFS" placeholder="Outflow %" suffix=" %"> </p-inputNumber>
+                        </div>
+                    </div>
+                    <div class="col-10 align-items-center">
+                        <div class="text-center p-3 border-round-sm mt-3">
+                            <p-slider [(ngModel)]="outflowPercentageCFS" class="mb-3 w-0 " (onChange)="onPercentageLiveChangeCFS(editDailyData)" styleClass="100%" />
+                        </div>
+                    </div>
                 </div>
+                
+                <!-- <div class="flex-initial text-left   p-3 m-1 border-round-sm font-bold">
+                    
+                    <p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm mb-3 w-0 font-bold" [maxFractionDigits]="4"  inputId="outflowPercentage" (onBlur)="onPercentageLiveChangeCFS(editDailyData)"  mode="decimal" [size]="4" [min]="0" [max]="100"  [(ngModel)]="outflowPercentageCFS" placeholder="Outflow %" suffix=" %"> </p-inputNumber>
+                    <p-slider [(ngModel)]="outflowPercentageCFS" class="mb-3 w-0" (onChange)="onPercentageLiveChangeCFS(editDailyData)" styleClass="w-30rem" />
+                
+                </div> -->
                 
                 <div class="flex-initial text-left   p-3 m-1 border-round-sm font-bold">
 
                     <p-table [scrollable]="true" scrollHeight="100px" [styleClass]="selectedSize" [value]="liveChange" [tableStyle]="{ 'min-width': '20rem' }" [autoLayout]="true">
                         <ng-template pTemplate="header">
                             <tr padding="3px">
-                                <th width="5px"  class="text-center">Half</th>
+                                <th width="5px"  class="text-center">Month</th>
                                 <th width="5px"  class="text-center">Days</th>
                                 <th width="5px"  class="text-center">Original Avg CFS</th>
                                 <th width="5px"  class="text-center">New Avg CFS</th>
@@ -868,7 +889,7 @@
 
                 <div class="flex column  w-full">
         
-                    <div class="flex column w-9">
+                    <div class="flex column w-11">
                         <div class="flex justify-content-start ">
                             <button
                                 pButton
@@ -880,8 +901,8 @@
                             </button>
                         </div>
                     </div>
-                    <div class="flex column w-3">
-                        <div class="flex align-content-end mr-10">
+                    <div class="flex column w-1 mr-3 ">
+                        <div class="flex align-content-end mr-1">
                     <!-- <button
                         pButton
                         type="button"
@@ -893,10 +914,10 @@
                     <button
                         pButton
                         type="button"
-                        class="p-button-text text-sm color: var(--blue-300)"
+                        class="flex align-content-end p-button-text text-sm color: var(--blue-300)"
                         (click)="onPercentageChangeCFS(editDailyData)"
                     >
-                        <div class="flex ml-2 text-blue-500 font-bold">Update</div>
+                        <div class="flex align-content-end ml-2 text-blue-500 font-bold">Update</div>
                     </button>
                         </div>
                     </div>
@@ -907,6 +928,7 @@
     </div>
 
 </p-dialog>
+</div>
 
 <p-toast [life]="6000" position="top-center" key="message"></p-toast>
 
