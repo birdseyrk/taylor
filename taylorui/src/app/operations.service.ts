@@ -171,9 +171,13 @@ export class OperationsService {
     }
 
     resetMonthlyData():Monthly[] {
-      //console.log('--- resetMonthlyData ---');
+      console.log('--- resetMonthlyData ---');
+      // console.log('--- this.myReport.monthly ---');
+      // console.log(this.myReport.monthly);
 
       this.editMonthlyData = this.deepClone(this.myReport.monthly);
+      // console.log('--- this.editMonthlyData ---');
+      // console.log(this.editMonthlyData);
       return this.editMonthlyData;
 
     }
@@ -246,8 +250,8 @@ export class OperationsService {
         return this.deepClone(this.myReport.daily);
     }
 
-    setDailyData = (operations: any): Daily[] => { 
-      // console.log("--- setDailyData ---");
+    setDailyData = (myMonth: Monthly[]): Daily[] => { 
+      console.log("--- setDailyData ---");
       this.myLog.log('INFO', '-------- OperationsService.setDailyData --------');
 
       let index = 0;
@@ -255,6 +259,11 @@ export class OperationsService {
 
       let myEOMContent = 0;
       let totalEomContent:number = 0;
+
+      // console.log('--- myMonth ---');
+      // console.log(myMonth);
+
+      this.myReport.daily = [];
 
       for (let monthLink = 0; monthLink < this.months; monthLink++) {
         if (monthLink == 0) {
@@ -267,11 +276,11 @@ export class OperationsService {
           index = monthLink * 2;
           nextIndex = index + 1;
           
-          this.startingEOM =  operations[index-1].eomContent;
+          this.startingEOM =  myMonth[index-1].eomContent;
         }
 
-        let month1Str:string = '';
-        let month2Str:string = '';
+        // let month1Str:string = '';
+        // let month2Str:string = '';
   
         let reportDailyData:Daily[]   = [];
         let month1:Monthly            = new Monthly();
@@ -283,11 +292,16 @@ export class OperationsService {
         let totalManualOutflow:number = 0;
         let totalDays:number          = 0;
 
-        month1 = operations[index];
-        month2 = operations[nextIndex];
+        month1 = myMonth[index];
+        month2 = myMonth[nextIndex];
         
         myEOMContent    = month1.startingEOMContent;
         totalEomContent = myEOMContent;
+
+        // console.log('--- month1 ---');
+        // console.log(month1);
+        // console.log('--- month2 ---');
+        // console.log(month2);
 
         for (let i = 0; i < month1.days; i++) {
           
@@ -309,8 +323,8 @@ export class OperationsService {
           myDailyData.avgOutflowCFS       = Number(month1.avgOutflowCFS);
           myDailyData.lastOutflowCFS      = Number(month1.avgOutflowCFS);
           myDailyData.lastRolledUpCFS     = Number(month1.avgOutflowCFS);
-          myDailyData.outflow             = Number(this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS)));
           myDailyData.manualOutflowCFS    = Number(month1.avgOutflowCFS);
+          myDailyData.outflow             = Number(this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS)));
           myDailyData.manualOutflow       = this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS));
           myDailyData.dailyChangePerDayAF = myDailyData.outflow - myDailyData.manualOutflow;
           myDailyData.eomContent          = myEOMContent + Number(this.elevationService.getAcreFeetFromCFS(Number(month1.avgInflowCFS))) - Number(this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS)));
@@ -321,6 +335,9 @@ export class OperationsService {
           myDailyData.monthIndex          = month1.index;
 
           myEOMContent = myDailyData.eomContent;
+
+          // console.log('--- myDailyData 1 ---');
+          // console.log(myDailyData);
 
           reportDailyData.push(myDailyData);
 
@@ -358,6 +375,9 @@ export class OperationsService {
 
           myEOMContent = myDailyData.eomContent;
 
+          // console.log('--- myDailyData 2 ---');
+          // console.log(myDailyData);
+
           reportDailyData.push(myDailyData);
           
         }  
@@ -382,9 +402,15 @@ export class OperationsService {
 
         reportDailyData.push(myDailyTotal);
 
+        // console.log('--- myDailyTotal  ---');
+        // console.log(myDailyTotal);
+
         this.myReport.daily.push(reportDailyData);
       
       }
+
+      // console.log('--- this.myReport.daily ---');
+      // console.log(this.myReport.daily);
       
       return this.myReport.daily; 
 
@@ -950,12 +976,18 @@ export class OperationsService {
     }
 
     setMyReport(report:Report) {
-      // console.log('--- operations.service setMyReport --- ');
-      // console.log(report)
+      console.log('--- operations.service setMyReport --- ');
+      // console.log('--- report ---');
+      // console.log(report);
+
+      //return; //TODO remove this
       this.myReport = this.deepClone(report);
-      
+
       this.resetMonthlyData();
       this.setDailyData(this.myReport.monthly);
+
+      // console.log('--- this.myReport ---');
+      // console.log(this.myReport);
     }
     
     setOperationalData = (operationsReport: any[]): any  => {
@@ -1006,6 +1038,8 @@ export class OperationsService {
             jsonObject.data[i].startingEOMContent = jsonObject.data[(i-1)].originalEomContent;
             this.myReport.monthly[i].startingEOMContent = Number(this.myReport.monthly[(i-1)].eomContent);
           }
+          
+          this.myReport.monthly[i].elevationChange = Number( this.elevationService.getElevation(Number(this.myReport.monthly[i].eomContent)) - this.elevationService.getElevation(this.myReport.monthly[i].startingEOMContent));
           
         }
 

@@ -21,6 +21,7 @@ export class Daily {  // extends Array
     public orgEomContent:number       = 0;
     public startingEomContent:number  = 0;
     public eomElevation:number        = 0;
+    public elevationChange:number     = 0;
     public elevationWarning:string    = '';
     public monthIndex:number          = 0;
     public monthChanged:boolean       = false;
@@ -39,6 +40,7 @@ export class Monthly { // extends Array
     public elevationWarning:string        = '';
     public eomContent:number              = 0;
     public eomElevation:number            = 0;
+    public elevationChange:number         = 0;
     public index:number                   = 0;
     public inflow:number                  = 0;
     public inflowCF:number                = 0;

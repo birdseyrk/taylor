@@ -38,63 +38,71 @@ export class OperationsDataComponent {
   ) {}
 
   
-  myReport:Report                     = new Report();
-  selectedSize                        = "p-datatable-sm";
-  myChangedText                       = constants.CELL_CHANGE_COLOR_TEXT;
-  myDate: Date                        = new Date();
-  editMonthlyData: Monthly[]          = [];
-  editDailyData: Daily[]              = [];  
-  reportTotals: Monthly[]             = [];
-  modifiedReportTotals: Monthly[]     = [];
-  dailyData:any                       = [];  //TODO change type to daily  All days - dailyData
+  myReport:Report                       = new Report();
+  selectedSize                          = "p-datatable-sm";
+  myChangedText                         = constants.CELL_CHANGE_COLOR_TEXT;
+  myDate: Date                          = new Date();
+  editMonthlyData: Monthly[]            = [];
+  editDailyData: Daily[]                = [];  
+  reportTotals: Monthly[]               = [];
+  modifiedReportTotals: Monthly[]       = [];
+  dailyData:any                         = [];  //TODO change type to daily  All days - dailyData
   
-  yearTypeBackgroundAnalytics: string = '';
+  yearTypeBackgroundAnalytics: string   = '';
 
-  errors: any                         = [];
-  fileName: string                    = "";
-  dirName: string                     = "";
-  fileNamePattern                     = /^[0-9a-zA-Z-]+$/;
+  errors: any                           = [];
+  fileName: string                      = "";
+  dirName: string                       = "";
+  fileNamePattern                       = /^[0-9a-zA-Z-]+$/;
 
-  outflowPercentage:number            = 0;
-  outflowDirection:string             = "Decrease";
+  outflowPercentage:number              = 0;
+  outflowDirection:string               = "Decrease";
+  overRideChecked:boolean              = false;
+  
+  outflowPercentageCFS:number           = 0;
+  outflowDirectionCFS:string            = "Decrease";
+  outflowDailyCFS:string                = "Both";
+  overRideCheckedCFS:boolean            = false;
 
-  maxFileSize: number                 = 1000000000;
+  liveChange:any                        = [];
 
-  operations: string[]                = [];
-  proposedOperations: any             = '';
+  maxFileSize: number                   = 1000000000;
 
-  elevationGridData: any              = '';
-  elevationGridOptions: any           = '';
+  operations: string[]                  = [];
+  proposedOperations: any               = '';
 
-  myTabIndex:number                  = 0;
+  elevationGridData: any                = '';
+  elevationGridOptions: any             = '';
 
-  overRideChecked:boolean            = false;
+  myTabIndex:number                    = 0;
 
-  calendarVisible                    = false;
-  clearOperationDataVisible          = false;
-  dataDialogVisible                  = false;
-  elevationVisible                   = false;
-  errorInputVisible                  = false;
-  editDialogVisible                  = false;
-  dailyDialogVisible                 = false;
-  linksVisible                       = false;
-  saveDialogVisible                  = false;
-  importFileDialogVisible            = false;
-  editHelpSidebarVisible             = false;
-  operationsHelpSidebarVisible       = false;
-  loadDataHelpSidebarVisible         = false;
-  fileImportHelpSidebarVisible       = false;
-  saveDataHelpSidebarVisible         = false;
-  unDockMonths                       = false;
+  calendarVisible:boolean              = false;
+  clearOperationDataVisible:boolean    = false;
+  dataDialogVisible:boolean            = false;
+  elevationVisible:boolean             = false;
+  errorInputVisible:boolean            = false;
+  editDialogVisible:boolean            = false;
+  dailyDialogVisible:boolean           = false;
+  linksVisible:boolean                 = false;
+  saveDialogVisible:boolean            = false;
+  importFileDialogVisible:boolean      = false;
+  editHelpSidebarVisible:boolean       = false;
+  operationsHelpSidebarVisible:boolean = false;
+  loadDataHelpSidebarVisible:boolean   = false;
+  fileImportHelpSidebarVisible:boolean = false;
+  saveDataHelpSidebarVisible:boolean   = false;
+  unDockMonths:boolean                 = false;
+  biMonthlyCFS:boolean                 = false;
 
-  rollupChange:boolean               = false;
+  rollupChange:boolean                 = false;
+  incorporateChange:boolean           = false;
 
-  recaculateYearType                 = 0.0;
+  recaculateYearType                   = 0.0;
 
-  myMonths = constants.MONTHS;
-  selectedMonth:any                  = this.myMonths[0];
-  monthIndex:number                  = 0;
-  startingDailyEOMContent: number    = 0.0;
+  myMonths                             = constants.MONTHS;
+  selectedMonth:any                    = this.myMonths[0];
+  monthIndex:number                    = 0;
+  startingDailyEOMContent: number      = 0.0;
 
   monthlyStats:any = {
     "maxInflow":0,
@@ -128,6 +136,7 @@ export class OperationsDataComponent {
   ]
 
   showEditDialog() {
+    console.log("--- showEditDialog ---");
     this.myLog.log(
       'INFO',
       '-------- Operations-Data-Component.showEditDialog -------- ' +
@@ -225,6 +234,9 @@ export class OperationsDataComponent {
         this.dailyDialogVisible
     );
 
+    // console.log('--- this.editMonthlyData ---');
+    // console.log(this.editMonthlyData);
+
     let myData:string = "";
 
     if (this.editMonthlyData.length == 0 ) {
@@ -306,6 +318,13 @@ export class OperationsDataComponent {
     this.modifiedReportTotals[3].elevationWarning = ''; 
 
     this.dailyDialogVisible = !this.dailyDialogVisible;
+
+    this.liveChange.push({"half":"1st Half", "avgOutflowCFS":this.editDailyData[0].avgOutflowCFS,  "days": Number(this.reportTotals[0].days), "changed": 0.0, "biMonthly":Number(this.reportTotals[0].outflow)});
+    this.liveChange.push({"half":"2nd Half", "avgOutflowCFS":this.editDailyData[16].avgOutflowCFS, "days": Number(this.reportTotals[1].days), "changed": 0.0, "biMonthly":Number(this.reportTotals[1].outflow)});
+    this.liveChange.push({"half":"Total",    "avgOutflowCFS":( (this.editDailyData[0].avgOutflowCFS + this.editDailyData[16].avgOutflowCFS ) /2 ), "days": (Number(this.reportTotals[0].days) + Number(this.reportTotals[1].days)), "changed": 0.0, "biMonthly":( Number(this.reportTotals[0].outflow) + Number(this.reportTotals[1].outflow))});
+
+    // console.log("--- this.liveChange ---");
+    // console.log(this.liveChange);
   }
 
   changeDailyMonth(month:any) {
@@ -363,6 +382,10 @@ export class OperationsDataComponent {
         this.editDailyData[i].eomElevation
       );
     }
+
+    this.liveChange.push({"half":"1st Half", "avgOutflowCFS":this.editDailyData[0].avgOutflowCFS,  "days": Number(this.reportTotals[0].days), "changed": 0.0, "biMonthly":Number(this.reportTotals[0].outflow)});
+    this.liveChange.push({"half":"2nd Half", "avgOutflowCFS":this.editDailyData[16].avgOutflowCFS, "days": Number(this.reportTotals[1].days), "changed": 0.0, "biMonthly":Number(this.reportTotals[1].outflow)});
+    this.liveChange.push({"half":"Total",    "avgOutflowCFS":( (this.editDailyData[0].avgOutflowCFS + this.editDailyData[16].avgOutflowCFS ) /2 ), "days": (Number(this.reportTotals[0].days) + Number(this.reportTotals[1].days)), "changed": 0.0, "biMonthly":(Number(this.reportTotals[0].outflow) + Number(this.reportTotals[1].outflow))});
 
   }
 
@@ -574,11 +597,14 @@ export class OperationsDataComponent {
   }
 
   incorporateMonthlyData(mySaveData:any) {
-    // console.log('--- incorporateMonthlyData ---');
+    console.log('--- incorporateMonthlyData ---');
     this.myLog.log(
       'INFO',
       '-------- Operations-Data-Component.incorporateMonthlyData -------- '
     );
+
+    // console.log('--- mySaveData ---');
+    // console.log(mySaveData);
 
     let saveIndex:number = 0;
 
@@ -607,8 +633,20 @@ export class OperationsDataComponent {
       }
 
     }
+    
+    this.incorporateChange = false;
 
     this.recalculateEOM( this.myReport.monthly,saveIndex);
+
+    // console.log('incorp - this.myReport');
+    // console.log(this.myReport);
+
+    //return; //TODO remove this
+
+    this.operationsService.setMyReport(this.myReport); //TODO this does not work
+
+    // console.log('--- this.operationsService.getDailyData() ---');
+    // console.log( this.operationsService.getDailyData());
 
     this.addToGridElevation()
 
@@ -761,6 +799,187 @@ export class OperationsDataComponent {
     this.onPercentageChange(myData);
 
   }
+
+  onPercentageLiveChangeCFS(myData:any) {
+    // console.log("--- onPercentageLiveChangeCFS ---");
+    // console.log("outflowDirectionCFS   " + this.outflowDirectionCFS);
+    // console.log("outflowDailyCFS       " + this.outflowDailyCFS);
+    // console.log("outflowPercentageCFS  " + this.outflowPercentageCFS);
+    // console.log("overRideCheckedCFS    " + this.overRideCheckedCFS);
+    // console.log("----------------------------------------------------");
+
+    let multiplier:number = 1.0;
+
+    if (this.outflowDirectionCFS  == "Decrease") {
+      multiplier = -1.0;
+    } else {
+      multiplier = 1.0;
+    }
+
+    if  ( this.outflowDailyCFS == "FirstHalf") {
+      this.liveChange[0].avgOutflowCFS = myData[0].avgOutflowCFS;
+      this.liveChange[0].changed       = myData[0].avgOutflowCFS + (myData[0].avgOutflowCFS * (this.outflowPercentageCFS * .01) * multiplier);
+      this.liveChange[0].biMonthly     = this.elevationService.getAcreFeetFromCFS(this.liveChange[0].changed) * this.editMonthlyData[myData[0].monthIndex].days;
+      
+      this.liveChange[1].avgOutflowCFS = myData[16].avgOutflowCFS;
+      this.liveChange[1].changed       = 0.0;
+      this.liveChange[1].biMonthly     = this.elevationService.getAcreFeetFromCFS(myData[16].avgOutflowCFS) * this.editMonthlyData[myData[16].monthIndex].days;
+    }
+
+    if ( this.outflowDailyCFS == "SecondHalf") {
+      this.liveChange[0].avgOutflowCFS = myData[0].avgOutflowCFS;
+      this.liveChange[0].changed       = 0.0;
+      this.liveChange[0].biMonthly     = this.elevationService.getAcreFeetFromCFS(myData[0].avgOutflowCFS) * this.editMonthlyData[myData[0].monthIndex].days;
+
+      this.liveChange[1].avgOutflowCFS = myData[16].avgOutflowCFS;
+      this.liveChange[1].changed       = myData[16].avgOutflowCFS + (myData[1].avgOutflowCFS * (this.outflowPercentageCFS * .01) * multiplier);
+      this.liveChange[1].biMonthly     = this.elevationService.getAcreFeetFromCFS(this.liveChange[1].changed) * this.editMonthlyData[myData[16].monthIndex].days;
+    }
+
+    if (this.outflowDailyCFS == "Both")  {
+      this.liveChange[0].avgOutflowCFS = myData[0].avgOutflowCFS;
+      this.liveChange[0].changed       = myData[0].avgOutflowCFS + (myData[0].avgOutflowCFS * (this.outflowPercentageCFS * .01) * multiplier);
+      this.liveChange[0].biMonthly     = this.elevationService.getAcreFeetFromCFS(this.liveChange[0].changed) * this.editMonthlyData[myData[0].monthIndex].days;
+
+      this.liveChange[1].avgOutflowCFS = myData[16].avgOutflowCFS;
+      this.liveChange[1].changed       = myData[16].avgOutflowCFS + (myData[1].avgOutflowCFS * (this.outflowPercentageCFS * .01) * multiplier);
+      this.liveChange[1].biMonthly     = this.elevationService.getAcreFeetFromCFS(this.liveChange[1].changed) * this.editMonthlyData[myData[16].monthIndex].days;
+    }
+
+    this.liveChange[2].avgOutflowCFS = (this.liveChange[0].avgOutflowCFS + this.liveChange[1].avgOutflowCFS ) /2 ;
+    this.liveChange[2].changed       = (this.liveChange[0].changed + this.liveChange[1].changed) /2;
+    this.liveChange[2].biMonthly     = this.liveChange[0].biMonthly + this.liveChange[1].biMonthly;
+
+    
+
+    // console.log("--- this.liveChange ---");
+    // console.log(this.liveChange);
+
+    // console.log("--- myData ---");
+    // console.log(myData);
+
+    // console.log("--- this.editMonthlyData[16] ---");
+    // console.log(this.editMonthlyData[16]);
+
+  }
+
+  onPercentageSetOriginalCFS(myData:any) {
+    // console.log("--- onPercentageSetOriginalCFS ---");
+    // console.log("outflowDirectionCFS   " + this.outflowDirectionCFS);
+    // console.log("outflowDailyCFS       " + this.outflowDailyCFS);
+    // console.log("outflowPercentageCFS  " + this.outflowPercentageCFS);
+    // console.log("overRideCheckedCFS    " + this.overRideCheckedCFS);
+    // console.log("----------------------------------------------------");
+
+    //let multiplier:number = 1.0;
+
+    // console.log("liveChange[0].changed " + this.liveChange[0].changed + "  " + this.liveChange[0].avgOutflowCFS);
+    // console.log("liveChange[1].changed " + this.liveChange[1].changed + "  " + this.liveChange[1].avgOutflowCFS);
+
+    if (this.liveChange[0].changed < this.liveChange[0].avgOutflowCFS) {
+      this.outflowDirectionCFS  = "Increase"
+    } else {
+      this.outflowDirectionCFS  = "Decrease"
+      //multiplier = -1.0;
+    }
+
+    this.outflowPercentageCFS = ( this.liveChange[0].avgOutflowCFS / this.liveChange[0].changed) * 100.0;
+
+    if  ( this.outflowDailyCFS == "FirstHalf") {
+      this.liveChange[0].changed    = this.liveChange[0].avgOutflowCFS;
+      this.liveChange[0].biMonthly  = this.elevationService.getAcreFeetFromCFS(this.liveChange[0].changed) * this.editMonthlyData[myData[0].monthIndex].days;
+
+    }
+
+    if ( this.outflowDailyCFS == "SecondHalf") {
+
+      this.liveChange[1].changed    = this.liveChange[1].avgOutflowCFS;
+      this.liveChange[1].biMonthly  = this.elevationService.getAcreFeetFromCFS(this.liveChange[1].changed) * this.editMonthlyData[myData[16].monthIndex].days;
+    }
+
+    if ( this.outflowDailyCFS == "Both") {
+      this.liveChange[0].changed    = this.liveChange[0].avgOutflowCFS;
+      this.liveChange[0].biMonthly  = this.elevationService.getAcreFeetFromCFS(this.liveChange[0].changed) * this.editMonthlyData[myData[0].monthIndex].days;
+      
+      this.liveChange[1].changed    = this.liveChange[1].avgOutflowCFS;
+      this.liveChange[1].biMonthly  = this.elevationService.getAcreFeetFromCFS(this.liveChange[1].changed) * this.editMonthlyData[myData[16].monthIndex].days;
+    }
+
+    this.liveChange[2].avgOutflowCFS = (this.liveChange[0].avgOutflowCFS + this.liveChange[1].avgOutflowCFS ) /2 ;
+    this.liveChange[2].changed       = (this.liveChange[0].changed + this.liveChange[1].changed) /2;
+    this.liveChange[2].biMonthly     = this.liveChange[0].biMonthly + this.liveChange[1].biMonthly;
+
+    // console.log("outflowDirectionCFS   " + this.outflowDirectionCFS);
+    // console.log("outflowDailyCFS       " + this.outflowDailyCFS);
+    // console.log("outflowPercentageCFS  " + this.outflowPercentageCFS);
+    // console.log("overRideCheckedCFS    " + this.overRideCheckedCFS);
+    // console.log("----------------------------------------------------");
+
+  }
+
+  onPercentageChangeCFS(myData:any) {
+    // console.log("--- onPercentageChangeCFS ---");
+    // console.log("outflowDirectionCFS   " + this.outflowDirectionCFS);
+    // console.log("outflowDailyCFS       " + this.outflowDailyCFS);
+    // console.log("outflowPercentageCFS  " + this.outflowPercentageCFS);
+    // console.log("overRideCheckedCFS    " + this.overRideCheckedCFS);
+    // console.log(myData);
+
+    let multiplier:number   = 1.0;
+    let myStartIndex:number = 0;
+    let myEndIndex:number   = myData.length - 1;
+    let myTotal:number      = 0.0;
+
+    if (this.outflowDirectionCFS  == "Decrease") {
+      multiplier = -1.0;
+    } else {
+      multiplier = 1.0;
+    }
+
+    if (this.outflowDailyCFS == "FirstHalf")  {
+
+      myEndIndex = 15;
+
+    } else if (this.outflowDailyCFS == "SecondHalf") {
+
+      myStartIndex = 15;
+
+    }
+    // console.log("myData.length " + myData.length);
+    // console.log(myData[29]);
+    // console.log(myData[myData.length].manualOutflowCFS);
+
+    for (let i = myStartIndex; i < (myEndIndex); i++) {
+
+      // if (this.overRideCheckedCFS) {   //TODO removing this for now, the flow does not work.
+        let myChange =  myData[i].avgOutflowCFS + (myData[i].avgOutflowCFS * (this.outflowPercentageCFS * .01) * multiplier);
+        myTotal =  myData[(myData.length - 1)].manualOutflowCFS = myData[(myData.length - 1)].manualOutflowCFS - myData[i].manualOutflowCFS + myChange;
+        myData[i].manualOutflowCFS = myChange;
+        if (myData[i].manualOutflowCFS != myData[i].avgOutflowCFS) {
+          myData[i].manualOutflowColor     = constants.CELL_CHANGE_COLOR;
+      //   }
+        
+      // } else if (myData[i].manualOutflowCFS == myData[i].lastRolledUpCFS) {
+      //   let myChange =  myData[i].avgOutflowCFS + (myData[i].avgOutflowCFS * (this.outflowPercentageCFS * .01) * multiplier);
+      //   myTotal =  myData[(myData.length - 1)].manualOutflowCFS = myData[(myData.length - 1)].manualOutflowCFS - myData[i].manualOutflowCFS + myChange;
+      //   myData[i].manualOutflowCFS = myChange;
+      //   if (myData[i].manualOutflowCFS != myData[i].avgOutflowCFS) {
+      //     myData[i].manualOutflowColor     = constants.CELL_CHANGE_COLOR;
+      //   }
+      }
+
+      // console.log(myData[i]);
+      //need to update the last row the totals.
+    
+    }
+
+    myData[(myData.length-1)].manualOutflowCFS = myTotal;
+
+    this.recalculateDaily(myData, myStartIndex);
+
+    this.biMonthlyCFS=false;
+
+  }
   
   onPercentageChange(myData:any) {
 
@@ -874,24 +1093,25 @@ export class OperationsDataComponent {
 
     this.operationsService.clearOperationalData();
 
-    this.myReport             = new Report();
-    this.editMonthlyData      = [];  
-    this.editDailyData        = [];
-    this.dailyData            = [];
-    this.reportTotals         = [];
-    this.modifiedReportTotals = [];
-    this.selectedMonth = this.myMonths[0];
-    this.myTabIndex = 0;
-    this.monthIndex = 0;
+    this.myReport                  = new Report();
+    this.editMonthlyData           = [];  
+    this.editDailyData             = [];
+    this.dailyData                 = [];
+    this.reportTotals              = [];
+    this.modifiedReportTotals      = [];
+    this.selectedMonth             = this.myMonths[0];
+    this.myTabIndex                = 0;
+    this.monthIndex                = 0;
     this.clearOperationDataVisible = false;
     this.editDialogVisible         = false;
     this.dailyDialogVisible        = false;
-    this.errors = [];
+    this.errors                    = [];
 
-    this.rollupChange = false;
+    this.rollupChange              = false;
+    this.incorporateChange        = false;
 
-    this.outflowPercentage = 0;
-    this.outflowDirection = "Decrease";
+    this.outflowPercentage         = 0;
+    this.outflowDirection          = "Decrease";
     
     this.monthlyStats = {
       "maxInflow":0,
@@ -1104,19 +1324,6 @@ export class OperationsDataComponent {
     return myElementJson;
   }
 
-  // loadDailyData(loadData:Daily[]): Daily[] {  //TODO this is not used
-  //   // console.log('--- loadDailyData ---');
-  //   let myLoadDailyData:any = [];
-
-  //   for ( let i = 0; i < loadData.length; i++ ) {
-  //     let myDailyJsonData:string = JSON.stringify(loadData[i]);
-  //     myLoadDailyData[i] = JSON.parse(myDailyJsonData);
-  //   }
-
-  //   return myLoadDailyData;
-
-  // }
-
   readOperationalData(event: FileUploadEvent) {
     console.log('--- readOperationalData ---');
     let myReadJson:any = {};
@@ -1248,16 +1455,26 @@ export class OperationsDataComponent {
   }
 
   clearManualEditInputs(myClearEditData:any) {
+    console.log('--- clearManualEditInputs ---');
     this.myLog.log(
       'INFO',
       '-------- Operations-Data-Component.clearManualEditInputs -------- '
     );
+
+    this.incorporateChange = false;
+
+    // console.log('--- myClearEditData ---');
+    // console.log(myClearEditData);
+
+    // console.log('--- this.operationsService.getDailyData() ---');
+    // console.log( this.operationsService.getDailyData());
     
     this. outflowPercentage = 0;
     this.outflowDirection = "Decrease";
   
     this.editMonthlyData      = this.operationsService.resetMonthlyData();
     this.dailyData = this.operationsService.getDailyData();
+    
   }
 
   addToGridElevation() {
@@ -1553,13 +1770,20 @@ export class OperationsDataComponent {
 
     this.modifiedReportTotals[3].manualOutflow          = Number( (outflowDifference).toFixed(3));
 
-    //add back in this.recalculateEOM(this.modifiedReportTotals, 0);
+    //TODO add back in this.recalculateEOM(this.modifiedReportTotals, 0);
 
     //this.recalculateDaily(myRecalcDailyData: any, myRollupData[0].monthIndex:number);
+
+    // console.log('--- myRollupData ---');
+    // console.log(myRollupData);
+
+    // console.log('--- this.editMonthlyData ---');
+    // console.log(this.editMonthlyData);
 
     this.dailyDialogVisible = false;
 
     this.rollupChange = false;
+    this.incorporateChange = true;
 
   }
 
@@ -1573,7 +1797,7 @@ export class OperationsDataComponent {
     for (let i = 0; i < (myResetDailyData.length); i++) {
 
       myResetDailyData[i].manualOutflowCFS = myResetDailyData[i].lastOutflowCFS;
-      myResetDailyData[i].lastRolledUpCFS  = myResetDailyData[i].lastOutflowCFS;;
+      myResetDailyData[i].lastRolledUpCFS  = myResetDailyData[i].lastOutflowCFS;
       myResetDailyData[i].eomContent             = myResetDailyData[i].orgEomContent;
       myResetDailyData[i].manualOutflowColor     = "";
       myResetDailyData[i].manualOutflowTextColor = "";
@@ -1650,7 +1874,7 @@ export class OperationsDataComponent {
 
     let cfsDifference = Number(myRecalcDailyData[myDayIndex].manualOutflowCFS) -  Number(myRecalcDailyData[myDayIndex].lastOutflowCFS);
 
-    myRecalcDailyData[myDayIndex].lastOutflowCFS = myRecalcDailyData[myDayIndex].manualOutflowCFS;
+    //myRecalcDailyData[myDayIndex].lastOutflowCFS = myRecalcDailyData[myDayIndex].manualOutflowCFS;
 
     if ( Math.abs(cfsDifference) <  0.001) {
       return;
@@ -1717,6 +1941,8 @@ export class OperationsDataComponent {
     );
     
     let myEomContent = 0;
+    let myElevation  = 0;
+
     let index = Number(myIndex);
     let myInflow:number = Number(myRecalcData[index].manualInflow);
     let myOutflow:number = Number(myRecalcData[index].manualOutflow);
@@ -1728,9 +1954,13 @@ export class OperationsDataComponent {
 
       if (i === 0) {
         myEomContent = this.myReport.startingEOMContent;
+        myElevation = this.elevationService.getElevation( myEomContent );
       } else {
         myEomContent = myRecalcData[i - 1].eomContent;
+        myElevation = this.elevationService.getElevation( myEomContent );
       }
+
+      // console.log("eomContent " + myEomContent + " elevation " + myElevation);
 
       if (!myOutflow) {
         myOutflow = 0;
@@ -1759,15 +1989,11 @@ export class OperationsDataComponent {
           myEomContent + myInflow - myOutflow;
         
         if (myRecalcData[i].eomContent > 0) {
-          myRecalcData[i].eomElevation =
-            this.elevationService.getElevation(
-              myRecalcData[i].eomContent
-            );
-          
-          myRecalcData[i].elevationWarning = this.getElevationWarning(
-            myRecalcData[i].eomElevation
-          );
-
+          myRecalcData[i].eomElevation = this.elevationService.getElevation( myRecalcData[i].eomContent );
+          //console.log("last elevation " + myElevation + " current Elevation " + myRecalcData[i].eomElevation);
+          myRecalcData[i].elevationChange = Number(myRecalcData[i].eomElevation - myElevation);
+          console.log("last elevation " + myElevation + " current Elevation " + myRecalcData[i].eomElevation + " change " + myRecalcData[i].elevationChange);
+          myRecalcData[i].elevationWarning = this.getElevationWarning( myRecalcData[i].eomElevation );
         }
       }
     }
@@ -1775,6 +2001,8 @@ export class OperationsDataComponent {
 
   adjustManualInput(myData:any, myIndex:number, inflowField:boolean) {
     console.log("--- adjustManualInput ---");
+    // console.log('--- myData ---');
+    // console.log(myData);
 
     if (inflowField) {
       this.editMonthlyData[Number(myIndex)].manualInflow           = Number((this.editMonthlyData[Number(myIndex)].manualInflow).toFixed(3));
@@ -1790,6 +2018,8 @@ export class OperationsDataComponent {
     
     this.recalculateEOM(myData,myIndex); 
     this.changeDailyFromMonthly(this.editMonthlyData[Number(myIndex)]);
+    this.incorporateChange = true;
+
   }
 
   getEOMContentList(data: any): number[] {  //TODO do I need this
