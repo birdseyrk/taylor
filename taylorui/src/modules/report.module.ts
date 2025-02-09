@@ -1,3 +1,4 @@
+import { NumberValueAccessor } from "@angular/forms";
 
 export class Daily {  // extends Array
 
@@ -122,4 +123,14 @@ export class Monthly { // extends Array
   
     constructor() {
     }
+}
+
+export class PercentCFS {
+  half:string                         = "";
+  month:string                        = "";
+  avgOutflowCFS:number                = 0;
+  days:number                         = 0;
+  changed:number                      = 0;
+  biMonthly:number                    = 0;
+
 }

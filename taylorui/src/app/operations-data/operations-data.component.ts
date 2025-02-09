@@ -10,9 +10,10 @@ import { ElevationService } from '../elevation.service';
 import { LoggingService } from '../logging.service';
 import { OperationsService } from '../operations.service';
 
-import { Report }  from '../../modules/report.module';
-import { Monthly } from '../../modules/report.module';
-import { Daily }   from '../../modules/report.module';
+import { Report }       from '../../modules/report.module';
+import { Monthly }      from '../../modules/report.module';
+import { Daily }        from '../../modules/report.module';
+import { PercentCFS }   from '../../modules/report.module';
 
 import * as constants from '../../constants';
 import { FileUploadEvent } from 'primeng/fileupload';
@@ -35,7 +36,23 @@ export class OperationsDataComponent {
     private messageService: MessageService,
     public operationsService: OperationsService,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+          
+
+      let myLiveChange               = new PercentCFS();
+
+      this.liveChange.push(myLiveChange);
+      
+      myLiveChange               = new PercentCFS();
+
+      this.liveChange.push(myLiveChange);
+
+      myLiveChange               = new PercentCFS();
+
+      this.liveChange.push(myLiveChange);
+
+
+  }
 
   
   myReport:Report                       = new Report();
@@ -47,6 +64,8 @@ export class OperationsDataComponent {
   reportTotals: Monthly[]               = [];
   modifiedReportTotals: Monthly[]       = [];
   dailyData:any                         = [];  //TODO change type to daily  All days - dailyData
+
+  liveChange:PercentCFS[]               = [];     
   
   yearTypeBackgroundAnalytics: string   = '';
 
@@ -62,13 +81,13 @@ export class OperationsDataComponent {
   outflowPercentageCFS:number           = 0;
   outflowDirectionCFS:string            = "Decrease";
   outflowDailyCFS:string                = "Both";
-  overRideCheckedCFS:boolean            = false;
+  overRideCheckedCFS:boolean            = false;  
 
-  liveChange:any                        = [
-    {"half":"1st Half of Month", "month":"", "avgOutflowCFS":0, "days": 0, "changed": 0.0, "biMonthly":0},
-    {"half":"2nd Half of Month", "month":"", "avgOutflowCFS":0, "days": 0, "changed": 0.0, "biMonthly":0},
-    {"half":"Total",             "month":"", "avgOutflowCFS":0, "days": 0, "changed": 0.0, "biMonthly":0}
-  ];
+  // liveChange:any                        = [
+  //   {"half":"1st Half of Month", "month":"", "avgOutflowCFS":0, "days": 0, "changed": 0.0, "biMonthly":0},
+  //   {"half":"2nd Half of Month", "month":"", "avgOutflowCFS":0, "days": 0, "changed": 0.0, "biMonthly":0},
+  //   {"half":"Total",             "month":"", "avgOutflowCFS":0, "days": 0, "changed": 0.0, "biMonthly":0}
+  // ];
 
   maxFileSize: number                   = 1000000000;
 
@@ -137,7 +156,7 @@ export class OperationsDataComponent {
     {"name" : "USGS Water Data", "link" : "https://waterdata.usgs.gov/monitoring-location/09110000"},
     {"name" : "State of Colorado", "link" : "https://dwr.state.co.us/Tools/Stations/TAYBERCO?params=DISCHRG&gridObservations-sort=meas_value-asc&gridAnalysisSummaryCY-sort=amt_aug-asc&gridPeakStreamFlow-sort=peak_q_date-asc&gridAnalysisSummaryIY-sort=amt_jan-asc&gridAnalysisSummaryWY-sort=amt_may-asce"},
     {"name" : "Taylor Park Dam - wikipedia", "link" : "https://en.wikipedia.org/wiki/Taylor_Park_Dam"}
-  ]
+  ] 
 
   showEditDialog() {
     console.log("--- showEditDialog ---");
@@ -326,26 +345,40 @@ export class OperationsDataComponent {
     let myHalf1 = this.editMonthlyData[this.monthIndex].month       + " " + this.editMonthlyData[this.monthIndex].dateRange;
     let myHalf2 = this.editMonthlyData[(this.monthIndex + 1)].month + " " + this.editMonthlyData[(this.monthIndex + 1)].dateRange;
 
-    this.liveChange[0].half          = myHalf1;
-    this.liveChange[0].month         = this.selectedMonth.month;
-    this.liveChange[0].avgOutflowCFS = this.editDailyData[0].avgOutflowCFS;
-    this.liveChange[0].days          = Number(this.reportTotals[0].days);
-    this.liveChange[0].changed       = 0.0;
-    this.liveChange[0].biMonthly     = Number(this.reportTotals[0].outflow);
+    this.liveChange            = [];
 
-    this.liveChange[1].half          = myHalf2;
-    this.liveChange[1].month         = this.selectedMonth.month;
-    this.liveChange[1].avgOutflowCFS = this.editDailyData[16].avgOutflowCFS;
-    this.liveChange[1].days          = Number(this.reportTotals[1].days);
-    this.liveChange[1].changed       = 0.0;
-    this.liveChange[1].biMonthly     = Number(this.reportTotals[1].outflow);
+    let myLiveChange           = new PercentCFS();
 
-    this.liveChange[2].half          = this.selectedMonth.month;
-    this.liveChange[2].month         = this.selectedMonth.month;
-    this.liveChange[2].avgOutflowCFS = (this.editDailyData[0].avgOutflowCFS + this.editDailyData[16].avgOutflowCFS ) /2;
-    this.liveChange[2].days          = Number(this.reportTotals[0].days) + Number(this.reportTotals[1].days);
-    this.liveChange[2].changed       = 0.0;
-    this.liveChange[2].biMonthly     = Number(this.reportTotals[0].outflow) + Number(this.reportTotals[1].outflow);
+    myLiveChange.half          = myHalf1;
+    myLiveChange.month         = this.selectedMonth.month;
+    myLiveChange.avgOutflowCFS = this.editDailyData[0].avgOutflowCFS;
+    myLiveChange.days          = Number(this.reportTotals[0].days);
+    myLiveChange.changed       = 0.0;
+    myLiveChange.biMonthly     = Number(this.reportTotals[0].outflow);
+
+    this.liveChange.push(myLiveChange);
+    
+    myLiveChange               = new PercentCFS();
+
+    myLiveChange.half          = myHalf2;
+    myLiveChange.month         = this.selectedMonth.month;
+    myLiveChange.avgOutflowCFS = this.editDailyData[16].avgOutflowCFS;
+    myLiveChange.days          = Number(this.reportTotals[1].days);
+    myLiveChange.changed       = 0.0;
+    myLiveChange.biMonthly     = Number(this.reportTotals[1].outflow);
+
+    this.liveChange.push(myLiveChange);
+
+    myLiveChange               = new PercentCFS();
+
+    myLiveChange.half          = this.selectedMonth.month;
+    myLiveChange.month         = this.selectedMonth.month;
+    myLiveChange.avgOutflowCFS = (this.editDailyData[0].avgOutflowCFS + this.editDailyData[16].avgOutflowCFS ) /2;
+    myLiveChange.days          = Number(this.reportTotals[0].days) + Number(this.reportTotals[1].days);
+    myLiveChange.changed       = 0.0;
+    myLiveChange.biMonthly     = Number(this.reportTotals[0].outflow) + Number(this.reportTotals[1].outflow);
+
+    this.liveChange.push(myLiveChange);
     
     // console.log("--- this.liveChange ---");
     // console.log(this.liveChange);
@@ -410,26 +443,40 @@ export class OperationsDataComponent {
     let myHalf1 = this.editMonthlyData[this.monthIndex].month       + " " + this.editMonthlyData[this.monthIndex].dateRange;
     let myHalf2 = this.editMonthlyData[(this.monthIndex + 1)].month + " " + this.editMonthlyData[(this.monthIndex + 1)].dateRange;
 
-    this.liveChange[0].half          = myHalf1;
-    this.liveChange[0].month         = this.selectedMonth.month;
-    this.liveChange[0].avgOutflowCFS = this.editDailyData[0].avgOutflowCFS;
-    this.liveChange[0].days          = Number(this.reportTotals[0].days);
-    this.liveChange[0].changed       = 0.0;
-    this.liveChange[0].biMonthly     = Number(this.reportTotals[0].outflow);
+    this.liveChange            = [];
 
-    this.liveChange[1].half          = myHalf2;
-    this.liveChange[1].month         = this.selectedMonth.month;
-    this.liveChange[1].avgOutflowCFS = this.editDailyData[16].avgOutflowCFS;
-    this.liveChange[1].days          = Number(this.reportTotals[1].days);
-    this.liveChange[1].changed       = 0.0;
-    this.liveChange[1].biMonthly     = Number(this.reportTotals[1].outflow);
+    let myLiveChange           = new PercentCFS();
 
-    this.liveChange[2].half          = this.selectedMonth.month;
-    this.liveChange[2].month         = this.selectedMonth.month;
-    this.liveChange[2].avgOutflowCFS = (this.editDailyData[0].avgOutflowCFS + this.editDailyData[16].avgOutflowCFS ) /2;
-    this.liveChange[2].days          = Number(this.reportTotals[0].days) + Number(this.reportTotals[1].days);
-    this.liveChange[2].changed       = 0.0;
-    this.liveChange[2].biMonthly     = Number(this.reportTotals[0].outflow) + Number(this.reportTotals[1].outflow);
+    myLiveChange.half          = myHalf1;
+    myLiveChange.month         = this.selectedMonth.month;
+    myLiveChange.avgOutflowCFS = this.editDailyData[0].avgOutflowCFS;
+    myLiveChange.days          = Number(this.reportTotals[0].days);
+    myLiveChange.changed       = 0.0;
+    myLiveChange.biMonthly     = Number(this.reportTotals[0].outflow);
+
+    this.liveChange.push(myLiveChange);
+    
+    myLiveChange               = new PercentCFS();
+
+    myLiveChange.half          = myHalf2;
+    myLiveChange.month         = this.selectedMonth.month;
+    myLiveChange.avgOutflowCFS = this.editDailyData[16].avgOutflowCFS;
+    myLiveChange.days          = Number(this.reportTotals[1].days);
+    myLiveChange.changed       = 0.0;
+    myLiveChange.biMonthly     = Number(this.reportTotals[1].outflow);
+
+    this.liveChange.push(myLiveChange);
+    
+    myLiveChange               = new PercentCFS();
+
+    myLiveChange.half          = this.selectedMonth.month;
+    myLiveChange.month         = this.selectedMonth.month;
+    myLiveChange.avgOutflowCFS = (this.editDailyData[0].avgOutflowCFS + this.editDailyData[16].avgOutflowCFS ) /2;
+    myLiveChange.days          = Number(this.reportTotals[0].days) + Number(this.reportTotals[1].days);
+    myLiveChange.changed       = 0.0;
+    myLiveChange.biMonthly     = Number(this.reportTotals[0].outflow) + Number(this.reportTotals[1].outflow);
+
+    this.liveChange.push(myLiveChange);
 
   }
 
