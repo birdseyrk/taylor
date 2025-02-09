@@ -130,7 +130,7 @@ export class OperationsService {
   
       rowObject = rowObject + "}";
       
-      let myObject:any = JSON.parse(rowObject);
+      let myObject:any             = JSON.parse(rowObject);
       
       myMonthly.month              =  myObject.month;
       myMonthly.dateRange          =  myObject.dateRange;
@@ -305,15 +305,15 @@ export class OperationsService {
 
         for (let i = 0; i < month1.days; i++) {
           
-          let myDailyData:Daily = new Daily();
+          let myDailyData:Daily           = new Daily();
           
-          totalEomContent   = totalEomContent + this.elevationService.getAcreFeetFromCFS(Number(month1.avgInflowCFS)) - this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS));
+          totalEomContent                 = totalEomContent + this.elevationService.getAcreFeetFromCFS(Number(month1.avgInflowCFS)) - this.elevationService.getAcreFeetFromCFS(Number(month1.avgOutflowCFS));
           
-          totalInflow        = totalInflow + Number(month1.avgInflowCFS);
-          totalManualInflow  = totalManualInflow + Number(month1.avgInflowCFS);
-          totalOutflow       = totalOutflow + Number(month1.avgOutflowCFS);
-          totalManualOutflow = totalManualOutflow + Number(month1.avgOutflowCFS);
-          totalDays = totalDays + 1;
+          totalInflow                     = totalInflow + Number(month1.avgInflowCFS);
+          totalManualInflow               = totalManualInflow + Number(month1.avgInflowCFS);
+          totalOutflow                    = totalOutflow + Number(month1.avgOutflowCFS);
+          totalManualOutflow              = totalManualOutflow + Number(month1.avgOutflowCFS);
+          totalDays                       = totalDays + 1;
 
           myDailyData.day                 = month1.month + "-" + (i+1);
           myDailyData.avgInflowCFS        = Number(month1.avgInflowCFS);
@@ -334,7 +334,7 @@ export class OperationsService {
           myDailyData.startingEomContent  = myEOMContent;
           myDailyData.monthIndex          = month1.index;
 
-          myEOMContent = myDailyData.eomContent;
+          myEOMContent                    = myDailyData.eomContent;
 
           // console.log('--- myDailyData 1 ---');
           // console.log(myDailyData);
@@ -347,12 +347,12 @@ export class OperationsService {
            
           let myDailyData:Daily = new Daily();
 
-          totalEomContent = totalEomContent + Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgInflowCFS))) - Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgOutflowCFS)));
-          totalInflow        = totalInflow + Number(month2.avgInflowCFS);
-          totalManualInflow  = totalManualInflow + Number(month2.avgInflowCFS);
-          totalOutflow       = totalOutflow + Number(month2.avgOutflowCFS);
-          totalManualOutflow = totalManualOutflow + Number(month2.avgOutflowCFS);
-          totalDays = totalDays + 1;
+          totalEomContent                 = totalEomContent + Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgInflowCFS))) - Number(this.elevationService.getAcreFeetFromCFS(Number(month2.avgOutflowCFS)));
+          totalInflow                     = totalInflow + Number(month2.avgInflowCFS);
+          totalManualInflow               = totalManualInflow + Number(month2.avgInflowCFS);
+          totalOutflow                    = totalOutflow + Number(month2.avgOutflowCFS);
+          totalManualOutflow              = totalManualOutflow + Number(month2.avgOutflowCFS);
+          totalDays                       = totalDays + 1;
 
           myDailyData.day                 = month2.month + "-" + (i+1);
           myDailyData.avgInflowCFS        = Number(month2.avgInflowCFS);
@@ -373,7 +373,7 @@ export class OperationsService {
           myDailyData.startingEomContent  = myEOMContent;
           myDailyData.monthIndex          = month2.index;
 
-          myEOMContent = myDailyData.eomContent;
+          myEOMContent                    = myDailyData.eomContent;
 
           // console.log('--- myDailyData 2 ---');
           // console.log(myDailyData);
@@ -382,7 +382,7 @@ export class OperationsService {
           
         }  
 
-        let myDailyTotal:Daily = new Daily();
+        let myDailyTotal:Daily          = new Daily();
         myDailyTotal.day                = "Totals";
         myDailyTotal.avgInflowCFS       = totalInflow;
         
@@ -418,9 +418,9 @@ export class OperationsService {
   
     checkOperationalData = (operations: any[]): string  => {
       this.myLog.log('INFO', '-------- OperationsService.checkOperationalData --------');
-      let fatalError = false;
-  
-      this.errorJson.errors = [];
+
+      let fatalError            = false;
+      this.errorJson.errors     = [];
       this.errorJson.fatalError = false;
   
       try {

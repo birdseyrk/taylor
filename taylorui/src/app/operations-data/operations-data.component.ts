@@ -168,8 +168,6 @@ export class OperationsDataComponent {
 
     this.editMonthlyData = this.operationsService.getEditMonthlyData();
     this.editDialogVisible = !this.editDialogVisible;
-    
-    //TODO NOt sure what this is .... need to set the values on save so the values are the same.  think about the flow when 
 
     this.outflowPercentage = 0;
     this.outflowDirection = "Decrease";
@@ -262,10 +260,12 @@ export class OperationsDataComponent {
 
     let myData:string = "";
 
-    if (this.editMonthlyData.length == 0 ) {  //TODO get rid of this block
-      myData = JSON.stringify(this.myReport.monthly);
-      this.editMonthlyData = JSON.parse(myData);
-    }
+    // if (this.editMonthlyData.length == 0 ) {  //TODO get rid of this block
+    //   myData = JSON.stringify(this.myReport.monthly);
+    //   this.editMonthlyData = JSON.parse(myData);
+    // }
+
+    this.editMonthlyData = this.operationsService.deepClone(this.myReport.monthly);
 
     this.monthIndex = this.getStartingMonthlyIndex(this.editMonthlyData);
 
@@ -1666,25 +1666,25 @@ export class OperationsDataComponent {
         constants.DATE_LABEL +
         '"}';
 
-    let myProposedData: any = [];
-    let myInflowData: any = [];
-    let myOutflowData: any = [];
-    let myDateLineData: any = [];
-    let myLabels: any = [];
-    let myWarning: any = [];
-    let myMax: any = [];
+    let myProposedData: any   = [];
+    let myInflowData: any     = [];
+    let myOutflowData: any    = [];
+    let myDateLineData: any   = [];
+    let myLabels: any         = [];
+    let myWarning: any        = [];
+    let myMax: any            = [];
 
-    this.elevationGridData = JSON.parse(myJSONstring);
+    this.elevationGridData    = JSON.parse(myJSONstring);
     let elevationProposedData = JSON.parse(myProposedLevel);
-    let outFlowData = JSON.parse(myOutFlowLevel);
-    let inFlowData = JSON.parse(myInFlowLevel);
-    let elevationWarningData = JSON.parse(myWarningLevel);
-    let elevationMaxData = JSON.parse(myMaxLevel);
-    let elevationDateData = JSON.parse(myDateLine);
+    let outFlowData           = JSON.parse(myOutFlowLevel);
+    let inFlowData            = JSON.parse(myInFlowLevel);
+    let elevationWarningData  = JSON.parse(myWarningLevel);
+    let elevationMaxData      = JSON.parse(myMaxLevel);
+    let elevationDateData     = JSON.parse(myDateLine);
 
-    let dayIndex:number = this.getStartingMonthlyIndex(this.myReport.monthly);
-    let maxIndex:number = this.getMaxWaterLevelIndex(this.myReport.monthly);
-    let minIndex:number = this.getMinWaterLevelIndex(this.myReport.monthly);
+    let dayIndex:number       = this.getStartingMonthlyIndex(this.myReport.monthly);
+    //let maxIndex:number       = this.getMaxWaterLevelIndex(this.myReport.monthly);
+    let minIndex:number       = this.getMinWaterLevelIndex(this.myReport.monthly);
 
     myDateLineData[dayIndex] =  (this.myReport.monthly[minIndex].eomElevation - 3);
 
@@ -1701,18 +1701,18 @@ export class OperationsDataComponent {
       myMax[i] = constants.MAX_ELEVATION_LEVEL;
     }
 
-    elevationProposedData.data = myProposedData;
-    inFlowData.data = myInflowData;
-    outFlowData.data = myOutflowData;
-    elevationWarningData.data = myWarning;
-    elevationMaxData.data = myMax;
-    elevationDateData.data = myDateLineData;
+    elevationProposedData.data         = myProposedData;
+    inFlowData.data                    = myInflowData;
+    outFlowData.data                   = myOutflowData;
+    elevationWarningData.data          = myWarning;
+    elevationMaxData.data              = myMax;
+    elevationDateData.data             = myDateLineData;
 
     this.elevationGridData.datasets[0] = elevationWarningData;
     this.elevationGridData.datasets[1] = elevationMaxData;
     this.elevationGridData.datasets[2] = elevationProposedData;
     this.elevationGridData.datasets[3] = elevationDateData;
-    this.elevationGridData.labels = myLabels;
+    this.elevationGridData.labels      = myLabels;
 
     this.elevationGridOptions = {
       plugins: {
@@ -1810,7 +1810,7 @@ export class OperationsDataComponent {
 
     let outflow1: number = 0;
     let outflow2: number = 0;
-    let dayIndex = this.getStartingMonthlyIndex(this.editMonthlyData);
+    //let dayIndex = this.getStartingMonthlyIndex(this.editMonthlyData);
 
     for (let i = 0; i < (myRollupData.length-1); i++) {
       
@@ -1875,7 +1875,7 @@ export class OperationsDataComponent {
 
     this.modifiedReportTotals[3].manualOutflow          = Number( (outflowDifference).toFixed(3));
 
-    //TODO add back in this.recalculateEOM(this.modifiedReportTotals, 0);
+    //TODO things are working fine this.recalculateEOM(this.modifiedReportTotals, 0);
 
     //this.recalculateDaily(myRecalcDailyData: any, myRollupData[0].monthIndex:number);
 
@@ -2029,7 +2029,7 @@ export class OperationsDataComponent {
     }
 
     this.modifiedReportTotals[2].outflow = this.modifiedReportTotals[2].outflow + this.elevationService.getAcreFeetFromCFS(cfsDifference);
-    // TODO  this needs to be recalculated  this.modifiedReportTotals[3].outflow = this.modifiedReportTotals[3].outflow + this.elevationService.getAcreFeetFromCFS(cfsDifference);
+    // TODO  things are working fine  this.modifiedReportTotals[3].outflow = this.modifiedReportTotals[3].outflow + this.elevationService.getAcreFeetFromCFS(cfsDifference);
 
     this.rollupChange = true;
 
