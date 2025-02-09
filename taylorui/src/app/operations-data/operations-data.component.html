@@ -133,6 +133,10 @@
                         <th width="5px"  class="text-center">Predicted<br>Inflow<br>(AF)</th>
                         <th width="5px"  class="text-center">Manual<br>Outflow<br>(AF)</th>
                         <th width="5px"  class="text-center">Outflow<br>(AF)</th>
+                        <th width="5px"  class="text-center">Average<br>Inflow<br>(CFS)</th>
+                        <th width="5px"  class="text-center">Average<br>Outflow<br>(CFS)</th>
+                        <th width="5px"  class="text-center">Manual<br>Outflow<br>(CFS)</th>
+                        <th width="5px"  class="text-center">Change<br>Outflow<br>(CFS)</th>
                         <th width="5px"  class="text-center">EOM<br>Content<br>(AF)</th>
                         <th width="5px"  class="text-center">EOM<br>Elevation<br>(FT)</th>
                         <th width="5px"  class="text-center">Elevation<br>Change<br>(FT)</th>
@@ -149,8 +153,18 @@
                             <td width="5px" class="text-center p-inputtext-sm">{{myData.inflow.toFixed(2)}}</td>
                             <td width="5px"  class="text-center"><p-inputNumber [inputStyle]="{'text-align': 'right'}" class="p-inputtext-sm" (onBlur)="adjustManualInput(editMonthlyData,myData.index, false)"                   inputId="manualOutflow_{{myData.index}}"    mode="decimal" [maxFractionDigits]="3" [size]="6" [min]="0" [max]="106200.000"                         [(ngModel)]="myData.manualOutflow"    placeholder="Outflow (AF)" [inputStyle]="{background:myData.manualOutflowColor,'text-align': 'right'}"> </p-inputNumber></td>
                             <td width="5px" class="text-center p-inputtext-sm">{{myData.outflow.toFixed(2)}}</td>
-                            <td width="5px" class="text-center p-inputtext-sm">{{myData.eomContent.toFixed(2)}}</td>
-                            <td width="5px" class="text-center p-inputtext-sm"  [ngStyle]="{'background':myData.elevationWarning}" >{{myData.eomElevation.toFixed(2)}}</td>
+                            <td width="5px" class="text-center p-inputtext-sm">{{myData.avgInflowCFS.toFixed(2)}}</td>
+                            <td width="5px" class="text-center p-inputtext-sm">{{myData.avgOutflowCFS.toFixed(2)}}</td>
+                            <td width="5px" class="text-center p-inputtext-sm">{{elevationService.getAvgCubicFeetPerSecond(myData.manualOutflow, myData.days).toFixed(2)}}</td>
+                            <td width="5px" class="text-center p-inputtext-sm" *ngIf="!myData.manualOutflow"></td>
+                            <td width="5px" class="text-center p-inputtext-sm" *ngIf="myData.manualOutflow" [ngClass]="
+                            { 'neutral' :(( (myData.avgOutflowCFS - elevationService.getAvgCubicFeetPerSecond(myData.manualOutflow, myData.days)) < -0.0000) 
+                            &&   ((myData.avgOutflowCFS - elevationService.getAvgCubicFeetPerSecond(myData.manualOutflow, myData.days))  > -0.0000)),      
+                            'outflowincrease' :(myData.avgOutflowCFS - elevationService.getAvgCubicFeetPerSecond(myData.manualOutflow, myData.days)) < -0.00001,  
+                            'outflowdecrease': (myData.avgOutflowCFS - elevationService.getAvgCubicFeetPerSecond(myData.manualOutflow, myData.days)) >= 0.00001}">{{(myData.avgOutflowCFS - elevationService.getAvgCubicFeetPerSecond(myData.manualOutflow, myData.days)).toFixed(2)}}</td>
+                            
+                            <td width="5px" class="text-center p-inputtext-sm"  [ngStyle]="{'background':myData.elevationWarning}" >{{ myData.eomContent.toFixed(2)}}</td>
+                            <td width="5px" class="text-center p-inputtext-sm">{{myData.eomElevation.toFixed(2)}}</td>
                             <td width="5px" class="text-center p-inputtext-sm"  [ngClass]="
                             { 'neutral' :(( myData.elevationChange < -0.0000) 
                             &&   (myData.elevationChange  > -0.0000) ),      
